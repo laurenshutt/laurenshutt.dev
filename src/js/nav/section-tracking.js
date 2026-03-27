@@ -70,11 +70,11 @@ export const sectionTrackingInit = () => {
         const el = entry.target;
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
         
-        const openWindow = (window) => {
+        const openWindow = (window, skipIsOpen) => {
             
             const chrome = window.querySelector(".🎨lsdev-window__chrome");
             
-            window.classList.add("is-open");
+            !skipIsOpen && window.classList.add("is-open");
             
             slideToggle(chrome);
         }
@@ -90,21 +90,33 @@ export const sectionTrackingInit = () => {
                 break;
             
             case "🫆lsdev-window--reviews":
-                setTimeout(function(){
-                    openWindow(el);
-                    moveCaret(li, true);
-                    sectionObserver.observe(el);
-                    initReviewsSlider();
-                    requestAnimationFrame(() => {
-                        
-                        const windowContent = el.querySelector(".🎨lsdev-window__content");
-                        const carousel = windowContent.querySelector(".🎨lsdev-reviews__carousel");
-                        const height = carousel.getBoundingClientRect().height;
 
-                        windowContent.style.height = height;
-                        windowContent.classList.add("is-initialized");
-                    });
-                }, 100);
+                const nav = el.querySelector(".🎨lsdev-window__menu");
+                const windowContent = el.querySelector(".🎨lsdev-window__content");
+                const carousel = windowContent.querySelector(".🎨lsdev-reviews__carousel");
+                const paddingY = 60;
+                const bottomBorderDelay = 500;
+                const finalizeOpen = () => {
+                    
+                    const carouselHeight = carousel.getBoundingClientRect().height;
+                    
+                    windowContent.style.height = `${Math.ceil(carouselHeight + paddingY * 2)}px`;
+                    nav.classList.add("is-initialized");
+
+                    setTimeout(() => {
+                        el.classList.add("is-open");
+                    }, bottomBorderDelay);
+                };
+
+                openWindow(el, true);
+                moveCaret(li, true);
+                
+                sectionObserver.observe(el);
+
+                $(carousel).on("init", finalizeOpen);
+
+                initReviewsSlider();
+
                 break;
 
             case "🫆lsdev-contact":

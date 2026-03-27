@@ -859,11 +859,18 @@
             height: 0px;
             padding: 0;
             overflow:hidden;
-            transition: all .2s ease;
+            transition: height 1000ms ease;
+        }
+        &.🎨lsdev-window--reviews .🎨lsdev-window__menu {
+            height:0px;
+            padding:0;
+            transition: height 800ms ease;
+            border:none;
 
             &.is-initialized {
-                height: max-height;
-                padding: 50px 50px 30px 50px;
+                height:48px;
+                padding:inherit;
+                border:2px solid #d68bb7;
             }
         }
         .🎨lsdev-window__status-bar {

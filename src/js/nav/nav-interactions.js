@@ -1,5 +1,6 @@
 import { 
     caret,
+    mainNav,
     mainNavItems
 } from '../dom.js';
 
