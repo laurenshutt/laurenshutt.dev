@@ -30,7 +30,7 @@ export const addProjects = (() => {
     const projectsObj = {
         "Carbon Colab Webpage":[
             "Virginia Tech",
-            "img/projects/carbon-colab.png",
+            "img/projects/carbon-colab.webp",
             ["developed","aem"]],
         "AI Summit Webpage":[
             "Virginia Tech",

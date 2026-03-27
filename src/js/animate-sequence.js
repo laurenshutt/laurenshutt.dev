@@ -51,7 +51,7 @@ export const animateSequence = (async () => {
 
     await Promise.all([
         shuffleTextEffect(h1Span, 200, 30, 0.75),
-        delay(2300)
+        delay(2500)
     ]);
     
     window.addEventListener("resize", () => {
@@ -67,11 +67,11 @@ export const animateSequence = (async () => {
 
     sidebarNav.style.animation = "✨lsdev-fx-stretch-down 0.2s linear forwards";
 
-    await delay(250);
+    await delay(350);
 
     initNavAnimations(lastI);
 
-    await delay (1300);
+    await delay (1400);
     
     requestAnimationFrame(() => {
         
@@ -86,7 +86,7 @@ export const animateSequence = (async () => {
         setTimeout(function(){
             slideToggle(firstWindowChrome);
             firstWindow.classList.add("is-animated", "is-open");
-        }, 250 * windows.length + 500);
+        }, 250 * windows.length + 100);
 
     });
 

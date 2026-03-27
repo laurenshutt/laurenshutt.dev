@@ -1,6 +1,5 @@
 import { 
     mainNav,
-    contact,
     contactH2Span,
     contactEls
 } from '../dom.js';
@@ -60,6 +59,8 @@ export const sectionTrackingInit = () => {
 
     let currentIndex = 0;
 
+    sectionObserver.observe(document.querySelector("#🫆lsdev-window--projects"));
+
     const observer = new IntersectionObserver(async (entries, obs) => {
         
         const entry = entries.find(e => e.isIntersecting);
@@ -85,16 +86,25 @@ export const sectionTrackingInit = () => {
                     openWindow(el);
                     moveCaret(li, true);
                     sectionObserver.observe(el);
-                }, 500);
+                }, 100);
                 break;
             
             case "🫆lsdev-window--reviews":
                 setTimeout(function(){
                     openWindow(el);
-                    initReviewsSlider();
                     moveCaret(li, true);
                     sectionObserver.observe(el);
-                }, 500);
+                    initReviewsSlider();
+                    requestAnimationFrame(() => {
+                        
+                        const windowContent = el.querySelector(".🎨lsdev-window__content");
+                        const carousel = windowContent.querySelector(".🎨lsdev-reviews__carousel");
+                        const height = carousel.getBoundingClientRect().height;
+
+                        windowContent.style.height = height;
+                        windowContent.classList.add("is-initialized");
+                    });
+                }, 100);
                 break;
 
             case "🫆lsdev-contact":
