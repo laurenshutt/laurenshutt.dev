@@ -96,6 +96,7 @@ export const sectionTrackingInit = () => {
                 const carousel = windowContent.querySelector(".🎨lsdev-reviews__carousel");
                 const paddingY = 60;
                 const bottomBorderDelay = 500;
+                
                 const finalizeOpen = () => {
                     
                     const carouselHeight = carousel.getBoundingClientRect().height;
@@ -120,8 +121,11 @@ export const sectionTrackingInit = () => {
                 break;
 
             case "🫆lsdev-contact":
+                
                 moveCaret(li, true);
+                
                 sectionObserver.observe(el);
+                
                 shuffleTextEffect(contactH2Span, 90, 45, 0.75);
                 setTimeout(function(){
                     contactEls.forEach(function(contactEl){
