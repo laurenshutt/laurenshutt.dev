@@ -2,7 +2,7 @@
 
 # laurenshutt.dev
 
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 
 </div>
 
@@ -39,7 +39,11 @@ open index.html
 ```
 
 ## Roadmap
-- [ ]  tooltip for come back soon links
-- [ ]  working minimize/maximize/close window buttons
-- [x]  music toggle
-- [ ]  tab filters
+- [ ] Tooltip for come back soon links
+- [ ] Project filters
+- [ ] In-depth project info on click
+- [ ] Catbot
+- [ ] Mobile layout
+- [ ] Cross-browser testing
+- [x] Working minimize/maximize/close window buttons
+- [x] Music toggle
