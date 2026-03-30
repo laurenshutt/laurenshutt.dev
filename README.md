@@ -1,8 +1,14 @@
 <div align="center">
 # laurenshutt.dev
+<<<<<<< HEAD
 This is the repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that would evoke the feeling I got when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript.  
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
-<div align="center">
+</div>
+=======
+
+This is the repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that would evoke the feeling I got when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript.  
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
+>>>>>>> origin/main
 
 ## Live site
 https://laurenshutt.dev
