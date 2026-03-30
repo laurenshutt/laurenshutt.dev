@@ -38,11 +38,8 @@ cd laurenshutt.dev
 open index.html
 ```
 
-/js
-  /effects
-  /nav
-  /utils
-  /init
-
-/css
-/img
+## Roadmap
+- [ ]  tooltip for come back soon links
+- [ ]  working minimize/maximize/close window buttons
+- [x]  music toggle
+- [ ]  tab filters
