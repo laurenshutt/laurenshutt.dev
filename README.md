@@ -1,6 +1,7 @@
 # laurenshutt.dev
 
 This is the repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that would evoke the feeling I got when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript.
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 
 ## Live site
 https://laurenshutt.dev
@@ -26,9 +27,11 @@ https://laurenshutt.dev
 - Netlify
 
 ## How to run locally
-`git clone https://github.com/laurenshutt/laurenshutt.dev.git
+```
+git clone https://github.com/laurenshutt/laurenshutt.dev.git
 cd laurenshutt.dev
-open index.html`
+open index.html
+```
 
 /js
   /effects
