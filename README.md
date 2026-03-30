@@ -1,20 +1,10 @@
 # laurenshutt.dev
 
-Personal portfolio for Lauren Shutt — front-end developer focused on immersive UI, microinteractions, and playful design systems.
+This is the repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that would evoke the feeling I got when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript.
 
 ## Preview
 
 ![Site preview](./img/preview.png)
-
-## About
-
-This site is a custom-built portfolio designed to feel like an interactive desktop environment.
-
-It focuses on:
-- Microinteractions and motion
-- Experimental UI patterns
-- Accessibility-aware components
-- Lightweight, framework-free JavaScript
 
 ## Features
 
@@ -31,6 +21,9 @@ It focuses on:
 - Vanilla JavaScript (modular)
 - jQuery (select interactions)
 - Slick Carousel
+- VSCode
+- Github
+- Netlify
 
 ## Project Structure
 
