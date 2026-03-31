@@ -4,12 +4,12 @@
 
 Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &hearts; and hosted with [Netlify](https://www.netlify.com/). 
 
-<img src="./portfolio1.gif"/>
+<img src="./portfolio2.gif"/>
 
 </div>
 
 
-
+## Overview
 This is a repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that could evoke the feeling of when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript. 
 
 ## Features
