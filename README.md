@@ -6,7 +6,7 @@ Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &
 
 </div>
 
-![Site preview](./img/preview.png)
+<img src="./portfolio1.gif" width="600" />
 
 This is the repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that would evoke the feeling I got when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript. 
 
