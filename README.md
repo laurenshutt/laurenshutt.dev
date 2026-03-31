@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./favicon.svg" alt="Form to Sheets Workflow" style="width:60px" />
+
 # laurenshutt.dev
 
 Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &hearts; and hosted with [Netlify](https://www.netlify.com/). 
