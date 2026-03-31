@@ -5,10 +5,12 @@
 Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &hearts; and hosted with [Netlify](https://www.netlify.com/). 
 
 <img src="./portfolio1.gif"/>
+<img src="./portfolio2.gif" style="width:400px"/>
+<img src="./portfolio3.gif" style="width:400px"/>
 
 </div>
 
-<img src="./portfolio2.gif" style="width:50%"/>
+
 
 
 ## Overview
