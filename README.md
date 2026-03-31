@@ -15,10 +15,10 @@ Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &
 
 
 
-## Overview
+## ✧･ﾟOverview
 This is a repo for my personal portfolio site. I wanted to create an early-2000s analog whimsy that could evoke the feeling of when I first fell in love with web development. I focused on building an immersive UI, with gamified microinteractions and a playful codebase featuring accessibility-aware components and lightweight, framework-free JavaScript. 
 
-## Features
+## ✧･ﾟFeatures
 - Window-based UI system (open, minimize, maximize)
 - Navigation caret to track visible sections
 - Scroll-driven animations using Intersection Observer API
