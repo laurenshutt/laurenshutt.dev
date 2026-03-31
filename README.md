@@ -21,8 +21,8 @@ This is a repo for my personal portfolio site. I wanted to create an early-2000s
 ## Features
 - Window-based UI system (open, minimize, maximize)
 - Navigation caret to track visible sections
-- Scroll-driven animations using IntersectionObserver
-- Interactive background canvas
+- Scroll-driven animations using Intersection Observer API
+- Interactive background using Canvas API
 - Custom cursor interactions
 - Faux chatbot
 - Contact form
