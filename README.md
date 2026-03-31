@@ -2,7 +2,7 @@
 
 <img src="./favicon.svg" style="width:60px" />
 
-# laurenshutt.dev
+# laurenshutt.dev (WIP)
 
 Second iteration of [laurenshutt.dev](https://laurenshutt.dev). Handcoded with &hearts; and hosted with [Netlify](https://www.netlify.com/). 
 
