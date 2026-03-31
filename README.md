@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./favicon.svg" alt="Form to Sheets Workflow" style="width:60px" />
+<img src="./favicon.svg" style="width:60px" />
 
 # laurenshutt.dev
 
