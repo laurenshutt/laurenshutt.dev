@@ -63,9 +63,8 @@ export const minimizeWindows = (() => {
         const chrome = window.querySelector(".🎨lsdev-window__chrome");
         const clone = document.querySelector(".is-clone");
 
-        clone && clone.remove();
-
         slideToggle(chrome);
+        clone && clone.remove();
 
         window.classList.remove("is-maximized");
         window.classList.toggle("is-open");
