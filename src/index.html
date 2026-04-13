@@ -543,6 +543,67 @@
         <audio 
             src="https://laurenshutt.dev/sunday-morning.mp3" 
             id="lsdev-lofi-audio"></audio>
+        <style>
+            .project-info-modal {
+                top:112px;
+                right:29px;
+                width:calc((100vw - 60px)/2 - 80px);
+                position:fixed;
+                display:none;
+                height:calc(100vh - 60px - 52px - 30px);
+                padding:40px;
+                z-index:1;
+                box-sizing:border-box;
+                background:linear-gradient(to bottom right, #fefcfc, #f2cdd0);
+                border-left:2px solid #d68bb7;
+                opacity:0;
+                transition:opacity .5s ease .15s;
+
+            }
+            .project-info-modal h2 {
+                line-height:1;
+                color:var(--💾lsdev-gold);
+                padding-bottom:30px;
+            }
+            .project-info-modal p {
+                padding-bottom:20px;
+            }
+            .project-secondary-image {
+                bottom:30px;
+                left:29px;
+                width:calc(((50vw - 30px) + 80px)/2);
+                display:none;
+                z-index:1;
+                position:fixed;
+                height:calc(100vh - 31.25vw - 60px - 52px - 30px - 30px);
+                border-top:2px solid #d68bb7;
+                border-bottom:2px solid #d68bb7;
+                opacity:0;
+                transition:opacity .5s ease .15s;
+            }
+            .project-secondary-image img {
+                min-width: 100%;
+                min-height: 100%;
+                object-fit: cover;
+                object-position: center;
+                max-height: 100%;
+                max-width: 100%;
+            }
+            #project-secondary-image-a {
+                border-left:2px solid #d68bb7;
+            }
+            #project-secondary-image-b {
+                left:calc((((50vw - 30px) + 80px)/2) + 29px);
+                border-left:2px solid #d68bb7;
+                border-right:2px solid #d68bb7;
+            }
+            .fade-in {
+                opacity:1;
+            }
+        </style>
+        <div class="project-info-modal" id="project-info-modal"></div>
+        <div class="project-secondary-image" id="project-secondary-image-a"></div>
+        <div class="project-secondary-image" id="project-secondary-image-b"></div>
     </body>
     <script type="module">
 
@@ -575,22 +636,24 @@
                 
             ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ . ݁₊ ⊹ . ݁ ⟡ ݁ . ⊹ ₊  ݁⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱
         
-            
-            [   ]  tooltip for come back soon links
-            [   ]  working minimize/maximize/close window buttons
+            [ x ]  working minimize/maximize/close window buttons
             [ x ]  music toggle
+            [   ]  project details on window expand
+            [   ]  tooltip for come back soon links
+            [   ]  lock scroll when window is expanded
+            [   ]  run npx info
             [   ]  tab filters
 
 
         */
 
         import {
+            animateSequence
+        } from "./js/animate-sequence.js";
+
+        import {
             minimizeWindows,
             maximizeWindows
         } from "./js/windows.js";
-
-        import {
-            animateSequence
-        } from "./js/animate-sequence.js";
 
     </script>

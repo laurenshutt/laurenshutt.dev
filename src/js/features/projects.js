@@ -4,6 +4,77 @@ let columnCount = 3;
 let projects, projectsArr, rowCount, lastRowStart;
 
 
+const projectsObj = {
+    "Carbon Colab Webpage":[
+        "Virginia Tech",
+        "img/projects/carbon-colab.webp",
+        [
+            "developed",
+            "aem"
+        ],
+        [
+            "img/projects/carbon-colab-mobile.png",
+            "img/projects/carbon-colab-tablet.png"
+        ]],
+    "AI Summit Webpage":[
+        "Virginia Tech",
+        "img/projects/ai-summit.png",
+        ["developed","aem"]],
+    "Phase, Inc. Website":[
+        "Phase, Inc.",
+        "img/projects/phase.png",
+        ["designed-developed","surreal"]],
+    "Institute for the Study of Eastern Christianity Website":[
+        "The Catholic University of America",
+        "img/projects/isec.png",
+        ["designed-developed","wp"]],
+    "G.K. Chesterton Entertainment Website": [
+        "G.K. Chesterton Entertainment",
+        "img/projects/gkce.png",
+        ["designed-developed"]],
+    "From Pests to Protein": [
+        "CALS Magazine",
+        "img/projects/pests.png",
+        ["developed"]],
+    "Ukrainian Catholic Crisis Media Center Website":[
+        "Ukrainian Greek Catholic Archeparchy of Philadelphia",
+        "img/projects/uccmc.png",
+        ["wp"]],
+    "School of Theology and Religious Studies Website":[
+        "The Catholic University of America",
+        "img/projects/trs.png",
+        ["designed-developed","cascade"]],
+    "School of Theology and Religious Studies Rollover Classes App":[
+        "The Catholic University of America",
+        "img/projects/rollover-app.png",
+        ["designed-developed","cascade"]],
+    "Google Scholar Plugin":[
+        "Virginia Tech",
+        "img/projects/scholar.png",
+        ["developed"]],
+    "CALS Strategic Plan Website":[
+        "Virginia Tech",
+        "img/projects/strategic-plan.png",
+        ["developed"]],
+    "CALS Sequicentennial Webpage":[
+        "Virginia Tech",
+        "img/projects/sesqui.png",
+        ["designed-developed","aem"]],
+    "CALS Digital Yearbook":[
+        "Virginia Tech",
+        "img/projects/digital-yearbook.png",
+        ["designed-developed","aem"]],
+    "CALS Homepage":[
+        "Virginia Tech",
+        "img/projects/cals-homepage.png",
+        ["designed-developed","aem"]],
+    "CPES Conference Website":[
+        "Virginia Tech",
+        "img/projects/cpes-conference.png",
+        ["designed-developed"]]
+};
+
+
 const scrollProjects = () => {
 
     const scrollContainer = document.querySelector("#🫆lsdev-projects__grid");

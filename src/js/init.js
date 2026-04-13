@@ -25,6 +25,8 @@ export const setElementIndices = () => {
 
 export const addProjects = (() => {
 
+    console.trace("addProjects called");
+
     const container = document.querySelector("#🫆lsdev-projects__grid");
 
     const projectsObj = {

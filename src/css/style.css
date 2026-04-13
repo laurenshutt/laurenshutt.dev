@@ -995,13 +995,6 @@
             p {
                 flex-grow:1;
             }
-            img {
-                width:100%;
-                transition:transform .2s ease-out;
-            }
-            :hover img {
-                transform:scale(1.5);
-            }
             .🎨lsdev-project_img-bg {
                 padding: 40px;
                 overflow: hidden;
@@ -1011,6 +1004,29 @@
                     #b1c2aa 110%
                 );
                 border-radius:5px;
+
+                img {
+                    width:100%;
+                    transition:transform .2s ease-out;
+                    aspect-ratio: 16/10;
+                }
+                :hover img {
+                    transform:scale(1.5);
+                }
+
+                &.is-expanded {
+                    position:fixed;
+                    top:112px;
+                    left:29px;
+                    width:calc((100vw + 104px)/2);
+                    padding:0;
+                    border-radius:0;
+                    border-left:2px solid #d68bb7;
+
+                    &:hover img {
+                        transform:none;
+                    }
+                }
             }
             .🎨lsdev-project_client-info { 
                 display:flex;
