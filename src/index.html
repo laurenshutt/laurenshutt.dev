@@ -228,8 +228,12 @@
                                     </button>
                                 </nav>
                                 <div 
+                                class="🎨lsdev-projects__grid-container" 
+                                id="🫆lsdev-projects__grid-container">
+                                    <div 
                                     class="🎨lsdev-window__content 🎨lsdev-projects__grid"
                                     id="🫆lsdev-projects__grid"></div>
+                                </div>
                             </div>
                         </div>
                         <div 
@@ -260,32 +264,56 @@
                                             About me
                                         </a>
                                         <a>
-                                            Skills
-                                        </a>
-                                        <a>
                                             Download résumé
                                         </a>
                                     </div>
                                 </nav>
                                 <div class="🎨lsdev-window__content 🎨lsdev-about__content">
+                                    <style>
+                                        #icebreaker::after {
+                                            content:"_";
+                                            margin-left:2px;
+                                            display: inline-block;
+                                            animation: blink 2s steps(1, end) infinite;
+                                        }
+
+                                        @keyframes blink {
+                                        0%, 50%, 100% {
+                                            opacity: 1;
+                                        }
+                                        25%, 75% {
+                                            opacity: 0;
+                                        }
+                                        }
+                                        .icebreaker-button {
+                                            transition: all .2s ease;
+                                        }
+                                        .icebreaker-button:hover {
+                                            background:var(--💾lsdev-purple);
+                                            color:white !important;
+                                        }
+                                    </style>
                                     <p>
-                                        Hi, I’m Lauren. 👋🏻
+                                        Hi there, I’m Lauren! 👋🏻 A self-taught developer driven by relentless curiosity and a love for designing imaginative corners of the internet. If you’re a CliftonStrengths person, you can read my report <a href="/Shutt-Lauren-SIGNATURE_THEME.pdf"><span>here</span></a>. Since 2016, I’ve been building the web for Virginia Tech, currently in the Office of <a href="https://partnerships.vt.edu"><span>Innovation and Partnerships</span></a>, with additional responsibilities for the main vt.edu website. 
                                     </p>
                                     <p>
-                                        I'm a self-taught full-stack developer, focusing on front-end design and development. My academic background is in anthropology, which means I care just as much about the people and Weberian webs of significance behind the website as I do about writing clean code for the front end. In practice, it also means I build thoughtful, well-structured digital experiences that balance clarity with personality. I’m love incorporating subtle microinteractions and dynamic visuals to create experiences that feel intuitive, engaging, and a little playful. 🌿
+                                        I was born in Germany to military parents and grew up riding polar bears in the wilds of Alaska. I studied anthropology for both my bachelor’s and master’s, and spent time in Germany taking courses in American Studies post-graduate-degree. After a young adulthood marked by vitamin D deprivation, I’ve finally put down roots in the temperate rainforests of Appalachia, where my family history goes back to the 1700s (one of my favorite things to talk about!).
                                     </p>
                                     <p>
-                                        Outside of work, you’ll usually find me playing <a><span>Stardew Valley</span></a>, building <a><span>Notion templates</span></a>, <a><span>crafting</span></a>, <a><span>reading</span></a>, or being closely supervised by two cats and a pittski who believe they manage this entire operation. 🐾
+                                        I’ve completed award-winning work for a variety of K-12 and higher education organizations, including the Anchorage School District, Georgetown University, The Catholic University of America, and The Augustine Institute. Outside of work I am an avid hobby collector. You can find me tending a heavily-modded <a><span>Stardew</span></a> farm, <a><span>crafting</span></a>, <a><span>reading</span></a>, writing, or being chided by two underfed cats and a pittski. 🐾
                                     </p>
-                                    <div class="🎨lsdev-about__skills">
-                                        <div class="🎨lsdev-skills__col" id="🫆lsdev-skills__col-1">
-                                            <div class="🎨lsdev-skills__skill"></div>
-                                            <div class="🎨lsdev-skills__skill-meter-container"></div>
+                                    <div style="display:flex;align-items: center;margin-top:20px;gap:20px">
+                                        <div>
+                                            <button id="icebreaker-button" class="icebreaker-button" style="border:3px solid var(--💾lsdev-purple); color:var(--💾lsdev-purple);font-family:'Silkscreen';border-radius:10px;padding:10px 18px;cursor:pointer;pointer-events:all">
+                                                Need an icebreaker?
+                                            </button>
+                                            <button class="icebreaker-button" style="border:3px solid var(--💾lsdev-purple); color:var(--💾lsdev-purple);font-family:'Silkscreen';border-radius:10px;padding:10px 18px;cursor:pointer;pointer-events:all">
+                                                <svg style="width:50px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M568.4 37.7C578.2 34.2 589 36.7 596.4 44C603.8 51.3 606.2 62.2 602.7 72L424.7 568.9C419.7 582.8 406.6 592 391.9 592C377.7 592 364.9 583.4 359.6 570.3L295.4 412.3C290.9 401.3 292.9 388.7 300.6 379.7L395.1 267.3C400.2 261.2 399.8 252.3 394.2 246.7C388.6 241.1 379.6 240.7 373.6 245.8L261.2 340.1C252.1 347.7 239.6 349.7 228.6 345.3L70.1 280.8C57 275.5 48.4 262.7 48.4 248.5C48.4 233.8 57.6 220.7 71.5 215.7L568.4 37.7z"/></svg>
+                                            </button>
                                         </div>
-                                        <div class="🎨lsdev-skills__col" id="🫆lsdev-skills__col-2">
-                                            <div class="🎨lsdev-skills__skill"></div>
-                                            <div class="🎨lsdev-skills__skill-meter-container"></div>
-                                        </div>
+                                        <p style="line-height:1;padding:0">
+                                            <span id="icebreaker">Ask me about...</span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -621,7 +649,7 @@
             @author         lauren shutt
             @contact        hello@laurenshutt.dev
             @website        https://laurenshutt.dev
-            @lastupdated    february 2026
+            @lastupdated    april 2026
             @vibe           ⊹ whimsical analog ⊹
             @license        © 2026 lauren shutt. all rights reserved. 
 
@@ -638,11 +666,17 @@
         
             [ x ]  working minimize/maximize/close window buttons
             [ x ]  music toggle
-            [   ]  project details on window expand
-            [   ]  tooltip for come back soon links
+            [ x ]  tab filters
+            [ x ]  project details on window expand
+            [   ]  time
+            [   ]  percentage scrolled
+            [   ]  adjust window border radius
+            [   ]  x/y coordinates    
+            [   ]  parallax background
             [   ]  lock scroll when window is expanded
+            [   ]  tooltip for come back soon links
             [   ]  run npx info
-            [   ]  tab filters
+            [   ]  work on spacing
 
 
         */
@@ -655,5 +689,21 @@
             minimizeWindows,
             maximizeWindows
         } from "./js/windows.js";
+
+        /* icebreakers */
+        const icebreakers = [
+            "What’s the story of the mysterious Samuel Shutt who lived in Blacksburg in the 1840s?",
+            "If your “Rottweiler mix” puppy isn’t at all Rottweiler, what is he?",
+            "What’s your interest in religion and gender?",
+            "How did you get started in web development?",
+            "How did you wind up in Blacksburg?",
+            "What was it like riding polar bears to school?",
+            "Why did you leave evangelicalism?",
+            "What does muktuk taste like?",
+            "What’s the most interesting interview question you’ve been asked?"
+        ]        
+        document.getElementById("icebreaker-button").addEventListener("click",function(){
+            document.getElementById("icebreaker").innerHTML = icebreakers[Math.floor(Math.random() * icebreakers.length)];;
+        });
 
     </script>

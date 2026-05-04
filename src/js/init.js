@@ -125,7 +125,7 @@ export const populateSkills = (() => {
         "HTML":         100,
         "CSS":          100,
         "jQuery":       90,
-        "JavaScript":   80,
+        "JS":           80,
         "PHP":          50,
         "SQL":          50,
         "XP":           100,

@@ -29,6 +29,11 @@ import {
     sectionTrackingInit
 } from "./nav/section-tracking.js";
 
+import {
+    scrollProjects,
+    filterProjects
+} from "./features/projects.js";
+
 import { 
     catbotButton
 } from './features/catbotButton.js';
@@ -76,17 +81,24 @@ export const animateSequence = (async () => {
     requestAnimationFrame(() => {
         
         Array.from(windows).forEach(window => {
-            
-            const chrome = window.querySelector(".🎨lsdev-window__chrome");
-            const i = window.style.getPropertyValue("--i");
-
             window.classList.add("is-animated");                        
         });
 
         setTimeout(function(){
+            
             slideToggle(firstWindowChrome);
-            firstWindow.classList.add("is-animated", "is-open");
+            
+            firstWindow.classList.add("is-open");
+
+            Array.from(windows).forEach(window => {
+                window.classList.add("is-not-animated");                        
+            });
+
+            scrollProjects();
+            filterProjects();
+
         }, 250 * windows.length + 100);
+
 
     });
 
@@ -134,5 +146,5 @@ export const animateSequence = (async () => {
     
     await delay(3000);
 
-    catbotButton();
+    //catbotButton();
 })();

@@ -67,7 +67,7 @@ export const floatingSquares = () => {
     const ctx = canvas.getContext('2d');
     const mouse = { x: null, y: null };
     const squareColors = ["#89a27d", "#a880ad", "#5e86b5"];
-    const NUM_SQUARES = 10;
+    const NUM_SQUARES = 7;
 
     const resizeCanvas = () => {
         const { width, height } = canvas.getBoundingClientRect();
@@ -95,7 +95,7 @@ export const floatingSquares = () => {
         }
 
         reset(initial = false) {
-            this.size = 25 + Math.random() * 25;
+            this.size = 33 + Math.random() * 33;
             this.baseColor = squareColors[Math.floor(Math.random() * squareColors.length)];
             this.alpha = initial ? 0 : 0.01;
             this.fadeSpeed = 0.01 + Math.random() * 0.01;

@@ -75,13 +75,9 @@ const projectsObj = {
 };
 
 
-const scrollProjects = () => {
+export const scrollProjects = () => {
 
-    const scrollContainer = document.querySelector("#🫆lsdev-projects__grid");
-    const scrollContainerRect = scrollContainer.getBoundingClientRect();
-
-    let scrollJumped = false;
-    let ticking = false;
+    const scrollContainer = document.getElementById("🫆lsdev-projects__grid-container");
 
     /**
      * ✨ Get First Visible Project Row
@@ -93,35 +89,10 @@ const scrollProjects = () => {
         });
 
     /**
-     * ✨ Adjust Navigation Position
-     */
-    const adjustNavPosition = () => {
-        
-        const lastRowProject = projectsArr[lastRowStart];
-        const { top: lastRowTop } = lastRowProject.getBoundingClientRect();
-        
-        if (lastRowTop > scrollContainer.getBoundingClientRect().top + 106){
-            return;
-        } 
-
-        const container = document.querySelector("#🫆lsdev-stage > main > div > div:nth-child(3)");
-        const firstChild = container.children[0];
-        
-        if (firstChild) {
-            firstChild.insertAdjacentElement("afterend", mainNav);
-        }
-
-        if (!scrollJumped) {
-            scrollJumped = true;
-        }
-    };
-
-    /**
      * ✨ Handle Scroll Behavior (Now Allows Page Scrolling After Container)
      */
 
     let scrolledPast = false;
-    let scrolledPastAbout = false;
 
     const handleScroll = (event) => {
 
@@ -134,7 +105,6 @@ const scrollProjects = () => {
         const projectExampleHeight = projectExample.getBoundingClientRect().height;
 
         const atBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 10;
-        const atTop = scrollContainerRect.top <= window.innerHeight;
 
         //If the user is scrolling down and the container hasn’t reached the bottom
         if (deltaY > 0 && !atBottom) { 
@@ -149,7 +119,7 @@ const scrollProjects = () => {
             event.preventDefault();
             scrollContainer.scrollTop += deltaY;
 
-            if (mainNav.getBoundingClientRect().top >= scrollContainerRect.top - projectExampleHeight) {
+            if (nav.getBoundingClientRect().top >= scrollContainerRect.top - projectExampleHeight) {
                 scrollJumped = false;
             }
         }
@@ -192,7 +162,7 @@ const scrollProjects = () => {
                     if (scrollTop <= 10) {
                         const firstLink = linkMap.get("🫆lsdev-window--projects");
                         if (firstLink) {
-                            moveCaret(firstLink.closest("li"), true);
+                            //moveCaret(firstLink.closest("li"), true);
                         }
                         return;
                     }
@@ -205,22 +175,12 @@ const scrollProjects = () => {
                         return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
                     })[currentlyVisible.length - 1];
 
-                    // OR, if you want the most visible one instead, use this instead:
-                    /*
-                    let activeSection = currentlyVisible
-                        .map(section => ({
-                            section,
-                            visibleHeight: getVisibleHeight(section)
-                        }))
-                        .sort((a, b) => b.visibleHeight - a.visibleHeight)[0]?.section;
-                    */
-
                     if (!activeSection) return;
 
                     const activeLink = linkMap.get(activeSection.id);
                     if (!activeLink) return;
 
-                    moveCaret(activeLink.closest("li"), true);
+                    //moveCaret(activeLink.closest("li"), true);
                 };
 
                 const observer = new IntersectionObserver((entries) => {
@@ -250,37 +210,39 @@ const scrollProjects = () => {
     document.addEventListener("wheel", handleScroll, { passive: false });
 };
 
-const filterProjects = () => {
+export const filterProjects = () => {
+
+    const nav = document.getElementById("🫆lsdev-projects__menu");
+    const projects = document.querySelectorAll(".🎨lsdev-projects__project");
     
     nav.addEventListener("click", (event) => {
-        const a = event.target.closest("a");
-        if (!a) return;
+        
+        const button = event.target.closest("button");
 
-        const filter = a.dataset.filter;
+        if (!button) return;
 
-        const container = document.querySelector("#🫆scroll-container > div");
-
-        // Step 1: Lock container height
-        const currentHeight = container.offsetHeight;
-        //container.style.height = `${currentHeight}px`;
+        const filter = button.dataset.filter;
 
         // Step 2: Hide all projects
         projects.forEach(project => {
-            project.style.display = "none";
+            project.classList.add("is-filtered");
         });
 
         // Step 3: Show only filtered ones
         setTimeout(() => {
+            
             projects.forEach(project => {
+                
                 const filters = project.dataset.filterby.split(",");
 
                 if (filter === "all" || filters.includes(filter)) {
-                    project.style.display = "flex";
+                    project.style.display = "";
+                    project.classList.remove("is-filtered");
                 }
             });
 
             // Update grid math
-            projectsArr = Array.from(document.querySelectorAll(".🎨lsdev-projects__project")).filter(
+            /*projectsArr = Array.from(document.querySelectorAll(".🎨lsdev-projects__project")).filter(
                 project => window.getComputedStyle(project).display !== "none"
             );
             rowCount = Math.ceil(projectsArr.length / columnCount);
@@ -289,7 +251,7 @@ const filterProjects = () => {
             // Step 4: Unlock height after transition
             setTimeout(() => {
                 container.style.height = "";
-            }, 300);
+            }, 300);*/
         }, 0);
     });
 };
