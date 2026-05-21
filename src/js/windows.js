@@ -2,10 +2,11 @@ import {
     slideToggle,
 } from "./utils.js";
 
-const originalRects = new WeakMap();
+const originalRects = new Map();
+const originalWindowRects = new Map();
 const clones = new WeakMap();
-const projectInfoModal = document.getElementById("project-info-modal");
-const projectSecondaryImages = document.querySelectorAll(".project-secondary-image");
+const projectInfoModal = document.getElementById("🫆lsdev-project-modal");
+const projectSecondaryImages = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image");
 const animationDuration = 500;
 
 const animateWindowToRect = (window, fromRect, toRect) => {
@@ -35,11 +36,16 @@ const closeProjectDetail = (currentRect) => {
 
     projectName.style.display = "block";
 
-    otherProjects.forEach(project => {
-        project.style.display = "flex";
+    setTimeout(function(){
+        otherProjects.forEach(project => {
+            [project, client, projectName].forEach(function(el){
+                el.style.visibility = "";
+            });
+        });
     });
 
-    client.style.display = "";
+
+    client.style.visibility = "";
 
     requestAnimationFrame(() => {
 
@@ -48,6 +54,7 @@ const closeProjectDetail = (currentRect) => {
         projectImg.style.width = "";
         projectImg.style.transform = `translate(0px, ${dy}px)`;
         projectImg.style.width = originalRect.width + "px";
+        projectImg.style.transition = "";
 
         requestAnimationFrame(() => {
             projectImg.classList.remove("is-expanded");
@@ -68,8 +75,10 @@ const closeProjectDetail = (currentRect) => {
     });
 
     projectDetailOpen = null;
+    document.body.style.overflow = "";
 }
-const closeWindow = (window) => window.classList.remove("is-open");
+export const closeWindow = (window) => window.classList.remove("is-open");
+
 const createClone = (window) => {
     const clone = window.cloneNode(true)
     clone.classList.add("is-clone");
@@ -100,7 +109,8 @@ const setRectStyles = (el, rect) => {
     });
 };
 const showProject = (project) => {
-    
+
+    const content = document.getElementById("🫆lsdev-project-content--" + project.id.split("--")[1]);
     const client = project.querySelector(".🎨lsdev-project_client-info");
     const projectName = project.querySelector("p");
     const projectImg = project.querySelector(".🎨lsdev-project_img-bg");
@@ -109,16 +119,15 @@ const showProject = (project) => {
         .filter(el => el !== project);
     const clientNameStr = client.innerText;
     const projectNameStr = projectName.innerText;
+    const originalRect = project.getBoundingClientRect();
+            
+    if (!originalRects.has(project)) {
+        originalRects.set(project, originalRect);
+    }
 
-    const text = `
-        <p>Cursed vanquish fly charming evil golden princess fair princess hidden wise princess. Vanquish awaken spell wand steal shining crown curse hidden royal fairy. Crown sleeping sword sword goblin beast dance.</p>
-        <p>Brave gentle magic golden king slipper forgotten enchant cursed hide defeat. Quest queen bewitched beast witch. Fearsome elf potion kingdom noble enchantment hide grant noble wise king. Silver steal break save cursed beast. Crown slipper dwarf protect fair haunted castle silver giant troll.</p>
-        <p>Beast defeat magic bewitch trick knight save. Trick steal troll hidden gentle slipper royal sing sing discover goblin. Princess enchantment vanquish forgotten shining sing hide mythical cast.</p>
-    `;
+    document.body.style.overflow = "hidden";
 
     projectDetailOpen = project;
-
-    const originalRect = originalRects.get(project);
 
     projectImg.style.position = "fixed";
     projectImg.style.top = originalRect.top + "px";
@@ -129,32 +138,72 @@ const showProject = (project) => {
     const dy = 112 - originalRect.top;
     const dx = 29 - originalRect.left;
 
-    requestAnimationFrame(() => {    
-        [client, projectName, ...otherProjects].forEach(el => {
-            el.style.display = "none";
+            [client, projectName, ...otherProjects].forEach(el => {
+            el.style.visibility = "hidden";
         });
+
+    requestAnimationFrame(() => {    
+
         projectImg.classList.add("is-expanded");
-        projectImg.style.transition = "all .415s ease";
+        projectImg.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
+        projectImg.style.transition = "all .5s ease";
         projectImg.style.width = "calc((100vw + 104px)/2)";
         projectImg.style.height = "auto";
-        projectImg.style.transform = `translate(${dx}px, ${dy}px)`;
+
+        setTimeout(function() {
+            projectImg.style.transform = `translate(${dx}px, ${dy}px) scale(1)`;
+        },415);
+        
     });
     
-    [projectInfoModal, ...projectSecondaryImages].forEach(el => {
-        el && (el.style.display = "block");
+    [...projectSecondaryImages, projectInfoModal].forEach((el, index) => {
+        
+        if (!el) return;
+
+        el.style.display = el === projectInfoModal ? "block" : "flex";
+
+        let delay = 750;
+
         requestAnimationFrame(() => {
+            el.style.transitionDelay = `${delay + (index * 250)}ms`;
+            console.log(el.style.transitionDelay);
             el.classList.add("fade-in");
         });
     });
 
-    projectInfoModal.innerHTML = `<h2>${projectNameStr}</h2>${text}`;
+    const role = `
+        <div class="role">
+            <h3>
+                Role
+            </h3>
+            <p>
+                Designer & developer
+            </p>
+            <h3 class="awards">
+                Awards
+            </h3>
+            <p>
+                Gold ADDY® American Advertising Award: Cross Platform
+            </p>
+            <h3>
+                Technologies
+            </h3>
+            <p>
+                Adobe Experience Manager, HTML, CSS, JavaScript, jQuery, Vanilla JSU Parallax, Parallax.js
+            </p>
+        </div>
+    `;
+    document.querySelectorAll("[id*='🫆lsdev-project-content'").forEach(function(content){
+        content.style.display = "none";
+    });
+    content.style.display = "block";
     projectSecondaryImages[0].innerHTML = `<img src="img/projects/carbon-colab-mobile.png"/>`;
-    projectSecondaryImages[1].innerHTML = `<img src="img/projects/carbon-colab-tablet.png"/>`;
+    projectSecondaryImages[1].innerHTML = role;
 }
 const shrinkMaximizedWindow = (window, minimizeClicked) => {
     
     const maxRect = window.getBoundingClientRect();
-    const normalRect = originalRects.get(window);
+    const normalRect = originalWindowRects.get(window);
     const chrome = window.querySelector(".🎨lsdev-window__chrome");
 
     if (!normalRect) return;
@@ -176,7 +225,7 @@ const shrinkMaximizedWindow = (window, minimizeClicked) => {
     setTimeout(() => {
         removeClone(window);
         resetWindowStyles(window);
-    }, animationDuration);
+    });
 };
 const unmaximizeWindow = (window) => window.classList.remove("is-maximized");
 
@@ -229,10 +278,12 @@ export const maximizeWindows = (() => {
 
         if (!isMaximized) {
 
+            console.log("maximizing");
+
             const originalRect = windowEl.getBoundingClientRect();
             
-            if (!originalRects.has(windowEl)) {
-                originalRects.set(windowEl, originalRect);
+            if (!originalWindowRects.has(windowEl)) {
+                originalWindowRects.set(windowEl, originalRect);
             }
 
             if (project){
@@ -290,9 +341,9 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
         const clone = clones.get(windowToClose);
         const windows = [...document.querySelectorAll(".🎨lsdev-window")]
                 .filter(el => el !== windowToClose);
-        const originalRects = new Map();
+        
             windows.forEach(window => {
-                originalRects.set(window, window.getBoundingClientRect());
+                originalWindowRects.set(window, window.getBoundingClientRect());
             });
 
         if (projectDetailOpen){
@@ -314,7 +365,7 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
             windows.forEach(window => {
                 
                 const currentRect = window.getBoundingClientRect();
-                const originalRect = originalRects.get(window);
+                const originalRect = originalWindowRects.get(window);
 
                 if (!originalRect) return;
 

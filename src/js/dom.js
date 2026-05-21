@@ -1,7 +1,24 @@
-export const mainNav = document.querySelector("#🫆lsdev-nav");
-export const mainNavItems = mainNav.querySelectorAll("li");
-export const caret = mainNav.querySelector(".🎨lsdev-nav__caret");
-export const windows = document.querySelectorAll(".🎨lsdev-window");
-export const contact = document.getElementById("🫆lsdev-contact");
-export const contactH2Span = contact.querySelector("h2 span");
-export const contactEls = contact.querySelectorAll("p, fieldset, .🎨lsdev-contact__checkbox-container, [type='submit']");
+export function initDom() {
+  
+    const mainNav = document.getElementById("🫆lsdev-nav");
+    const mainNavItems = mainNav.querySelectorAll("li");
+    const caret = mainNav.querySelector(".🎨lsdev-nav__caret");
+    const windows = document.querySelectorAll(".🎨lsdev-window");
+    const contact = document.getElementById("🫆lsdev-contact");
+    const contactH2Span = contact.querySelector("h2 span");
+    const contactEls = contact.querySelectorAll(
+        ":scope > p, fieldset, :scope div:has(>[type='submit'])"
+    );
+
+    return {
+        mainNav,
+        mainNavItems,
+        caret,
+        windows,
+        contact,
+        contactH2Span,
+        contactEls,
+        caret
+    };
+}
+

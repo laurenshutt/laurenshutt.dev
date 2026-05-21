@@ -61,30 +61,49 @@ export const handleGridHover = ({ target }) => {
     }, 800);
 };
 
+const generatePoints = (width, height, minDist, maxPoints, padding = 0) => {
+
+  const points = [];
+
+  const minDistSq = minDist * minDist;
+
+  let attempts = 0;
+
+  const MAX_ATTEMPTS = maxPoints * 50;
+
+  while (points.length < maxPoints && attempts++ < MAX_ATTEMPTS) {
+
+    const x = padding + Math.random() * (width - padding * 2);
+
+    const y = padding + Math.random() * (height - padding * 2);
+
+    const valid = points.every(p => {
+
+      const dx = x - p.x;
+
+      const dy = y - p.y;
+
+      return (dx * dx + dy * dy) >= minDistSq;
+
+    });
+
+    if (valid) points.push({ x, y });
+
+  }
+
+  return points;
+
+};
+
 export const floatingSquares = () => {
 
     const canvas = document.getElementById('🫆lsdev-floating-squares');
     const ctx = canvas.getContext('2d');
     const mouse = { x: null, y: null };
     const squareColors = ["#89a27d", "#a880ad", "#5e86b5"];
-    const NUM_SQUARES = 7;
+    const NUM_SQUARES = 8;
 
-    const resizeCanvas = () => {
-        const { width, height } = canvas.getBoundingClientRect();
-        canvas.width = width;
-        canvas.height = height;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    window.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        mouse.x = (e.clientX - rect.left) * scaleX;
-        mouse.y = (e.clientY - rect.top) * scaleY;
-    });
+    let squares = [];
 
     class Square {
         
@@ -101,30 +120,15 @@ export const floatingSquares = () => {
             this.fadeSpeed = 0.01 + Math.random() * 0.01;
             this.maxAlpha = 1;
             this.fadedIn = false;
-
             this.radius = 10 + Math.random() * 40;
-            const buffer = this.radius + this.size;
-
-            let x, y, valid = false, attempts = 0;
-            while (!valid && attempts++ < 100) {
-                x = buffer + Math.random() * (canvas.width - 2 * buffer);
-                y = buffer + Math.random() * (canvas.height - 2 * buffer);
-                valid = squares.every(other => {
-                    const dx = x - other.centerX;
-                    const dy = y - other.centerY;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    return dist >= (50 + Math.random() * 20);
-                });
-            }
-
-            this.centerX = this.homeX = x;
-            this.centerY = this.homeY = y;
             this.angle = Math.random() * Math.PI * 2;
             this.orbitSpeed = 0.0002 + Math.random() * 0.003;
         }
 
         update(deltaTime) {
+            
             this.elapsed += deltaTime;
+            
             if (this.elapsed < this.delay) return; // Wait for delay
 
             if (!this.fadedIn) {
@@ -165,113 +169,93 @@ export const floatingSquares = () => {
         }
 
         draw(x, y) {
-            // Shadow settings
-            ctx.shadowColor = `rgba(0, 0, 0, ${this.alpha * 0.3})`; // or any other color
+
+            const half = this.size / 2;
+
+            ctx.shadowColor = `rgba(0, 0, 0, ${this.alpha * 0.3})`;
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 6; // shift the shadow downward
-
             ctx.shadowOffsetY = 4;
-
-            // Draw filled square
             ctx.fillStyle = this.hexToRgba(this.baseColor, this.alpha);
-            ctx.fillRect(x, y, this.size, this.size);
-
-            // Reset shadow for stroke (optional — keeps stroke clean)
+            ctx.fillRect(x - half, y - half, this.size, this.size);
             ctx.shadowColor = "transparent";
-
             ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
             ctx.lineWidth = 1.5;
-            ctx.strokeRect(x, y, this.size, this.size);
+            ctx.strokeRect(x - half, y - half, this.size, this.size);
         }
 
         hexToRgba(hex, alpha) {
-        const bigint = parseInt(hex.slice(1), 16);
-        const r = (bigint >> 16) & 255;
-        const g = (bigint >> 8) & 255;
-        const b = bigint & 255;
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
     }
 
-    const squares = [];
+    const initSquares = () => {
 
-    for (let i = 0; i < NUM_SQUARES; i++) {
-        const delay = i * 75; 
-        squares.push(new Square(delay));
-    }
+        const padding = 75; // safe buffer for size + orbit
+        const points = generatePoints(
+            canvas.width,
+            canvas.height,
+            80,
+            NUM_SQUARES,
+            padding
+        );
+
+        squares = points.map((p, i) => {
+
+            const delay = i * 100;
+            const sq = new Square(delay);
+
+            sq.centerX = sq.homeX = p.x;
+            sq.centerY = sq.homeY = p.y;
+
+            return sq;
+        });
+    };
+
+    const resizeCanvas = () => {
+        
+        const { width, height } = canvas.getBoundingClientRect();
+        
+        canvas.width = width;
+        canvas.height = height;
+
+        initSquares();
+    };
+
+    resizeCanvas();
+    
+    window.addEventListener('resize', resizeCanvas);
+
+    window.addEventListener('mousemove', (e) => {
+        
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        
+        mouse.x = (e.clientX - rect.left) * scaleX;
+        mouse.y = (e.clientY - rect.top) * scaleY;
+    });
 
     let lastTime = performance.now();
+    
     const animate = (currentTime) => {
+        
         const deltaTime = currentTime - lastTime;
+        
         lastTime = currentTime;
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         squares.forEach(square => square.update(deltaTime));
+        
         requestAnimationFrame(animate);
     };
 
     requestAnimationFrame(animate);
 };
-    
-export const createSquares = () => {
-    
-    const containers = document.querySelectorAll(".squares-bg");
 
-    containers.forEach(container => {
-        
-        const size = 12;
-        const minSpacing = 5;
-
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        
-        if (!width || !height) return;
-
-        const existing = [...container.querySelectorAll(".square")].map(sq => ({
-            x: parseFloat(sq.style.left) || 0,
-            y: parseFloat(sq.style.top) || 0
-        }));
-
-        let validPosition = false;
-        let x, y;
-
-        let attempts = 0;
-        const MAX_ATTEMPTS = 200;
-
-        while (!validPosition && attempts++ < MAX_ATTEMPTS) {
-            
-            x = Math.random() * (width - size);
-            y = Math.random() * (height - size);
-
-            validPosition = true;
-
-            for (let i = 0; i < existing.length; i++) {
-                
-                const dx = x - existing[i].x;
-                const dy = y - existing[i].y;
-                const d = Math.sqrt(dx * dx + dy * dy);
-
-                if (d < size + minSpacing) {
-                    validPosition = false;
-                    break;
-                }
-            }
-        }
-
-        if (!validPosition) return;
-
-        const square = document.createElement("div");
-        
-        square.className = "square";
-        square.style.left = `${x}px`;
-        square.style.top = `${y}px`;
-        
-        container.appendChild(square);
-
-        setTimeout(() => square.remove(), 3000);
-    });
-};
     
 
     

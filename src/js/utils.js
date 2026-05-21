@@ -47,8 +47,45 @@ export const slideToggle = (el, duration = 500) => {
 export const scrollToTop = (() => {
     history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
-})();      
+})();    
 
 export const delay = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const setSize = (el) => {
+
+    el.style.height = el.offsetHeight + "px";
+
+    window.addEventListener("resize", () => {
+        el.style.height = "";
+        requestAnimationFrame = () => {
+            el.style.height = el.offsetHeight + "px";
+        }
+    });
+}
+
+
+export const buttonPress = () => {
+    
+    document.querySelectorAll('.🎨lsdev-button').forEach(button => {
+
+                const removePress = () => {
+            button.classList.remove('is-pressed');
+        };
+        
+        button.addEventListener('pointerdown', () => {
+            button.classList.add('is-pressed');
+
+            setTimeout(function(){
+                removePress();
+            },200)
+        });
+
+
+
+        //button.addEventListener('pointerup', removePress);
+        button.addEventListener('pointerleave', removePress);
+        button.addEventListener('pointercancel', removePress);
+    });
 }

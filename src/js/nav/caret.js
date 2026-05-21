@@ -1,15 +1,16 @@
 import { 
-    mainNav,
-    mainNavItems,
-    caret
+    initDom
 } from '../dom.js';
+
+const dom = initDom();
+const {mainNav, mainNavItems, caret} = dom;
 
 export const moveCaret = (li, changedSection) => {
 
     const navTop = mainNav.getBoundingClientRect().top;
     const y = li.getBoundingClientRect().top - navTop;
     
-    caret.style.setProperty("--caret-y", `${y + 3}px`);
+    caret.style.setProperty("--caret-y", `${y - 3}px`);
 
     if (changedSection === true) {
         

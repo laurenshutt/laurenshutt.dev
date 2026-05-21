@@ -1,0 +1,360 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Person",
+            "@id": "https://laurenshutt.dev/#lauren",
+            "name": "Lauren Shutt",
+            "jobTitle": "Web Developer",
+            "worksFor": {
+                "@id": "https://laurenshutt.dev/#vt"
+            },
+            "url": "https://laurenshutt.dev",
+            "sameAs": [
+                "https://github.com/laurenshutt",
+                "https://www.linkedin.com/in/laurenshutt"
+            ],
+            "skills": [
+                "HTML",
+                "CSS",
+                "Bootstrap",
+                "Materialize",
+                "JavaScript",
+                "jQuery",
+                "GSAP",
+                "Three.js",
+                "AmCharts",
+                "Slick",
+                "PHP",
+                "MySQL",
+                "Node.js",
+                "Puppeteer",
+                "Google APIs",
+                "Google Apps Script",
+                "Web accessibility",
+                "SMAPI"
+            ],
+            "knowsAbout": [
+                "Make.com",
+                "Notion",
+                "Adobe Experience Manager",
+                "WordPress",
+                "Cascade CMS",
+                "SurrealCMS",
+                "UI engineering",
+                "Interactive web design",
+                "Web animation and motion design",
+                "Responsive web design",
+                "Web accessibility",
+                "Database-driven web applications",
+                "Browser automation",
+                "API integration",
+                "Data visualization",
+                "Game modding ecosystems",
+                "Design systems"
+            ]
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#website",
+            "url": "https://laurenshutt.dev",
+            "name": "Lauren Shutt | Web Designer & Front-end Developer",
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#homepage",
+            "url": "https://laurenshutt.dev",
+            "name": "Lauren Shutt | Web Developer Portfolio",
+            "description": 
+                "Portfolio site for Lauren Shutt, a multidisciplinary front-end developer building immersive visuals, pixel-perfect layouts, and scalable design systems.",
+            "isPartOf": {
+                "@id": "https://laurenshutt.dev/#website"
+            },
+            "about": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            },
+            "mainEntity": {
+                "@type": "Person",
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#partnerships",
+            "name": "Virginia Tech Innovation and Partnerships Website",
+            "url": "https://partnerships.vt.edu/",
+            "description": 
+                "A large-scale digital communications platform developed to support storytelling, research engagement, and partnership initiatives across Virginia Tech’s innovation ecosystem.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#vt"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#vt-made",
+            "name": "Virginia Tech MADE Landing Page",
+            "url": "https://partnerships.vt.edu/big-ideas/vtmade",
+            "description": 
+                "A structured web page designed to communicate the Virginia Tech MADE initiative, showcasing program goals, research themes, and collaborative manufacturing innovation efforts.",
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            },
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#vt"
+            }
+            
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#carbon-colab",
+            "name": "Carbon CoLab Landing Page",
+            "url": "https://partnerships.vt.edu/big-ideas/carbon-colab",
+            "description": 
+                "A structured web page designed to communicate the Carbon CoLab initiative through research narratives, industry partnerships, and interactive storytelling about carbon sequestration innovation.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#vt"                        },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#ai-summit",
+            "name": "Atlas of AI Summit Page",
+            "url": "https://partnerships.vt.edu/networking/industry-engagement/ai-summit.html",
+            "description": 
+                "A structured web page designed to communicate the Virginia Tech AI Summit, showcasing event programming, speakers, and collaborative discussions between industry, government, and academic leaders in artificial intelligence.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#vt"    
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#phase-website",
+            "name": "Phase, Inc. Website",
+            "url": "https://phase.am",
+            "description": 
+                "A structured web page documenting Phase’s microfluidic manufacturing platform, including research applications, fabrication methods, and biomedical use cases.",
+            "sponsor": {
+                "@id": "phase-inc"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#isec",
+            "name": "Institute for the Study of Eastern Christianity Website",
+            "url": "https://isec.catholic.edu",
+            "description": 
+                "A structured web page presenting the Institute for the Study of Eastern Christianity, featuring academic resources, events, faculty research, and initiatives exploring Eastern Christian traditions.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#catholicu"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            } 
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#gkce-website",
+            "name": "G.K. Chesterton Entertainment Website",
+            "url": "https://gkchestertonentertainment.org",
+            "description": 
+                "A web page for G.K. Chesterton Entertainment presenting its media and storytelling work, including faith-based documentary content, educational programming, and organizational initiatives in religious and cultural media production.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#gkce-org"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#bugs",
+            "name": "“From Pests to Protein” CALS Magazine Article Page",
+            "url": "https://www.magazine.cals.vt.edu/pests-to-protein.html",
+            "description": 
+                "A digital editorial feature page for Virginia Tech CALS Magazine presenting research into insect-based protein as a sustainable food system. The article communicates emerging applications in alternative proteins, circular agriculture, and food system innovation through science storytelling and faculty research.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#vt"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://laurenshutt.dev/#uccmc",
+            "name": "Ukrainian Catholic Crisis Media Center Website",
+            "description": 
+                "A content publishing website featuring news, statements, and humanitarian updates from the Ukrainian Catholic Crisis Media Center, documenting church-led responses, relief efforts, and community stories during the war in Ukraine.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#ukrcath"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+         {
+            "@type": "WebPage",
+            "@id": "https://laurenshutt.dev/#trs",
+            "name": "School of Theology and Religious Studies Website",
+            "url": "https://trs.catholic.edu",
+            "description": 
+                "A structured academic directory website for The Catholic University of America’s School of Theology and Religious Studies, designed to present faculty profiles, research areas, publications, and teaching responsibilities through a navigable institutional layout supporting academic discovery and departmental visibility.",
+            "sponsor": {
+                "@id": "https://laurenshutt.dev/#catholicu"
+            },
+            "creator": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {
+            "@type": "Quotation",
+            "text": 
+                "I want to give out a huge shoutout to Lauren. I wanted our new website to be dynamic; as a media company, I wanted people to land on our page and just for it to hit in a visually beautiful and dynamic way. I personally feel that she has accomplished that. Lauren, God bless you, thank you for sticking with me. And please check out some of the other work that Lauren's doing. She just has such a beautiful heart.",
+            "author": {
+                "@id": "https://laurenshutt.dev/#maria-vargo"
+            },
+            "about": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            },
+            "mentions": {
+                "@id": "https://laurenshutt.dev/#gkce-website"
+            }
+        },
+        {
+            "@type": "Quotation",
+            "text": 
+                "Lauren creates custom web applications and bespoke features that push the boundaries of web technologies. Her compassionate approach stands out, demonstrating her dedication to fostering inclusivity and accessibility in the digital realm. This characteristic has been evident in her impressive list of clients throughout her career.",
+            "author": {
+                "@type": "Person",
+                "name": "Scott Chandler",
+                "jobTitle": "Digital Accessibility Officer",
+                "worksFor": {
+                    "@id": "https://laurenshutt.dev/#vt"
+                },
+                "sameAs": [
+                    "https://www.linkedin.com/in/scott-b-chandler-92b22826a/"
+                ]
+            },
+            "about": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            }
+        },
+        {     
+            "@type": "Quotation",
+            "text": 
+                "Always insightful and creative, Lauren’s warm personality and can-do attitude speak to a strong person who has continually impressed me.  With every change and adjustment, she brought creativity, technical expertise, and genuine care to the development of our website, helping communicate our mission in a way that feels both engaging and authentic. She has been a trusted collaborator and will walk with you thoughtfully and patiently to produce work of the highest caliber.",
+            "author": {
+                "@id": "https://laurenshutt.dev/#mark-morozowich"
+            },
+            "about": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            },
+            "mentions": {
+                "@id": "https://laurenshutt.dev/#isec"
+            }
+        },
+        {
+            "@type": "Quotation",
+            "text":
+                "Lauren has a rare alchemy of creative vision, technical ability, and collaborative spirit. She always finds a way to say yes—to ideas, challenges, or new directions—through smart and strategic problem-solving. Her holistic thinking is invaluable, and her end-to-end perspective offers clarity and cohesion to every project she engages. Working with her is a joy; I’d partner again in a heartbeat.",
+            "author": {
+                "@id": "https://laurenshutt.dev/#zeke-barlow"
+            },
+            "about": {
+                "@id": "https://laurenshutt.dev/#lauren"
+            },
+            "mentions": {
+                "@id": "https://laurenshutt.dev/#phase-website"
+            }
+        },
+        {
+            "@type": "CollegeOrUniversity",
+            "@id": "https://laurenshutt.dev/#vt",
+            "name": "Virginia Tech",
+            "url": "https://vt.edu"
+        },
+        {
+            "@type": "CollegeOrUniversity",
+            "@id": "https://laurenshutt.dev/#catholicu",
+            "name": "The Catholic University of America",
+            "url": "https://catholic.edu"
+        },
+        {
+            "@type": "Organization",
+            "@id": "https://laurenshutt.dev/#gkce-org",
+            "name": "G.K. Chesterton Entertainment",
+            "url": "https://gkchestertonentertainment.org",
+            "founder": {
+                "@id": "https://laurenshutt.dev/#maria-vargo"
+            }
+        },
+        {
+            "@type": "Corporation",
+            "@id": "https://laurenshutt.dev/#phase-inc",
+            "name": "Phase, Inc.",
+            "url": "https://phase.am",
+            "founder": {
+                "@id": "https://laurenshutt.dev/#zeke-barlow"
+            }
+        },
+        {
+            "@type": "Organization",
+            "@id": "https://laurenshutt.dev/#ukrcath",
+            "name": "Ukrainian Catholic Archeparchy of Philadelphia",
+            "url": "https://ukrcatholic.org/"
+        },
+        {
+            "@type": "Person",
+            "@id": "https://laurenshutt.dev/#zeke-barlow",
+            "name": "Zeke Barlow",
+            "jobTitle": "Senior Director of Communications",
+            "worksFor": {
+                "@id": "https://laurenshutt.dev/#vt"
+            },
+            "sameAs": [
+                "https://www.linkedin.com/in/zekebarlow/"
+            ]
+        },
+        {
+            "@type": "Person",
+            "@id": "https://laurenshutt.dev/#maria-vargo",
+            "name": "Maria Vargo",
+            "jobTitle": "President and Founder",
+            "sameAs": [
+                "https://www.linkedin.com/in/maria-vargo-19274745/"
+            ]
+        },
+        {
+            "@type": "Person",
+            "@id": "https://laurenshutt.dev/#mark-morozowich",
+            "name": "Mark Morozowich",
+            "jobTitle": "Bishop Basil H. Losten Ukrainian Church Studies Chair and Director",
+            "worksFor": [
+                {
+                    "@id": "https://laurenshutt.dev/#catholicu"
+                },
+                {
+                    "@id": "https://laurenshutt.dev/#ukrcath"
+                }
+            ],
+            "sameAs": [
+                "https://www.linkedin.com/in/fr-mark-morozowich-2026b111/",
+                "https://trs.catholic.edu/faculty-and-research/faculty-profiles/morozowich-mark/index.html"
+            ]
+        }
+    ]
+}

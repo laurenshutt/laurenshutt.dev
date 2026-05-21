@@ -63,9 +63,9 @@ export const loadingPhrases = () => {
     let charIndex = 0;
     let currentPhrase = phrases[currentIndex];
 
-    const line1 = document.getElementById('🫆line-1');
-    const line2 = document.getElementById('🫆line-2');
-    const line3 = document.getElementById('🫆line-3');
+    const line1 = document.getElementById('🫆lsdev-loading-phrases__line-1');
+    const line2 = document.getElementById('🫆lsdev-loading-phrases__line-2');
+    const line3 = document.getElementById('🫆lsdev-loading-phrases__line-3');
 
     const typingSpeed = 50;
     const pauseAfterTyping = 2000;

@@ -1,12 +1,13 @@
 import { 
-    caret,
-    mainNav,
-    mainNavItems
+    initDom
 } from '../dom.js';
 
 import { 
     moveCaret
 } from './caret.js';
+
+const dom = initDom();
+const {mainNav, mainNavItems, caret} = dom;
 
 export const initNavAnimations = (lastI) => {
 
@@ -15,7 +16,7 @@ export const initNavAnimations = (lastI) => {
     mainNavItems.forEach(item => item.classList.add("is-animated"));
 
     caret.style.setProperty("--i", lastI + 1);
-    caret.style.setProperty("--caret-y", "3px");
+    caret.style.setProperty("--caret-y", "-3px");
     caret.style.setProperty("opacity", "1");
             
     lastNavItem.addEventListener("animationend", () => {

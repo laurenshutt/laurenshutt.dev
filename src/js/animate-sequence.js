@@ -1,7 +1,3 @@
-import {
-    windows
-} from "./dom.js";
-
 import { 
     delay,
     slideToggle
@@ -30,19 +26,56 @@ import {
 } from "./nav/section-tracking.js";
 
 import {
+    suggestIcebreaker
+} from "./features/icebreakers.js";
+
+import {
+    tooltips
+} from "./features/tooltips.js";
+
+import {
     scrollProjects,
     filterProjects
 } from "./features/projects.js";
 
+import {
+    toggleMusic
+} from "./features/music.js";
+
 import { 
-    catbotButton
-} from './features/catbotButton.js';
+    startTheClock
+} from './hud/time.js';
+
+import { 
+    createMouseTracker
+} from './hud/mouse-coords.js';
+
+import {
+    watchFooter
+} from './effects/footer-observer.js';
+
+import {
+    weather
+} from './hud/weather.js';
+
+import {
+    buttonPress
+} from './utils.js';
+
+import {
+    contactForm
+} from './contact-form.js';
+
+import { initDom } from "./dom.js";
+const dom = initDom();
+const {windows} = dom;
 
 
-export const animateSequence = (async () => {
+export const animateSequence = async () => {
 
-    const h1 = document.querySelector("h1");
-    const h1Span = document.querySelector("h1 span");
+
+    const glitchOuter = document.querySelector(".has-glitch");
+    const glitchInner = document.querySelector(".has-glitch span");
     const stage = document.getElementById("🫆lsdev-stage");
     const sidebarNav = document.getElementById("🫆lsdev-sidebar-nav");
     const firstWindow = document.querySelector(".🎨lsdev-window");
@@ -55,7 +88,7 @@ export const animateSequence = (async () => {
     createGrid();
 
     await Promise.all([
-        shuffleTextEffect(h1Span, 200, 30, 0.75),
+        shuffleTextEffect(glitchInner, 200, 30, 0.75),
         delay(2500)
     ]);
     
@@ -64,7 +97,13 @@ export const animateSequence = (async () => {
         gridResizeTimer = setTimeout(createGrid, 150);
     });
 
-    h1.classList.add("moved");
+    weather();
+    suggestIcebreaker();
+    tooltips();
+    buttonPress();
+    toggleMusic();
+
+    glitchOuter.classList.add("moved");
 
     stage.style.display = "block";
 
@@ -96,17 +135,26 @@ export const animateSequence = (async () => {
 
             scrollProjects();
             filterProjects();
-
+            document.body.classList.remove("is-loading");
         }, 250 * windows.length + 100);
 
-
+        sectionTrackingInit();
+        startTheClock();
+        createMouseTracker();
     });
+
+
+    await delay(1200);
 
     floatingSquares();
 
+    await delay(750);
+
+    document.querySelector(".🎨lsdev-hud").classList.add("is-animated");
+
+
     await delay(2500);
     
-    sectionTrackingInit();
 
     const glitch = (() => {
 
@@ -140,11 +188,10 @@ export const animateSequence = (async () => {
 
         // Immediately invoke triggerAnimation; the first execution will simply schedule the animation.
         triggerAnimation();
+        watchFooter();
     })();
 
     loadingPhrases();
     
     await delay(3000);
-
-    //catbotButton();
-})();
+};
