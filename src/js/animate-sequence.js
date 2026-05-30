@@ -74,8 +74,9 @@ const {windows} = dom;
 export const animateSequence = async () => {
 
 
-    const glitchOuter = document.querySelector(".has-glitch");
-    const glitchInner = document.querySelector(".has-glitch span");
+    const glitchOuter = document.querySelectorAll(".has-glitch");
+    const glitchInner = document.querySelectorAll(".has-glitch span");
+    const introText = document.querySelector(".🎨lsdev-intro-text");
     const stage = document.getElementById("🫆lsdev-stage");
     const sidebarNav = document.getElementById("🫆lsdev-sidebar-nav");
     const firstWindow = document.querySelector(".🎨lsdev-window");
@@ -88,7 +89,9 @@ export const animateSequence = async () => {
     createGrid();
 
     await Promise.all([
-        shuffleTextEffect(glitchInner, 200, 30, 0.75),
+        glitchInner.forEach(function(el){
+            shuffleTextEffect(el, 200, 30, 0.75)
+        }),
         delay(2500)
     ]);
     
@@ -103,9 +106,13 @@ export const animateSequence = async () => {
     buttonPress();
     toggleMusic();
 
-    glitchOuter.classList.add("moved");
+    if (window.innerWidth >= 1035) glitchOuter[0].classList.add("moved");
 
     stage.style.display = "block";
+
+    await delay(500);
+
+    introText.classList.add("is-animated");
 
     await delay(500);
 
@@ -146,9 +153,9 @@ export const animateSequence = async () => {
 
     await delay(1200);
 
-    floatingSquares();
+    //floatingSquares();
 
-    await delay(750);
+    //await delay(750);
 
     document.querySelector(".🎨lsdev-hud").classList.add("is-animated");
 
@@ -156,7 +163,7 @@ export const animateSequence = async () => {
     await delay(2500);
     
 
-    const glitch = (() => {
+    const glitch = () => {
 
         let hasRunOnce = false;
 
@@ -189,7 +196,9 @@ export const animateSequence = async () => {
         // Immediately invoke triggerAnimation; the first execution will simply schedule the animation.
         triggerAnimation();
         watchFooter();
-    })();
+    };
+
+    if (window.innerWidth >= 1035) glitch();
 
     loadingPhrases();
     

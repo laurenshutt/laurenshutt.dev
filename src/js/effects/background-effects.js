@@ -11,6 +11,7 @@ const hexToRgba = (hex, alpha) => {
 export const createGrid = () => {
             
     if (!grid) return;
+    if (window.innerWidth <= 1035) return;
 
     const cols = Math.floor(window.innerWidth / 32);
     const rows = Math.floor(window.innerHeight / 32);
@@ -41,7 +42,7 @@ export const createGrid = () => {
 
 export const handleGridHover = ({ target }) => {
             
-    const glowColors = ["#a7ba9e", "#c0a4c5", "#85a4c7"];
+    const glowColors = ["#a7ba9e", "#d1bcd3", "#85a4c7"];
 
     if (!target.matches(".🎨lsdev-bg-grid__cell")) return;
 
@@ -99,23 +100,28 @@ export const floatingSquares = () => {
 
     const canvas = document.getElementById('🫆lsdev-floating-squares');
     const ctx = canvas.getContext('2d');
+
     const mouse = { x: null, y: null };
-    const squareColors = ["#89a27d", "#a880ad", "#5e86b5"];
-    const NUM_SQUARES = 8;
+
+    const squareColors = ["#c7d3c2", "#c9b0cc", "#cad7e6"];
+    const NUM_SQUARES = 5;
 
     let squares = [];
 
     class Square {
-        
+
         constructor(delay = 0) {
-            this.delay = delay;          
+            this.delay = delay;
             this.elapsed = 0;
+
+            // 🟢 fallback prevents undefined errors before initSquares runs
+            this.baseColor = squareColors[0];
+
             this.reset(true);
         }
 
         reset(initial = false) {
-            this.size = 33 + Math.random() * 33;
-            this.baseColor = squareColors[Math.floor(Math.random() * squareColors.length)];
+            this.size = 48 + Math.random() * 25;
             this.alpha = initial ? 0 : 0.01;
             this.fadeSpeed = 0.01 + Math.random() * 0.01;
             this.maxAlpha = 1;
@@ -126,10 +132,10 @@ export const floatingSquares = () => {
         }
 
         update(deltaTime) {
-            
+
             this.elapsed += deltaTime;
-            
-            if (this.elapsed < this.delay) return; // Wait for delay
+
+            if (this.elapsed < this.delay) return;
 
             if (!this.fadedIn) {
                 this.alpha += this.fadeSpeed;
@@ -144,10 +150,15 @@ export const floatingSquares = () => {
                 const dx = this.centerX - mouse.x;
                 const dy = this.centerY - mouse.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
+
                 if (dist < 150) {
                     const force = (150 - dist) / 150;
-                    this.centerX += (dx / dist) * force * 1.5;
-                    this.centerY += (dy / dist) * force * 1.5;
+
+                    // 🟢 prevent divide-by-zero crash
+                    const safeDist = dist || 0.0001;
+
+                    this.centerX += (dx / safeDist) * force * 1.5;
+                    this.centerY += (dy / safeDist) * force * 1.5;
                 }
             }
 
@@ -157,6 +168,7 @@ export const floatingSquares = () => {
 
             // Orbit motion
             this.angle += this.orbitSpeed;
+
             const offsetX = Math.cos(this.angle) * this.radius;
             let offsetY = Math.sin(this.angle) * this.radius;
 
@@ -176,8 +188,10 @@ export const floatingSquares = () => {
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 4;
+
             ctx.fillStyle = this.hexToRgba(this.baseColor, this.alpha);
             ctx.fillRect(x - half, y - half, this.size, this.size);
+
             ctx.shadowColor = "transparent";
             ctx.strokeStyle = `rgba(255, 255, 255, ${this.alpha})`;
             ctx.lineWidth = 1.5;
@@ -195,7 +209,8 @@ export const floatingSquares = () => {
 
     const initSquares = () => {
 
-        const padding = 75; // safe buffer for size + orbit
+        const padding = 75;
+
         const points = generatePoints(
             canvas.width,
             canvas.height,
@@ -203,6 +218,21 @@ export const floatingSquares = () => {
             NUM_SQUARES,
             padding
         );
+
+        // 🟢 guarantee at least one of each color
+        const colorPool = [...squareColors];
+
+        while (colorPool.length < NUM_SQUARES) {
+            colorPool.push(
+                squareColors[Math.floor(Math.random() * squareColors.length)]
+            );
+        }
+
+        // 🟣 shuffle for natural distribution
+        for (let i = colorPool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [colorPool[i], colorPool[j]] = [colorPool[j], colorPool[i]];
+        }
 
         squares = points.map((p, i) => {
 
@@ -212,14 +242,17 @@ export const floatingSquares = () => {
             sq.centerX = sq.homeX = p.x;
             sq.centerY = sq.homeY = p.y;
 
+            // 🟣 controlled color assignment
+            sq.baseColor = colorPool[i];
+
             return sq;
         });
     };
 
     const resizeCanvas = () => {
-        
+
         const { width, height } = canvas.getBoundingClientRect();
-        
+
         canvas.width = width;
         canvas.height = height;
 
@@ -227,29 +260,31 @@ export const floatingSquares = () => {
     };
 
     resizeCanvas();
-    
+
     window.addEventListener('resize', resizeCanvas);
 
     window.addEventListener('mousemove', (e) => {
-        
+
         const rect = canvas.getBoundingClientRect();
+
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-        
+
         mouse.x = (e.clientX - rect.left) * scaleX;
         mouse.y = (e.clientY - rect.top) * scaleY;
     });
 
     let lastTime = performance.now();
-    
+
     const animate = (currentTime) => {
-        
+
         const deltaTime = currentTime - lastTime;
-        
         lastTime = currentTime;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         squares.forEach(square => square.update(deltaTime));
-        
+
         requestAnimationFrame(animate);
     };
 

@@ -1,3 +1,29 @@
+@media screen and (max-width:1600px){
+    .🐱lsdev {
+        .has-glitch.moved {
+            font-size:5.25vw;
+        }
+        .🎨lsdev-intro-text {
+            top:calc(120px + 10vw);
+            width:23vw;
+        }
+        .🎨lsdev-nav {
+            top:calc(125px + 16vw);
+        }
+    }
+}
+
+@media screen and (max-width:1420px){
+    .🎨lsdev-intro-text {
+        top:calc(120px + 10vw);
+        width:18vw;
+
+    }
+    .🎨lsdev-nav {
+        top:calc(125px + 18.25vw);
+    }
+}
+
 @media screen and (max-width: 1370px){
     .🐱lsdev {
         .🎨lsdev-projects__grid {
@@ -7,7 +33,46 @@
             font-size:5.25vw;
         }
         .🎨lsdev-nav {
-            top:19vw;
+            top:calc(125px + 16.5vw);
+        }
+    }
+}
+
+@media screen and (max-width:1275px){
+    .🐱lsdev {
+        .🐱lsdev .has-glitch.moved {
+            width:5.5vw;
+        }
+        .🎨lsdev-nav {
+            left:90px;
+            top:calc(125px + 19vw);
+            
+        }
+        .🎨lsdev-intro-text {
+            top:calc(120px + 10.5vw);
+            width:21vw;
+        }
+    }
+}
+
+@media screen and (max-width:1200px){
+    .🐱lsdev {
+        .has-glitch.moved {
+            font-size:5.75vw;
+        }
+        .🐱lsdev .🎨lsdev-intro-text {
+            top: calc(120px + 11vw);
+        }
+        .🎨lsdev-nav {
+            top: calc(125px + 20vw);
+        }
+    }
+}
+
+@media screen and (max-width:1150px){
+    .🐱lsdev {
+        .🎨lsdev-nav {
+            top: calc(125px + 21vw);
         }
     }
 }
@@ -24,24 +89,56 @@
             grid-template-columns: 1fr;
         }
         .🎨lsdev-nav {
-            top:23vw;
+            top: calc(125px + 21.5vw);
         }
     }
 }
 
-@media screen and (max-width:992px){
+@media screen and (max-width:1035px){
     .🐱lsdev {
+
+        body {
+            overflow-x:hidden;
+        }
+
+        #🫆lsdev-stage {
+            overflow-y:scroll;
+        }
+
 
         .🎨lsdev-bg-grid {
             top:0;
-            width:unset;
-            height:unset;
+            min-width:100vw;
+            min-height:100vh;
         }
-        h1.moved {
+        .🎨lsdev-bg-grid__gradient-overlay {
+            min-width:100vw;
+            min-height:100vh;
+        }
+        div:has(> .has-glitch){
+            margin-bottom:25vh;
+            top:50vh;
+            transform:translateY(-75%);
+            position:relative;
+        }
+        .has-glitch {
             width:auto;
-            top:70px;
-            left:18px;
-            font-size:41px;
+            font-size:17.5vw;
+            text-align:center;
+            position:relative;
+            top:unset;
+            left:unset;
+            transform:unset;
+        }
+        .🎨lsdev-intro-text {
+            width:calc(100vw - 80px);
+            padding:0 40px;
+            position:relative;
+            left: unset;
+            text-align: center;
+            font-size: 6vw;
+            top:unset;
+            padding-top:20px;
         }
         main {
             display:block;
@@ -51,7 +148,38 @@
             }
                 
             > div:nth-child(2) {
-                margin:175px 0 0 0;
+                padding:250px 0 0 0;
+                margin:0;
+            }
+
+            .🎨lsdev-contact {
+                padding: 25px;
+
+                h2 {
+                    line-height: 1;
+                    font-size: 2em;
+                }
+
+                form {
+                    display: block !important;
+
+                    > div:first-child button {
+                        display:none;
+
+                        &:first-of-type, &:nth-of-type(2), &:nth-of-type(3) {
+                            display:block;
+                        }
+                    }
+                    > div:nth-child(2) fieldset {
+                        display:block !important;
+
+                        label:has(input[type=radio]) {
+                            display:inline-block;
+                        }
+                    }
+                }
+
+                
             }
         }
         .🎨lsdev-sidebar-nav {
@@ -109,40 +237,23 @@
             }
         }
         .🎨lsdev-nav {
-            top:125px;
-            left:25px;
-            width:330px;
-            font-size:16px;
-
-            .🎨lsdev-nav__caret {
-                display:none;
-            }
-
-            ul {
-                display:flex;
-                justify-content: space-between;
-                padding:0;
-
-                li {
-                    padding:0;
-                    a {
-                        span {
-                            display:none;
-                        }
-                    }
-                }
-            }
+            display:none;
+        }
+        .🎨lsdev-projects__grid-container {
+            height:calc(100vh - 100px - 160px);
         }
         .🎨lsdev-window {
             --💾lsdev-window-l-r-padding: 20px;
-            width: calc(100vw - 30px);
+            width: calc(100vw - 40px);
             padding:0 20px;
             border-radius:8px;
             margin-left:auto;
             margin-right:auto;
+            margin-bottom:max(40px, 8vh);
 
             &.is-open {
                 padding-bottom:20px;
+                height:calc(100vh - 100px);
             }
 
             .🎨lsdev-window__title-bar {
@@ -167,6 +278,8 @@
             }
             .🎨lsdev-window__content {
                 padding: 28px 30px 0px 30px;
+                height:calc(100vh - 270px);
+                overflow-y:scroll;
             }
             /*.🎨lsdev-window__content:not(.🎨lsdev-projects__grid) {
                 height: calc(100vh - 52px - 60px - 60px - 60px - 20px - 120px);
@@ -194,9 +307,33 @@
             margin-top:20px;
             flex-direction:column;
         }
+        .🎨lsdev-window.🎨lsdev-window--reviews.is-open .🎨lsdev-window__content {
+            height:unset !important;
+        }
+        .🎨lsdev-hud {
+            display:none;
+        }
+        .🎨lsdev-contact form .🎨lsdev-contact__col div:has([type=submit]) {
+            display:block;
+        }
+        .🎨lsdev-contact form .🎨lsdev-contact__col [type=submit] {
+            width:100%;
+        }
+        .🎨lsdev-contact form .🎨lsdev-contact__col div:has([type=submit]) p {
+            text-align:center;
+        }
+        footer {
+            display:block;
+            padding:20px;
+            text-align:center;
+            min-height:unset;
 
-        div:has(> #coords) {
-            display:none !important;
+            .🎨lsdev-loading-phrases {
+                display:none;
+            }
+            .🎨lsdev-copyright {
+                text-align:center;
+            }
         }
     }
 }

@@ -4,6 +4,8 @@ import {
 
 export const scrollProjects = () => {
 
+    if (window.innerWidth <= 1035) return;
+
     const scrollContainer = document.getElementById("🫆lsdev-projects__grid-container");
     const tracker = createMouseTracker();
 
