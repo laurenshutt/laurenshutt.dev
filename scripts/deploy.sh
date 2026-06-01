@@ -10,7 +10,9 @@ npm run build
 echo "Committing changes..."
 git add .
 
-git commit -m "Deploy $TIMESTAMP" || echo "No changes to commit"
+read -p "📝 Enter commit message: " COMMIT_MSG
+
+git commit -m "$COMMIT_MSG" || echo "No changes to commit"
 
 echo "Pushing latest commits..."
 git push origin main
