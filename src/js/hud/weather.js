@@ -20,5 +20,7 @@ export const weather = () => {
         }
     };
 
-    getWeatherData();
+    window.addEventListener("load", () => {
+        getWeatherData();
+    });
 }
