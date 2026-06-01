@@ -5,6 +5,8 @@ export const contactForm = () => {
     });
 
     const form = document.querySelector("form");
+    const submitButton = document.querySelector(".🎨lsdev-button[type='submit']");
+    const errorMsg = document.querySelector(".🎨lsdev-contact__error");
 
     form.addEventListener("submit", (e) => {
 
@@ -22,6 +24,7 @@ export const contactForm = () => {
             if (!input.checkValidity()) {
                 input.closest("fieldset")?.classList.add("has-invalid");
                 isInvalid = true;
+                errorMsg.style.opacity = "1";
             }
             else {
                 input.closest("fieldset")?.classList.remove("has-invalid");
@@ -45,6 +48,7 @@ export const contactForm = () => {
                 if (!isChecked) {
                     group[0]?.closest("fieldset")?.classList.add("has-invalid");
                     isInvalid = true;
+                    errorMsg.style.opacity = "1";
                 }
             });
         }
@@ -57,39 +61,60 @@ export const contactForm = () => {
             });
 
             if (isInvalid){
-                document.querySelector(".🎨lsdev-contact__col p").style.opacity = "1";
-            } 
 
-            const invalidFieldsets = document.querySelectorAll("fieldset.has-invalid");
+                const invalidFieldsets = document.querySelectorAll("fieldset.has-invalid");
 
-            invalidFieldsets.forEach(function(fieldset){
+                invalidFieldsets.forEach(function(fieldset){
 
-                fieldset.addEventListener("focusout", () => {
-                    
-                    const input = fieldset.querySelector("textarea, input");
-                    
-                    checkInputValidity(input);
+                    fieldset.addEventListener("focusout", () => {
 
-                    if (fieldset.querySelector("input[type='radio']") != null){
-                        checkRadioButtons();
-                    }
+                        errorMsg.style.opacity = "0";
+
+                        const input = fieldset.querySelector("textarea, input");
+                        
+                        checkInputValidity(input);
+
+                        if (fieldset.querySelector("input[type='radio']") != null){
+                            checkRadioButtons();
+                        }
+                    });
                 });
-            });
 
+                isInvalid = false;
+            } 
+            else {
 
+                const formData = new FormData(form);
 
-            isInvalid = false;
+                errorMsg.style.opacity = "0";
 
-            // AJAX only runs if valid
-            /*$.ajax({
-                method: 'POST',
-                url: 'https://formsubmit.co/ajax/dae31ce907c2e0bb6d4f029f67ece4c7',
-                dataType: 'json',
-                accepts: 'application/json',
-                data: $(form).serialize(),
-                success: (data) => console.log(data),
-                error: (err) => console.log(err)
-            });*/
+                form.querySelectorAll("input, textarea, select, button").forEach(input => {
+                    input.disabled = true;
+                });
+
+                submitButton.classList.add("is-sending");
+                submitButton.disabled = true;
+                submitButton.innerHTML = "Message sending";
+
+                submitButton.addEventListener("mouseleave", () => {
+                    submitButton.classList.add("is-idle");
+                });
+
+                fetch('https://formsubmit.co/ajax/dae31ce907c2e0bb6d4f029f67ece4c7', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    submitButton.classList.remove("is-sending");
+                    submitButton.innerHTML = "Sent!";
+                    console.log(data);
+                })
+                .catch(err => console.log(err));
+            }
         },300);
     });
 

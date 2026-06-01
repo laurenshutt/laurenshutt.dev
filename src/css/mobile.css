@@ -116,9 +116,9 @@
             min-height:100vh;
         }
         div:has(> .has-glitch){
-            margin-bottom:25vh;
+            margin-bottom:33vh;
             top:50vh;
-            transform:translateY(-75%);
+            transform:translateY(-50s%);
             position:relative;
         }
         .has-glitch {

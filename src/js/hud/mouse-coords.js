@@ -6,8 +6,8 @@ export const createMouseTracker = () => {
     let extraScroll = 0; // 👈 this will come from your container
 
     const update = () => {
-        const x = client.x + window.scrollX;
-        const y = client.y + window.scrollY + extraScroll;
+        const x = Math.round(client.x + window.scrollX);
+        const y = Math.round(client.y + window.scrollY + extraScroll);
         coordsEl.textContent = `x: ${x}, y: ${y}`;
     };
 

@@ -76,7 +76,7 @@ export const animateSequence = async () => {
 
     const glitchOuter = document.querySelectorAll(".has-glitch");
     const glitchInner = document.querySelectorAll(".has-glitch span");
-    const introText = document.querySelector(".🎨lsdev-intro-text");
+    const introTexts = document.querySelectorAll(".🎨lsdev-intro-text");
     const stage = document.getElementById("🫆lsdev-stage");
     const sidebarNav = document.getElementById("🫆lsdev-sidebar-nav");
     const firstWindow = document.querySelector(".🎨lsdev-window");
@@ -112,7 +112,9 @@ export const animateSequence = async () => {
 
     await delay(500);
 
-    introText.classList.add("is-animated");
+    introTexts.forEach(function(el){
+        el.classList.add("is-animated");
+    });
 
     await delay(500);
 
