@@ -456,31 +456,44 @@
                             target="_blank">
                             <span>Vite</span>
                         </a>
-                        to handle bundling and optimization. I deploy manually with a small shell script that first commits changes to
+                        to handle bundling and optimization. I deploy with a small shell script that first commits changes to
                         <a 
                             href=""
                             target="_blank"
                             rel="noreferrer noopener">
-                            GitHub
-                        </a>, 
-                        which serves as a remote backup and synchronization layer. It next uploads the build to my 
+                            <span>GitHub</span>
+                        </a>. 
+                        The repo serves as a remote backup and synchronization layer. Next it uploads the build to my 
                         <a 
                             href=""
                             target="_blank"
                             rel="noreferrer noopener">
-                            Nixihost
+                            <span>Nixihost</span>
                         </a>
                         VPS using
                         <a
                             href=""
                             target="_blank"
                             rel="noreferrer noopener">
-                            rsync
-                        </a>
+                            <span>rsync</span>
+                        </a>,
                         and saves it as a timestamped release. It finally switches a symbolic link to point to the newest release, with old releases kept on the server for easy rollback.
                     </p> 
                     <p>
-                        The site is served using Nginx, with HTTPS handled by Let’s Encrypt.
+                        The site is served using
+                        <a
+                            href=""
+                            target="_blank"
+                            rel="noreferrer noopener">
+                            <span>Nginx</span>
+                        </a>, 
+                        with HTTPS handled by 
+                        <a
+                            href=""
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            <span>Let’s Encrypt</span>
+                        </a>.
                     </p>
                     <p>
                         <b>
