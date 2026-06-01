@@ -2,6 +2,8 @@ export const weather = () => {
     
     const getWeatherData = async () => {
 
+        console.log("loading weather");
+
         try {
             const res = await fetch(
                 "https://api.openweathermap.org/data/2.5/weather?q=Blacksburg,Virginia&units=imperial&appid=61d80150d7a07a8b55fbe1ddf6f6fbd9"

@@ -438,49 +438,49 @@
                                 target="_blank">
                                 <span>Porkbun</span>
                             </a>,
-                            which also provides my hosting and email provisioning. The services are inexpensive, but there is no cPanel and the shared hosting environment means that performance can be slow. I’m evaluating other options. Email is handled through 
+                            which also handles my DNS and email via its SMTP service. I use
                             <a  
                                 href="https://mail.google.com/"
                                 target="_blank">
-                                <span>Gmail’s</span>
+                                <span>Gmail</span>
                             </a>
-                            custom domain routing.
+                            as my primary email interface.
                     </p>
                     <p>
                         <b>
                             Build and deployment
                         </b>
-                        I don’t use a content management system or external publishing tools; all my content is currently written in the project source using HTML, CSS, and Vanilla JavaScript. 
-                        I use <a
+                        The site is built locally with a static frontend using
+                        <a
                             href="https://vite.dev/"
                             target="_blank">
                             <span>Vite</span>
                         </a>
-                        to handle bundling and optimization. I deploy manually with a script using 
+                        to handle bundling and optimization. I deploy manually with a small shell script that first commits changes to
                         <a 
-                            href="https://github.com/theophilusx/ssh2-sftp-client"
-                            target="_blank">
-                            <span>SftpClient</span>
-                        </a>.
-                        (Porkbun does not provide full SSH shell access or support remote execution-based deployment workflows.) 
-                    </p>
+                            href=""
+                            target="_blank"
+                            rel="noreferrer noopener">
+                            GitHub
+                        </a>, 
+                        which serves as a remote backup and synchronization layer. It next uploads the build to my 
+                        <a 
+                            href=""
+                            target="_blank"
+                            rel="noreferrer noopener">
+                            Nixihost
+                        </a>
+                        VPS using
+                        <a
+                            href=""
+                            target="_blank"
+                            rel="noreferrer noopener">
+                            rsync
+                        </a>
+                        and saves it as a timestamped release. It finally switches a symbolic link to point to the newest release, with old releases kept on the server for easy rollback.
+                    </p> 
                     <p>
-                        <b>
-                            Versioning
-                        </b>
-                        The site is version-controlled using 
-                        <a
-                            href="https://git-scm.com/"
-                            target="_blank">
-                            <span>Git</span>
-                        </a>.
-                        The repository is hosted on 
-                        <a
-                            href="https://github.com/"
-                            target="_blank">
-                            <span>GitHub</span>
-                        </a>,
-                        which serves as a remote backup and synchronization layer.
+                        The site is served using Nginx, with HTTPS handled by Let’s Encrypt.
                     </p>
                     <p>
                         <b>
