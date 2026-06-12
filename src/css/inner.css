@@ -26,7 +26,7 @@
 
         position: fixed;
         top: 100vh;
-        transform: translateY(-100%);
+        transform: translateY(calc(-100% - 20px));
 
 
         h2 {
@@ -236,7 +236,7 @@
             top:unset;
             display: flex;
             position: relative;
-            margin-top:100px;
+            margin-top:max(12.5vh, 100px);
             justify-content:center;
             left:-75px;
             padding:0;
