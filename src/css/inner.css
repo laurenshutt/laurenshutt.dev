@@ -36,9 +36,9 @@
         }
 
         .🎨lsdev-toc {
-            position: fixed;
-            top: 100vh;
-            transform: translateY(calc(-100% - 20px));
+            position:fixed;
+            padding-top:6.5px;
+            transition: all .35s ease-out;
 
             h2 {
                 font-size:20px;
@@ -49,6 +49,7 @@
                 padding-left:0;
                 font-family: var(--💾lsdev-sans-font);
                 font-size:18px;
+                margin-top:8px;
 
                 li {
                     padding-bottom:8px;
