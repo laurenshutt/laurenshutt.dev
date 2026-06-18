@@ -1,17 +1,17 @@
 export const weather = () => {
-    
+
     const getWeatherData = async () => {
 
-        console.log("loading weather");
-
         try {
-            const res = await fetch(
-                "https://api.openweathermap.org/data/2.5/weather?q=Blacksburg,Virginia&units=imperial&appid=61d80150d7a07a8b55fbe1ddf6f6fbd9"
-            );
+            // Served by the fern service and refreshed every 15 min.
+            // Same-origin JSON — no API key in the client (see fern/integrations/weather.js).
+            const res = await fetch("/fern/weather/current.json", { cache: "no-store" });
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const data = await res.json();
-            const temp = Math.round(data.main.temp);
-            const desc = data.weather[0].description;
+            const temp = Math.round(data.temp);
+            const desc = data.description;
 
             document.getElementById("🫆lsdev-hud__weather").innerHTML = `${temp} &deg;F ${desc}`;
 
