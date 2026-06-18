@@ -52,12 +52,10 @@ open index.html
 ```
 
 ## ✧･ﾟRoadmap
-- [ ] Tooltip for come back soon links
-- [ ] Refine about section
-- [ ] Project filters
+- [x] Refine about section
+- [x] Project filters
 - [ ] In-depth project info on click
-- [ ] Catbot
-- [ ] Contact form
+- [x] Contact form
 - [ ] Mobile layout
 - [ ] Cross-browser testing
 - [x] Working minimize/maximize/close window buttons
