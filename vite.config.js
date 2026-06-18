@@ -17,5 +17,12 @@ export default defineConfig({
         assetFileNames: "assets/[name]-[hash][extname]"
       }
     }
+  },
+  server: {
+    proxy: {
+      // Dev-only: forward the fern weather endpoint to production so the
+      // homepage HUD renders in `npm run dev` (nginx serves this path in prod).
+      "/fern": { target: "https://laurenshutt.dev", changeOrigin: true }
+    }
   }
 });

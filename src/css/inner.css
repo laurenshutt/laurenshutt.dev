@@ -115,7 +115,7 @@
                     transition:all .2s ease;
                 }
 
-                &::after {
+                &:not(#gr_challenge_11680 a)::after {
                     content:"";
                     display:inline-block;
                     mask-image: url("/img/icons/link.svg");
