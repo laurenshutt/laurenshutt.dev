@@ -22,10 +22,6 @@ export const scrollProjects = () => {
         if (event.target.closest("#🫆lsdev-projects__menu")) return;
             
         const { deltaY } = event;
-        const scrollContainerRect = scrollContainer.getBoundingClientRect();
-
-        const projectExample = document.querySelector('.🎨lsdev-projects__project');
-        const projectExampleHeight = projectExample.getBoundingClientRect().height;
 
         const atBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 10;
 
@@ -39,15 +35,11 @@ export const scrollProjects = () => {
             tracker.setExtraScroll(scrollContainer.scrollTop);
         } 
         //If the user is scrolling up, and the bottom of the container is below the visible window
-        else if (deltaY < 0 && scrollContainerRect.bottom <= window.innerHeight && scrollContainerRect.top >= 0 ) { 
+        else if (deltaY < 0 && scrollContainer.scrollTop > 0 ) { 
         
             event.preventDefault();
             scrollContainer.scrollTop += deltaY;
             tracker.setExtraScroll(scrollContainer.scrollTop);
-
-            if (nav.getBoundingClientRect().top >= scrollContainerRect.top - projectExampleHeight) {
-                scrollJumped = false;
-            }
         }
         else {
             
