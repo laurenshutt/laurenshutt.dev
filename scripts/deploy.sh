@@ -18,14 +18,19 @@ echo "Pushing latest commits..."
 git push origin main
 
 echo "Creating release folder..."
-ssh deploy@23.187.248.117 "
-mkdir -p /var/www/site/releases/$TIMESTAMP
-"
+# Reuse the previous release as a baseline so only changed files upload
+# (each release is a fresh empty dir, so without this rsync re-sends everything).
+PREV=$(ssh deploy@23.187.248.117 'readlink -f /var/www/site/current' 2>/dev/null || true)
+ssh deploy@23.187.248.117 "mkdir -p /var/www/site/releases/$TIMESTAMP"
 
 echo "Uploading files..."
-rsync -az --delete \
-dist/ \
-deploy@23.187.248.117:/var/www/site/releases/$TIMESTAMP/
+# --checksum: Vite rewrites every file with a fresh mtime each build, so compare by
+#   content, not timestamp. --link-dest hard-links unchanged files from the previous
+#   release (instant, ~no extra disk); only changed files actually transfer.
+rsync -az --checksum --delete \
+  ${PREV:+--link-dest="$PREV"} \
+  dist/ \
+  deploy@23.187.248.117:/var/www/site/releases/$TIMESTAMP/
 
 echo "Switching live site..."
 ssh deploy@23.187.248.117 "

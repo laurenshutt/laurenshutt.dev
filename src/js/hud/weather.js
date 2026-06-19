@@ -22,7 +22,12 @@ export const weather = () => {
         }
     };
 
-    window.addEventListener("load", () => {
+    // weather() runs from animateSequence ~2.5s in — well after `load` has already
+    // fired — so a plain load listener would never run (that's why it "only loaded on
+    // hard refresh"). Run now if the page is already loaded; otherwise wait for load.
+    if (document.readyState === "complete") {
         getWeatherData();
-    });
+    } else {
+        window.addEventListener("load", getWeatherData, { once: true });
+    }
 }
