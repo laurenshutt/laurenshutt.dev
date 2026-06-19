@@ -31,7 +31,11 @@ const closeProjectDetail = (currentRect) => {
     const projectName = projectDetailOpen.querySelector("p");
     const projectImg = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg");
     const originalRect = originalRects.get(projectDetailOpen);
-    const otherProjects = [...document.querySelectorAll(".🎨lsdev-projects__project:not(.is-filtered)")]
+    // Restore visibility on ALL other cards — symmetric with showProject(), which
+    // hides every other card. Restoring a still-filtered (display:none) card is a
+    // no-op, but it clears the stale inline visibility:hidden that otherwise shows
+    // as a blank grid cell once a later filter reveals that card.
+    const otherProjects = [...document.querySelectorAll(".🎨lsdev-projects__project")]
         .filter(el => el !== projectDetailOpen);
 
     projectName.style.display = "block";
