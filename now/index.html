@@ -397,13 +397,17 @@
                                 </div>
                                 <script src="https://www.goodreads.com/user_challenges/widget/90534009-lauren-elizabeth?challenge_id=11680&v=2"></script>
                                 <script>
-                                    //element.parentNode.insertBefore(wrapper, element);
                                     const wrapper = document.createElement("div");
                                     wrapper.style.display = "flex";
 
                                     document.getElementById("gr_challenge_progress_body_11680").insertBefore(wrapper, document.querySelector(".challengePic"));
                                     wrapper.appendChild(document.querySelector(".challengePic"));
                                     wrapper.appendChild(document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)"));
+
+                                    setTimeout(function(){
+                                        document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2)").appendChild(document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)"));
+                                    },200);
+                                    
                                 </script>
                             </div>
                             <style>
