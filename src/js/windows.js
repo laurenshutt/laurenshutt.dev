@@ -31,6 +31,7 @@ const closeProjectDetail = (currentRect) => {
     const projectName = projectDetailOpen.querySelector("p");
     const projectImg = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg");
     const originalRect = originalRects.get(projectDetailOpen);
+    const card = projectDetailOpen;
     // Restore visibility on ALL other cards — symmetric with showProject(), which
     // hides every other card. Restoring a still-filtered (display:none) card is a
     // no-op, but it clears the stale inline visibility:hidden that otherwise shows
@@ -53,22 +54,51 @@ const closeProjectDetail = (currentRect) => {
 
     requestAnimationFrame(() => {
 
-        const dy = originalRect.top - currentRect.top - 40;
+        // --- reverse FLIP: animate the image from full-screen back onto its card ---
+        const first = projectImg.getBoundingClientRect();
 
+        // drop the expansion so it returns to its natural grid spot, and measure it
+        projectImg.style.transition = "none";
+        projectImg.classList.remove("is-expanded");
+        projectImg.style.position = "";
+        projectImg.style.top = "";
+        projectImg.style.left = "";
         projectImg.style.width = "";
-        projectImg.style.transform = `translate(0px, ${dy}px)`;
-        projectImg.style.width = originalRect.width + "px";
-        projectImg.style.transition = "";
+        projectImg.style.height = "";
+        projectImg.style.transform = "none";
+        projectImg.style.transformOrigin = "top left";
 
-        requestAnimationFrame(() => {
-            projectImg.classList.remove("is-expanded");
-            projectImg.style.position = "";
-            projectImg.style.width = "";
+        // Pin the grid to the saved scroll across the whole close + un-maximize. The
+        // window resize keeps nudging the scroll, so a single restore would land as a
+        // jump at the end; re-applying it each frame keeps the content steady.
+        const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
+        if (gridContainer) {
+            gridContainer.scrollTop = savedGridScroll;
+            const pinUntil = performance.now() + 600;
+            const pinScroll = () => {
+                gridContainer.scrollTop = savedGridScroll;
+                if (performance.now() < pinUntil) requestAnimationFrame(pinScroll);
+            };
+            requestAnimationFrame(pinScroll);
+        }
+
+        const last = projectImg.getBoundingClientRect();
+
+        // invert to full-screen, then play the transform back to the grid
+        const sx = (first.width / last.width) || 1;
+        const sy = (first.height / last.height) || 1;
+        projectImg.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
+        void projectImg.offsetWidth;
+        projectImg.style.transition = "transform 0.5s ease";
+        projectImg.style.transform = "none";
+
+        // clean up the leftover transform once it's home
+        setTimeout(() => {
+            projectImg.style.transition = "";
             projectImg.style.transform = "";
-            if (projectDetailOpen) {
-                projectDetailOpen.style.display = "";
-            }
-        });
+            projectImg.style.transformOrigin = "";
+            if (card) card.style.display = "";
+        }, 500);
     });
     
     [projectInfoModal, ...projectSecondaryImages].forEach(el => {
@@ -114,6 +144,11 @@ const setRectStyles = (el, rect) => {
 };
 const showProject = (project) => {
 
+    // Remember the grid's scroll so it can be restored after closing (the maximize
+    // resizes the grid-container and drops its scrollTop).
+    const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
+    savedGridScroll = gridContainer ? gridContainer.scrollTop : 0;
+
     const content = document.getElementById("🫆lsdev-project-content--" + project.id.split("--")[1]);
     const client = project.querySelector(".🎨lsdev-project_client-info");
     const projectName = project.querySelector("p");
@@ -133,32 +168,49 @@ const showProject = (project) => {
 
     projectDetailOpen = project;
 
+    // --- FLIP: animate the image straight from its current grid spot to full-screen ---
+    // The maximize sequence offsets the (position:relative) window via inline top/left
+    // before is-maximized pins it, which shifts the image right at measure time. Undo that
+    // shift using the card's pre-maximize rect so the animation starts from the real spot.
+    const imgNow = projectImg.getBoundingClientRect();
+    // Only correct while the window is mid-maximize (not yet pinned by is-maximized);
+    // if it's already maximized there's no shift to undo.
+    const shifting = !project.closest(".🎨lsdev-window")?.classList.contains("is-maximized");
+    const cardOrig = originalRects.get(project) || originalRect;
+    const shiftX = shifting ? originalRect.left - cardOrig.left : 0;
+    const shiftY = shifting ? originalRect.top - cardOrig.top : 0;
+    const first = {
+        left: imgNow.left - shiftX,
+        top: imgNow.top - shiftY,
+        width: imgNow.width,
+        height: imgNow.height,
+    };
+
+    // jump to the final expanded layout (no transition)
+    projectImg.style.transition = "none";
+    projectImg.style.transform = "none";
+    projectImg.style.transformOrigin = "top left";
     projectImg.style.position = "fixed";
-    projectImg.style.top = originalRect.top + "px";
-    projectImg.style.left = originalRect.left + "px";
-    projectImg.style.height = originalRect.height + "px";
-    projectImg.style.width = originalRect.width + "px";
+    projectImg.style.top = "112px";
+    projectImg.style.left = "29px";
+    projectImg.style.width = "calc((100vw + 104px)/2)";
+    projectImg.style.height = "auto";
+    projectImg.classList.add("is-expanded");
 
-    const dy = 112 - originalRect.top;
-    const dx = 29 - originalRect.left;
+    // invert: place it visually back where it started
+    const last = projectImg.getBoundingClientRect();
+    const sx = (first.width / last.width) || 1;
+    const sy = (first.height / last.height) || 1;
+    projectImg.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
 
-            [client, projectName, ...otherProjects].forEach(el => {
-            el.style.visibility = "hidden";
-        });
-
-    requestAnimationFrame(() => {    
-
-        projectImg.classList.add("is-expanded");
-        projectImg.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
-        projectImg.style.transition = "all .5s ease";
-        projectImg.style.width = "calc((100vw + 104px)/2)";
-        projectImg.style.height = "auto";
-
-        setTimeout(function() {
-            projectImg.style.transform = `translate(${dx}px, ${dy}px) scale(1)`;
-        },415);
-        
+    [client, projectName, ...otherProjects].forEach(el => {
+        el.style.visibility = "hidden";
     });
+
+    // play: animate the transform away → one clean scale + move
+    void projectImg.offsetWidth;
+    projectImg.style.transition = "transform 0.5s ease";
+    projectImg.style.transform = "none";
     
     [...projectSecondaryImages, projectInfoModal].forEach((el, index) => {
         
@@ -234,6 +286,7 @@ const shrinkMaximizedWindow = (window, minimizeClicked) => {
 const unmaximizeWindow = (window) => window.classList.remove("is-maximized");
 
 let projectDetailOpen = null;
+let savedGridScroll = 0;
 
 
 export const minimizeWindows = (() => {
