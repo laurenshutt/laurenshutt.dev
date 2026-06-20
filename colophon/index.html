@@ -662,13 +662,9 @@
                 const triggerElTop = triggerEl.getBoundingClientRect().top;
                 
                 if (triggerElTop <= 0) {
-                    pinnedEl.style.transform = "translateY(calc(max(12.5vh, 100px) * -1 + 40px))";
-                    console.log(toc.getBoundingClientRect().height);
-                    console.log(firstH2Top);
                     toc.style.transform = `translateY(calc(100vh - ${toc.getBoundingClientRect().height}px - ${firstH2Top}px - 40px)`;
                 } 
                 else {
-                    pinnedEl.style.transform = "unset";
                     toc.style.transform = "unset";
                 }
         });
