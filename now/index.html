@@ -397,19 +397,56 @@
                                 </div>
                                 <script src="https://www.goodreads.com/user_challenges/widget/90534009-lauren-elizabeth?challenge_id=11680&v=2"></script>
                                 <script>
+                                    
                                     const wrapper = document.createElement("div");
+                                    const challengeContainer = document.getElementById("gr_challenge_11680");
+                                    const challenge = document.getElementById("gr_challenge_progress_body_11680");
+                                    const challengeTitle = document.querySelector("#gr_challenge_progress_body_11680 > h3");
+                                    const challengeTitleLink = challengeTitle.querySelector("a");
+                                    const challengeImg = document.querySelector(".challengePic");
+                                    
                                     wrapper.style.display = "flex";
+                                    wrapper.style.fontFamily = "var(--💾lsdev-sans-font)";
+                                    wrapper.style.fontWeight = "300";
 
-                                    document.getElementById("gr_challenge_11680").style.padding = "8px 12px 8px 12px";
-                                    document.getElementById("gr_challenge_11680").style.maxWidth = "235px";
-                                    document.getElementById("gr_challenge_progress_body_11680").insertBefore(wrapper, document.querySelector(".challengePic"));
-                                    wrapper.appendChild(document.querySelector(".challengePic"));
-                                    wrapper.appendChild(document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)"));
-                                    document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2)").appendChild(document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)"));
-                                    document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2)").appendChild(document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)"));
-                                    document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)").style.marginTop = "8px";
-                                    document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)").style.marginTop = "4px";
-                                    document.querySelector("#gr_challenge_progress_body_11680 > h3").style.textAlign = "left";
+                                    challengeContainer.style.padding = "8px 12px 8px 12px";
+                                    challengeContainer.style.maxWidth = "235px";
+                                    challengeContainer.style.marginTop = "15px";
+                                    
+                                    challenge.insertBefore(wrapper, challengeImg);
+                                    
+                                    wrapper.appendChild(challengeImg);
+
+                                    let text = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)");
+
+                                    wrapper.appendChild(text);
+
+                                    let progressBar = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)");
+
+                                    text = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2)");
+
+                                    text.appendChild(progressBar);
+
+                                    let progressText = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)")
+
+                                    text.appendChild(progressText);
+
+                                    progressBar = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)");
+                                    progressText = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)")
+
+                                    progressBar.style.marginTop = "8px";
+                                    progressText.style.marginTop = "4px";
+
+                                    challengeTitle.style.textAlign = "left";
+                                    challengeTitleLink.style.fontStyle = "normal";
+                                    challengeTitleLink.style.fontFamily = "var(--💾lsdev-sans-font)";
+
+                                    const viewMoreLink = document.querySelector("#gr_challenge_progress_body_11680 > div:nth-child(3)");
+
+                                    viewMoreLink.style.textAlign = "left";
+                                    viewMoreLink.style.marginTop = "8px";
+                                    viewMoreLink.style.fontFamily = "var(--💾lsdev-sans-font)";
+                                    viewMoreLink.querySelector("a").innerHTML = "View books";
                                 </script>
                             </div>
                             <style>
@@ -421,6 +458,7 @@
                                     list-style:none;
                                     padding-left:0;
                                     margin-top:40px;
+                                    width:115%;
                                 }
                                 .reading-list li {
                                     padding:20px;
@@ -431,6 +469,9 @@
                                     display:flex !important;
                                     flex-direction:column;
                                     height:100%;
+                                }
+                                .reading-list li > a::after {
+                                    display:none !important;
                                 }
                                 .reading-list li a:hover div:nth-of-type(2) p:first-of-type {
                                     color:#cd7347;

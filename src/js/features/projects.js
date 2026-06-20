@@ -23,22 +23,22 @@ export const scrollProjects = () => {
             
         const { deltaY } = event;
 
-        const rect = scrollContainer.getBoundingClientRect();
-        const inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+        // Scroll-jack only while the page is at the very top: wheel scrolling drives the
+        // grid (down fills it; up rewinds it). Away from the top, the page scrolls normally.
         const atBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 10;
         const atTop = scrollContainer.scrollTop <= 0;
 
 
         //If the user is scrolling down and the container hasn’t reached the bottom
-        if (inView && deltaY > 0 && !atBottom) { 
+        if (deltaY > 0 && !atBottom) { 
 
             //Continue scrolling the container
             event.preventDefault();
             scrollContainer.scrollTop += deltaY;
             tracker.setExtraScroll(scrollContainer.scrollTop);
         } 
-        //If the user is scrolling up and the grid still has content above
-        else if (inView && deltaY < 0 && !atTop ) { 
+        //If the user is scrolling up AND the page is back at the top, rewind the grid
+        else if (window.scrollY <= 0 && deltaY < 0 && !atTop ) { 
         
             event.preventDefault();
             scrollContainer.scrollTop += deltaY;
