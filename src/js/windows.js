@@ -88,6 +88,7 @@ const closeProjectDetail = (currentRect) => {
         const sx = (first.width / last.width) || 1;
         const sy = (first.height / last.height) || 1;
         projectImg.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
+        projectImg.style.willChange = "transform";
         void projectImg.offsetWidth;
         projectImg.style.transition = "transform 0.5s ease";
         projectImg.style.transform = "none";
@@ -97,6 +98,7 @@ const closeProjectDetail = (currentRect) => {
             projectImg.style.transition = "";
             projectImg.style.transform = "";
             projectImg.style.transformOrigin = "";
+            projectImg.style.willChange = "";
             if (card) card.style.display = "";
         }, 500);
     });
@@ -208,9 +210,11 @@ const showProject = (project) => {
     });
 
     // play: animate the transform away → one clean scale + move
+    projectImg.style.willChange = "transform";
     void projectImg.offsetWidth;
     projectImg.style.transition = "transform 0.5s ease";
     projectImg.style.transform = "none";
+    setTimeout(() => { projectImg.style.willChange = ""; }, 500);
     
     [...projectSecondaryImages, projectInfoModal].forEach((el, index) => {
         
@@ -222,7 +226,6 @@ const showProject = (project) => {
 
         requestAnimationFrame(() => {
             el.style.transitionDelay = `${delay + (index * 250)}ms`;
-            console.log(el.style.transitionDelay);
             el.classList.add("fade-in");
         });
     });
@@ -281,7 +284,7 @@ const shrinkMaximizedWindow = (window, minimizeClicked) => {
     setTimeout(() => {
         removeClone(window);
         resetWindowStyles(window);
-    });
+    }, animationDuration);
 };
 const unmaximizeWindow = (window) => window.classList.remove("is-maximized");
 
@@ -334,8 +337,6 @@ export const maximizeWindows = (() => {
         const isOpen = windowEl.classList.contains("is-open");
 
         if (!isMaximized) {
-
-            console.log("maximizing");
 
             const originalRect = windowEl.getBoundingClientRect();
             
@@ -417,29 +418,27 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
             windowToClose.remove();
             if (clone) removeClone(windowToClose);
 
+            // read phase: measure how far each window shifts (no writes -> no thrash)
             const movedWindows = [];
-
             windows.forEach(window => {
-                
-                const currentRect = window.getBoundingClientRect();
                 const originalRect = originalWindowRects.get(window);
-
                 if (!originalRect) return;
-
-                const dy = originalRect.top - currentRect.top;
-                
+                const dy = originalRect.top - window.getBoundingClientRect().top;
                 if (dy === 0) return;
-
-                window.style.transition = "none";
-                window.style.willChange = "transform";
-                window.style.transform = `translateY(${dy}px)`;                
-                movedWindows.push(window);
+                movedWindows.push({ window, dy });
             });
 
-            movedWindows[0]?.offsetHeight;
+            // write phase: invert all at once, then play to identity
+            movedWindows.forEach(({ window, dy }) => {
+                window.style.transition = "none";
+                window.style.willChange = "transform";
+                window.style.transform = `translateY(${dy}px)`;
+            });
+
+            movedWindows[0]?.window.offsetHeight;
 
             requestAnimationFrame(() => {
-                movedWindows.forEach(window => {
+                movedWindows.forEach(({ window }) => {
                     window.style.transition = "transform 280ms cubic-bezier(0.2, 0, 0, 1)";
                     window.style.transform = "";
                 });
@@ -447,8 +446,9 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
 
             // 5. CLEANUP
             setTimeout(() => {
-                movedWindows.forEach(el => {
-                    el.style.transition = "";
+                movedWindows.forEach(({ window }) => {
+                    window.style.transition = "";
+                    window.style.willChange = "";
                 });
             }, 400);
         }, 400);
