@@ -9,6 +9,36 @@ const projectInfoModal = document.getElementById("🫆lsdev-project-modal");
 const projectSecondaryImages = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image");
 const animationDuration = 500;
 const BASE_TRANSFORM = "translateY(0px)"; // window's RESTING transform: the intro fade-in-down ends at translateY(0) with fill-mode:forwards, overriding the -10px CSS base
+const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place after a FLIP
+
+// After a window FLIP, slide each project card (its text AND image tile together) back into place
+// one at a time in reading order, instead of snapping them all on at once. Each card's animation
+// actually STARTS at its staggered time, which also spreads the rasterization so no single frame
+// is heavy. The card being closed (.is-flip-landed) already animated in via its image's own FLIP,
+// so it's skipped and left visible.
+const revealGridImages = (windowEl) => {
+    const cards = [...windowEl.querySelectorAll(".🎨lsdev-projects__project")]
+        .filter(el => !el.classList.contains("is-flip-landed"))
+        .map(el => ({ el, r: el.getBoundingClientRect() }))
+        .filter(o => o.r.width > 0 && o.r.bottom > 0 && o.r.top < window.innerHeight)
+        .sort((a, b) => (a.r.top - b.r.top) || (a.r.left - b.r.left))
+        .map(o => o.el);
+
+    // Hold the on-screen cards hidden, then drop the scale-time class so the rest of the window
+    // (shadows, the focal image) is back to normal while the cards wait their turn.
+    cards.forEach(el => el.classList.add("is-pending-reveal"));
+    windowEl.classList.remove("is-flipping");
+
+    cards.forEach((el, i) => {
+        setTimeout(() => {
+            el.classList.remove("is-pending-reveal");
+            el.classList.add("is-sliding-in");
+            setTimeout(() => el.classList.remove("is-sliding-in"), 400);
+        }, i * CARD_REVEAL_STAGGER);
+    });
+    // Note: .is-flip-landed is owned and removed by closeProjectDetail (per-card), not here, so
+    // overlapping flips can't strip each other's exemption.
+};
 
 // Smoothly FLIP a window between its cell and full-screen states using a single
 // composited transform, instead of animating top/left/width/height (which jitters).
@@ -28,6 +58,7 @@ const flipWindow = (windowEl, toMaximized) => {
     const sy = (first.height / last.height) || 1;
     windowEl.style.transformOrigin = "top left";
     windowEl.style.willChange = "transform";
+    windowEl.classList.add("is-flipping"); // drop shadows + heavy screenshots while scaling
     windowEl.style.transform =
         `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy}) ${BASE_TRANSFORM}`;
     void windowEl.offsetWidth;
@@ -38,6 +69,7 @@ const flipWindow = (windowEl, toMaximized) => {
         windowEl.style.transform = "";
         windowEl.style.transformOrigin = "";
         windowEl.style.willChange = "";
+        revealGridImages(windowEl); // staggered slide-in, then drops is-flipping
     }, animationDuration);
 };
 
@@ -52,6 +84,11 @@ const clearRectStyles = (el) => {
 const closeProjectDetail = () => {
 
     const card = projectDetailOpen;
+    // Its image FLIPs back on its own path, so exempt this card from the slide-in cascade. Drop
+    // the marker per-card just after the reveal has read it (it runs at animationDuration), so
+    // overlapping open/close operations can't strip each other's exemption.
+    card.classList.add("is-flip-landed");
+    setTimeout(() => card.classList.remove("is-flip-landed"), animationDuration + 80);
     const client = card.querySelector(".🎨lsdev-project_client-info");
     const projectName = card.querySelector("p");
 
@@ -77,13 +114,12 @@ const closeProjectDetail = () => {
     // into) exactly where the FLIP lands.
     const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
     if (gridContainer) {
+        // Restore the grid scroll just twice instead of every frame for 600ms (that forced a
+        // layout + fired scroll listeners each frame, stealing frames from the close). The FLIP
+        // is transform-only, so layout only shifts twice: when the window un-maximizes (next
+        // frame) and when the image reparents (the cleanup timeout below).
         gridContainer.scrollTop = savedGridScroll;
-        const pinUntil = performance.now() + 600;
-        const pinScroll = () => {
-            gridContainer.scrollTop = savedGridScroll;
-            if (performance.now() < pinUntil) requestAnimationFrame(pinScroll);
-        };
-        requestAnimationFrame(pinScroll);
+        requestAnimationFrame(() => { gridContainer.scrollTop = savedGridScroll; });
     }
 
     if (projectImg && savedImgTile) {
@@ -110,6 +146,8 @@ const closeProjectDetail = () => {
             if (imgHome) imgHome.parent.insertBefore(projectImg, imgHome.next);
             projectImg.classList.remove("is-portaled");
             projectImg.style.cssText = "";
+            // reparenting re-grows the card, nudging the grid scroll — re-pin once
+            if (gridContainer) gridContainer.scrollTop = savedGridScroll;
         }, animationDuration);
     }
 
@@ -172,7 +210,12 @@ const showProject = (project) => {
     // showProject runs BEFORE the window's transform FLIP, so the image is measured at its
     // real tile position (no maximize shift to undo). Moving it out of the window keeps the
     // window's transform from affecting it.
-    const first = projectImg.getBoundingClientRect();
+    // Measure the inner <img> (the actual screenshot), not the padded .img-bg frame. The
+    // portaled image is full-bleed (padding:0), so targeting the frame's rect would land the
+    // screenshot oversized and make it "pop" smaller when it reparents into the padded card
+    // tile. Targeting the screenshot's own rect keeps it the same size through the reparent.
+    const tileImg = projectImg.querySelector("img");
+    const first = (tileImg || projectImg).getBoundingClientRect();
     savedImgTile = first; // remember the tile rect so the close can FLIP straight back to it
     imgHome = { parent: projectImg.parentNode, next: projectImg.nextSibling };
     document.body.appendChild(projectImg);

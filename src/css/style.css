@@ -2251,3 +2251,30 @@ body.is-loading {
     aspect-ratio: 16/10;
     border-radius: 6px;
 }
+
+/* While a window is mid-FLIP, keep its composited layer cheap to rasterize (matters on a
+   hi-DPI / low-core machine): drop shadows and hide the heavy project screenshots — they're
+   back the instant the motion ends. The portaled focal image lives on <body>, not inside the
+   window, so it stays visible and keeps animating. visibility:hidden preserves layout, so the
+   FLIP measurements are unaffected. */
+.🎨lsdev-window.is-flipping {
+    box-shadow: none !important;
+}
+/* Hide each whole project card — its text AND its image tile — during the scale so the scaling
+   layer is cheap. The card being closed (.is-flip-landed) stays visible (its image FLIPs solo). */
+.🎨lsdev-window.is-flipping .🎨lsdev-projects__project:not(.is-flip-landed) {
+    visibility: hidden;
+}
+
+/* After the scale, each card waits hidden (is-pending-reveal) then slides into place one at a
+   time (staggered from JS, reading order) — text and image tile move in together, horizontally. */
+.🎨lsdev-projects__project.is-pending-reveal {
+    visibility: hidden;
+}
+.🎨lsdev-projects__project.is-sliding-in {
+    animation: ✨lsdev-fx-img-slide-in 300ms cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes ✨lsdev-fx-img-slide-in {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
