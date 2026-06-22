@@ -2233,3 +2233,21 @@ body.is-loading {
         var(--💾lsdev-purple) 0 -8px 0 inset;
     padding-bottom:20px;
 }
+
+/* The project image is portaled to <body> during open/close so it can animate
+   independently of the transform-FLIP'd window. Its normal styles are scoped under the
+   project card, so re-declare the expanded look here (matches .img-bg + .is-expanded). */
+.🎨lsdev-project_img-bg.is-portaled {
+    z-index: 1000;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom right, #fad9e5 15%, #b1c2aa 110%);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    padding: 0;
+    border-radius: 0;
+    border-left: 2px solid #d68bb7;
+}
+.🎨lsdev-project_img-bg.is-portaled img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 6px;
+}

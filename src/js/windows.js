@@ -8,15 +8,39 @@ const clones = new WeakMap();
 const projectInfoModal = document.getElementById("🫆lsdev-project-modal");
 const projectSecondaryImages = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image");
 const animationDuration = 500;
+const BASE_TRANSFORM = "translateY(0px)"; // window's RESTING transform: the intro fade-in-down ends at translateY(0) with fill-mode:forwards, overriding the -10px CSS base
 
-const animateWindowToRect = (window, fromRect, toRect) => {
-    setRectStyles(window, fromRect);
-    window.style.position = "fixed";
-    unmaximizeWindow(window);
-    requestAnimationFrame(() => {
-        setRectStyles(window, toRect);
-    });
+// Smoothly FLIP a window between its cell and full-screen states using a single
+// composited transform, instead of animating top/left/width/height (which jitters).
+const flipWindow = (windowEl, toMaximized) => {
+    const first = windowEl.getBoundingClientRect();
+    windowEl.style.transition = "none";
+    windowEl.style.transform = "";
+    if (toMaximized) {
+        maximizeWindow(windowEl);
+    } else {
+        unmaximizeWindow(windowEl);
+        windowEl.style.position = "";
+        clearRectStyles(windowEl);
+    }
+    const last = windowEl.getBoundingClientRect();
+    const sx = (first.width / last.width) || 1;
+    const sy = (first.height / last.height) || 1;
+    windowEl.style.transformOrigin = "top left";
+    windowEl.style.willChange = "transform";
+    windowEl.style.transform =
+        `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy}) ${BASE_TRANSFORM}`;
+    void windowEl.offsetWidth;
+    windowEl.style.transition = `transform ${animationDuration}ms cubic-bezier(.22, 1, .36, 1)`;
+    windowEl.style.transform = BASE_TRANSFORM;
+    setTimeout(() => {
+        windowEl.style.transition = "";
+        windowEl.style.transform = "";
+        windowEl.style.transformOrigin = "";
+        windowEl.style.willChange = "";
+    }, animationDuration);
 };
+
 const clearRectStyles = (el) => {
     Object.assign(el.style, {
         top: "",
@@ -25,84 +49,70 @@ const clearRectStyles = (el) => {
         height: ""
     });
 };
-const closeProjectDetail = (currentRect) => {
+const closeProjectDetail = () => {
 
-    const client = projectDetailOpen.querySelector(".🎨lsdev-project_client-info");
-    const projectName = projectDetailOpen.querySelector("p");
-    const projectImg = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg");
-    const originalRect = originalRects.get(projectDetailOpen);
     const card = projectDetailOpen;
-    // Restore visibility on ALL other cards — symmetric with showProject(), which
-    // hides every other card. Restoring a still-filtered (display:none) card is a
-    // no-op, but it clears the stale inline visibility:hidden that otherwise shows
-    // as a blank grid cell once a later filter reveals that card.
+    const client = card.querySelector(".🎨lsdev-project_client-info");
+    const projectName = card.querySelector("p");
+
+    // The image is still portaled to <body> from the open. Keep it there so the window's
+    // transform FLIP (in shrinkMaximizedWindow) can't affect it, FLIP it independently back
+    // onto its grid tile, then reparent it home at the end.
+    const projectImg = document.querySelector(".🎨lsdev-project_img-bg.is-portaled");
+
+    // Restore visibility on ALL other cards — symmetric with showProject(), which hides every
+    // other card. Restoring a still-filtered (display:none) card is a no-op, but it clears the
+    // stale inline visibility:hidden that would otherwise show as a blank cell after a filter.
     const otherProjects = [...document.querySelectorAll(".🎨lsdev-projects__project")]
-        .filter(el => el !== projectDetailOpen);
+        .filter(el => el !== card);
 
     projectName.style.display = "block";
-
-    setTimeout(function(){
-        otherProjects.forEach(project => {
-            [project, client, projectName].forEach(function(el){
-                el.style.visibility = "";
-            });
-        });
+    client.style.visibility = "";
+    setTimeout(() => {
+        otherProjects.forEach(p => [p, client, projectName].forEach(el => el.style.visibility = ""));
     });
 
-
-    client.style.visibility = "";
-
-    requestAnimationFrame(() => {
-
-        // --- reverse FLIP: animate the image from full-screen back onto its card ---
-        const first = projectImg.getBoundingClientRect();
-
-        // drop the expansion so it returns to its natural grid spot, and measure it
-        projectImg.style.transition = "none";
-        projectImg.classList.remove("is-expanded");
-        projectImg.style.position = "";
-        projectImg.style.top = "";
-        projectImg.style.left = "";
-        projectImg.style.width = "";
-        projectImg.style.height = "";
-        projectImg.style.transform = "none";
-        projectImg.style.transformOrigin = "top left";
-
-        // Pin the grid to the saved scroll across the whole close + un-maximize. The
-        // window resize keeps nudging the scroll, so a single restore would land as a
-        // jump at the end; re-applying it each frame keeps the content steady.
-        const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
-        if (gridContainer) {
+    // Pin the grid to the saved scroll across the close. The un-maximize keeps nudging the
+    // scroll, so re-apply it each frame; this also keeps the card (which the image reparents
+    // into) exactly where the FLIP lands.
+    const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
+    if (gridContainer) {
+        gridContainer.scrollTop = savedGridScroll;
+        const pinUntil = performance.now() + 600;
+        const pinScroll = () => {
             gridContainer.scrollTop = savedGridScroll;
-            const pinUntil = performance.now() + 600;
-            const pinScroll = () => {
-                gridContainer.scrollTop = savedGridScroll;
-                if (performance.now() < pinUntil) requestAnimationFrame(pinScroll);
-            };
-            requestAnimationFrame(pinScroll);
-        }
+            if (performance.now() < pinUntil) requestAnimationFrame(pinScroll);
+        };
+        requestAnimationFrame(pinScroll);
+    }
 
-        const last = projectImg.getBoundingClientRect();
-
-        // invert to full-screen, then play the transform back to the grid
-        const sx = (first.width / last.width) || 1;
-        const sy = (first.height / last.height) || 1;
-        projectImg.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
+    if (projectImg && savedImgTile) {
+        // reverse FLIP in the overlay: from full-screen expanded back onto the tile
+        const firstNow = projectImg.getBoundingClientRect();
+        projectImg.style.transition = "none";
+        projectImg.style.transform = "none";
+        projectImg.style.top = `${savedImgTile.top}px`;
+        projectImg.style.left = `${savedImgTile.left}px`;
+        projectImg.style.width = `${savedImgTile.width}px`;
+        projectImg.style.height = `${savedImgTile.height}px`;
+        const lastNow = projectImg.getBoundingClientRect();
+        const sx = (firstNow.width / lastNow.width) || 1;
+        const sy = (firstNow.height / lastNow.height) || 1;
+        projectImg.style.transformOrigin = "top left";
+        projectImg.style.transform = `translate(${firstNow.left - lastNow.left}px, ${firstNow.top - lastNow.top}px) scale(${sx}, ${sy})`;
         projectImg.style.willChange = "transform";
         void projectImg.offsetWidth;
         projectImg.style.transition = "transform 0.5s ease";
         projectImg.style.transform = "none";
 
-        // clean up the leftover transform once it's home
+        // reparent home and strip every portal/FLIP inline style once it's back on its tile
         setTimeout(() => {
-            projectImg.style.transition = "";
-            projectImg.style.transform = "";
-            projectImg.style.transformOrigin = "";
-            projectImg.style.willChange = "";
-            if (card) card.style.display = "";
-        }, 500);
-    });
-    
+            if (imgHome) imgHome.parent.insertBefore(projectImg, imgHome.next);
+            projectImg.classList.remove("is-portaled");
+            projectImg.style.cssText = "";
+        }, animationDuration);
+    }
+
     [projectInfoModal, ...projectSecondaryImages].forEach(el => {
         el && (el.style.display = "none");
         requestAnimationFrame(() => {
@@ -132,18 +142,6 @@ const removeClone = (window) => {
     clone?.remove();
     clones.delete(window);
 };
-const resetWindowStyles = (window) => {
-    window.style.position = "";
-    clearRectStyles(window);
-};
-const setRectStyles = (el, rect) => {
-    Object.assign(el.style, {
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`
-    });
-};
 const showProject = (project) => {
 
     // Remember the grid's scroll so it can be restored after closing (the maximize
@@ -170,23 +168,15 @@ const showProject = (project) => {
 
     projectDetailOpen = project;
 
-    // --- FLIP: animate the image straight from its current grid spot to full-screen ---
-    // The maximize sequence offsets the (position:relative) window via inline top/left
-    // before is-maximized pins it, which shifts the image right at measure time. Undo that
-    // shift using the card's pre-maximize rect so the animation starts from the real spot.
-    const imgNow = projectImg.getBoundingClientRect();
-    // Only correct while the window is mid-maximize (not yet pinned by is-maximized);
-    // if it's already maximized there's no shift to undo.
-    const shifting = !project.closest(".🎨lsdev-window")?.classList.contains("is-maximized");
-    const cardOrig = originalRects.get(project) || originalRect;
-    const shiftX = shifting ? originalRect.left - cardOrig.left : 0;
-    const shiftY = shifting ? originalRect.top - cardOrig.top : 0;
-    const first = {
-        left: imgNow.left - shiftX,
-        top: imgNow.top - shiftY,
-        width: imgNow.width,
-        height: imgNow.height,
-    };
+    // --- FLIP: portal the image to <body>, then scale it from its tile to full-screen ---
+    // showProject runs BEFORE the window's transform FLIP, so the image is measured at its
+    // real tile position (no maximize shift to undo). Moving it out of the window keeps the
+    // window's transform from affecting it.
+    const first = projectImg.getBoundingClientRect();
+    savedImgTile = first; // remember the tile rect so the close can FLIP straight back to it
+    imgHome = { parent: projectImg.parentNode, next: projectImg.nextSibling };
+    document.body.appendChild(projectImg);
+    projectImg.classList.add("is-portaled");
 
     // jump to the final expanded layout (no transition)
     projectImg.style.transition = "none";
@@ -197,9 +187,8 @@ const showProject = (project) => {
     projectImg.style.left = "29px";
     projectImg.style.width = "calc((100vw + 104px)/2)";
     projectImg.style.height = "auto";
-    projectImg.classList.add("is-expanded");
 
-    // invert: place it visually back where it started
+    // invert: place it visually back on its tile
     const last = projectImg.getBoundingClientRect();
     const sx = (first.width / last.width) || 1;
     const sy = (first.height / last.height) || 1;
@@ -255,41 +244,39 @@ const showProject = (project) => {
     document.querySelectorAll("[id*='🫆lsdev-project-content'").forEach(function(content){
         content.style.display = "none";
     });
-    content.style.display = "block";
+    // Projects without an authored write-up (07+) have no content div — guard so the
+    // maximize still runs instead of throwing and leaving the window un-maximized.
+    if (content) content.style.display = "block";
     projectSecondaryImages[0].innerHTML = `<img src="img/projects/carbon-colab-mobile.png"/>`;
     projectSecondaryImages[1].innerHTML = role;
 }
 const shrinkMaximizedWindow = (window, minimizeClicked) => {
     
-    const maxRect = window.getBoundingClientRect();
     const normalRect = originalWindowRects.get(window);
     const chrome = window.querySelector(".🎨lsdev-window__chrome");
 
     if (!normalRect) return;
 
+    // The project image (if any) is portaled to <body>, so the window is free to use the same
+    // clean transform FLIP as the plain path — no layout animation, no leftover inline styles.
     if (projectDetailOpen){
-            const currentRect = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg").getBoundingClientRect();
-
-        closeProjectDetail(currentRect);
+        closeProjectDetail();
     }
-
-    animateWindowToRect(window, maxRect, normalRect);
+    removeClone(window);
+    flipWindow(window, false);
 
     if (minimizeClicked){
         setTimeout(() => {
             handleMinimizeDuringShrink(window, chrome);
         }, animationDuration - 50);
     }
-
-    setTimeout(() => {
-        removeClone(window);
-        resetWindowStyles(window);
-    }, animationDuration);
 };
 const unmaximizeWindow = (window) => window.classList.remove("is-maximized");
 
 let projectDetailOpen = null;
 let savedGridScroll = 0;
+let imgHome = null; // where the portaled project image came from, so it can be put back
+let savedImgTile = null; // the project image's grid-tile rect at open, for the close FLIP back
 
 
 export const minimizeWindows = (() => {
@@ -313,8 +300,7 @@ export const minimizeWindows = (() => {
         }
 
         if (projectDetailOpen){
-            const currentRect = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg").getBoundingClientRect();
-            closeProjectDetail(currentRect);
+            closeProjectDetail();
         }
     }
 
@@ -355,16 +341,14 @@ export const maximizeWindows = (() => {
             }
 
             createClone(windowEl);
-            setRectStyles(windowEl, originalRect);
+            windowEl.style.display = "block";
 
-            requestAnimationFrame(() => {
-                maximizeWindow(windowEl);
-                windowEl.style.display = "block";
-            });
-            
-            if (project){
+            // For a project, showProject portals its image out of the window FIRST, so the
+            // window's transform FLIP below can't affect it. Then both animate independently.
+            if (project) {
                 showProject(project);
             }
+            flipWindow(windowEl, true);
 
             return;
         }
@@ -405,8 +389,7 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
             });
 
         if (projectDetailOpen){
-            const currentRect = projectDetailOpen.querySelector(".🎨lsdev-project_img-bg").getBoundingClientRect();
-            closeProjectDetail(currentRect);
+            closeProjectDetail();
             shrinkMaximizedWindow(windowToClose);
             return;
         }
