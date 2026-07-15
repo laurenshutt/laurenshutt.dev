@@ -71,6 +71,8 @@
                 font-family: var(--💾lsdev-sans-font);
                 border:1px solid lightgray;
                 margin:20px 0;
+                font-weight:300;
+                padding:20px;
             }
 
             h1 {
