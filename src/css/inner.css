@@ -161,7 +161,7 @@
                 width:fit-content;
                 padding-bottom:0;
                 gap:12px;
-                margin-bottom:25px;
+                margin-bottom:12px;
                 float:left;
                 margin-right:32px;
 
@@ -185,7 +185,6 @@
 
             .🎨lsdev-read-and-share {
                 font-size:16px; 
-                border-top: 1px solid #bbb;
                 margin-bottom:72px;
                 display:flex;
                 align-content: space-between;
