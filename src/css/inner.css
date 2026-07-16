@@ -184,8 +184,8 @@
                 font-size:16px; 
                 margin-bottom:72px;
                 display:flex;
-                align-content: space-between;
-                width: 700px;
+                gap:20px;
+                width: fit-content;
                 left: 0;
                 position: relative;
                 clear: both;
