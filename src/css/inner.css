@@ -161,9 +161,6 @@
                 width:fit-content;
                 padding-bottom:0;
                 gap:12px;
-                margin-bottom:25px;
-                float:left;
-                margin-right:32px;
 
                 > span:first-of-type {
                     font-weight:500;
@@ -185,16 +182,14 @@
 
             .🎨lsdev-read-and-share {
                 font-size:16px; 
-                border-top: 1px solid #bbb;
                 margin-bottom:72px;
                 display:flex;
-                align-content: space-between;
-                width: 700px;
+                gap:60px;
+                width: fit-content;
                 left: 0;
                 position: relative;
                 clear: both;
                 justify-content: space-between;
-                padding: 10px 0px;
 
                 p {
                     margin:0;

@@ -168,50 +168,47 @@
             <div>
                 <div>
                     <div style="position:fixed;transition:all .2s ease-out">
-                            <a style="font-family:var(--💾lsdev-pixel-font);color:var(--💾lsdev-gold);text-decoration:none;" href="/">
-                                < Home
-                            </a>
-                        </div>
-                        <nav class="🎨lsdev-toc" aria-label="Table of contents">
-                            <h2>
-                                Contents
-                            </h2>
-                            <span style="font-family:var(--💾lsdev-pixel-font);color:var(--💾lsdev-purple);position:absolute;transform:translateY(9px)">
-                                >
-                            </span>
-                            <ul>
-                                <li style="padding-left:20px">
-                                    <a href="#about">
-                                        About the Site
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#garden">
-                                        Capsurium
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#design">
-                                        Design
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#implementation">
-                                        Implementation
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#accessibility">
-                                        Accessibility
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#privacy">
-                                        Privacy
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                    </div>
+                    <nav class="🎨lsdev-toc" aria-label="Table of contents">
+                        <h2>
+                            Contents
+                        </h2>
+                        <span style="font-family:var(--💾lsdev-pixel-font);color:var(--💾lsdev-purple);position:absolute;transform:translateY(9px)">
+                            >
+                        </span>
+                        <ul>
+                            <li style="padding-left:20px">
+                                <a href="#about">
+                                    About the Site
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#garden">
+                                    Capsurium
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#design">
+                                    Design
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#implementation">
+                                    Implementation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#accessibility">
+                                    Accessibility
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#privacy">
+                                    Privacy
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
                 <article 
                     class="h-entry" 
@@ -231,33 +228,31 @@
                             <span>slash now</span>?
                         </a> 
                     </p>
-                    <div class="🎨lsdev-tama">
-                        <span>
-                            Evolution:
-                        </span>
-                        <img src="/img/tama/1.gif">
-                        <span class="🎨lsdev-growth">
-                            Baby
-                        </span>
-                    </div>
-                    <div class="🎨lsdev-tama">
-                        <span>
-                            Hatched:
-                        </span>
-                        <span>
-                            05.26.2026
-                        </span>
-                    </div>
-                    <div class="🎨lsdev-read-and-share">
-                        <div>
-                            <p>
-                                11 min read
-                            </p>
+                    <div style="display:flex;justify-content: space-between;align-items: center;margin-bottom:80px;border-bottom:1px solid lightgray;padding-bottom:24px">
+                        <div class="🎨lsdev-tama">
+                            <span>
+                                Evolution:
+                            </span>
+                            <img src="/img/tama/1.gif">
+                            <span class="🎨lsdev-growth">
+                                Baby
+                            </span>
                         </div>
-                        <div>
-                            <p>
-                                Share
-                            </p>
+                        <div class="🎨lsdev-tama">
+                            <span>
+                                Hatched:
+                            </span>
+                            <span>
+                                05.26.2026
+                            </span>
+                        </div>
+                        <div class="🎨lsdev-tama">
+                            <span>
+                                Last fed:
+                            </span>
+                            <span>
+                                06.16.2026
+                            </span>
                         </div>
                     </div>
                     <div 
@@ -687,22 +682,6 @@
         const pinPoint = "50px";
         const toc = document.querySelector(".🎨lsdev-toc");
         let firstH2Top;
-
-        
-        async function measure() {
-            
-            await document.fonts?.ready;
-
-            requestAnimationFrame(() => {
-                
-                const firstH2 = document.querySelector("article h2:first-of-type");
-                firstH2Top = firstH2.getBoundingClientRect().top + window.scrollY;
-
-                toc.style.top = `${firstH2Top}px`;
-            });
-        }
-
-        window.addEventListener("load", measure);
             
         
         window.addEventListener("scroll", function() {
