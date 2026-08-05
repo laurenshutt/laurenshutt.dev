@@ -1087,21 +1087,22 @@
                     border:none;
                     font-size:1em;
                     text-decoration:none;
+                    transition:all .2s ease;
 
-                    &::after {
+                    /*&::after {
                         content: "";
                         position: absolute;
                         inset: 0;
-                        z-index: -1;                        /* above this element's bg, below its content */
+                        z-index: -1;                        
                         border-radius: inherit;
                         pointer-events: none;
-                        background-image: radial-gradient(circle,  rgba(255,255,255,.8) 10px,  rgba(255,255,255,0));
+                        background-image: radial-gradient(circle,  rgba(255,255,255,.825) 3px,  rgba(255,255,255,0));
                         opacity: 0;
                         transition: opacity .33s ease;
-                    }
+                    }*/
 
-                    &:hover::after {
-                        opacity: 1;
+                    &:hover {
+                        background-color:#f4dede;
                     }
                 }
                 ::-webkit-scrollbar {
