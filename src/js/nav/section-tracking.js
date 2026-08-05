@@ -155,10 +155,17 @@ export const sectionTrackingInit = () => {
 
                 if (!userHasScrolled) return;
 
-                openWindow(reviews);
+                // Slick measures slide widths at init, so the carousel needs layout. Give the
+                // reviews chrome layout just long enough to initialise it — this is synchronous,
+                // so the browser never paints the intermediate state and nothing flashes. It used
+                // to slideToggle the window open and straight back closed, which only stayed
+                // invisible while the slide-down was silently snapping; once the open actually
+                // animated, that hack became a visible open-then-close.
+                reviewsChrome.style.display = "block";
+                reviewsChrome.style.visibility = "hidden";
                 initReviewsSlider();
-                closeWindow(reviews);    
-                slideToggle(reviewsChrome);
+                reviewsChrome.style.removeProperty("display");
+                reviewsChrome.style.removeProperty("visibility");
         
                 setTimeout(function(){
                     document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";

@@ -31,6 +31,10 @@ export const slideToggle = (el, duration = 500) => {
 
     } else {
         // SLIDE UP
+        // Stop any in-flight slide-down: a running WAAPI animation outranks inline styles, so it
+        // would otherwise keep opening the element while this transition tries to close it.
+        el.getAnimations().forEach(a => a.cancel());
+
         const height = el.scrollHeight;
 
         el.style.overflow = "hidden";
