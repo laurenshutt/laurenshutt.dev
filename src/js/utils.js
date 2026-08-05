@@ -12,17 +12,22 @@ export const slideToggle = (el, duration = 500) => {
         const height = el.scrollHeight;
 
         el.style.overflow = "hidden";
-        el.style.height = "0px";
-        el.offsetHeight; // force reflow
 
-        el.style.transition = `height ${duration}ms ease`;
-        el.style.height = `${height}px`;
+        // Animate with the Web Animations API instead of a CSS transition. A transition needs a
+        // previous computed style to interpolate from, and this element was display:none until a
+        // moment ago — so 0 -> full height collapsed into a single frame, snapping every window
+        // below down at once instead of pushing them gradually. (Slide-up doesn't hit this: the
+        // element is already rendered, which is why minimizing was smooth.) animate() takes
+        // explicit keyframes, so it always runs. No inline height is left behind either, so the
+        // element settles at its natural height with nothing to snap at the end.
+        el.getAnimations().forEach(a => a.cancel()); // guard against rapid re-toggling
 
-        setTimeout(() => {
-            el.style.removeProperty("height");
-            el.style.removeProperty("overflow");
-            el.style.removeProperty("transition");
-        }, duration);
+        el.animate(
+            [{ height: "0px" }, { height: `${height}px` }],
+            { duration, easing: "ease" }
+        ).finished
+            .then(() => el.style.removeProperty("overflow"))
+            .catch(() => {}); // cancelled by a re-toggle
 
     } else {
         // SLIDE UP
