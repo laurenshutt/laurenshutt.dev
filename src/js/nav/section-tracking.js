@@ -87,8 +87,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     navMap.set(a.getAttribute("href").slice(1), a.closest("li"));
 });
         
+// True while the page sits at its very top or very bottom, where the caret is pinned to Work
+// Portfolio / Contact Me instead (see pinCaretAtEdges). Visible sections are still tracked while
+// pinned so the caret lands on the right one the moment the page leaves the extreme.
+let caretPinned = false;
+
 export const sectionObserver = new IntersectionObserver((entries) => {
-    
+
     entries.forEach(entry => {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
             visibleSections.add(entry.target);
@@ -96,6 +101,8 @@ export const sectionObserver = new IntersectionObserver((entries) => {
             visibleSections.delete(entry.target);
         }
     });
+
+    if (caretPinned) return;
 
     if (!visibleSections.size) return;
 
@@ -223,4 +230,51 @@ export const sectionTrackingInit = () => {
     window.addEventListener("scroll", () => {
         observer.observe(revealTargets[0]);
     }, { passive: true, once: true });
+
+    // Pin the caret at the page extremes. sectionObserver highlights the bottom-most section that
+    // is at least a quarter visible, so at the foot of the page a tall About still in view can
+    // outrank Contact — and Contact may never register at all, since a section more than twice the
+    // viewport tall can never reach that observer's 50% threshold.
+    const topLi = mainNav.querySelector('li:has(a[href="#🫆lsdev-window--projects"])');
+    const bottomLi = mainNav.querySelector('li:has(a[href="#🫆lsdev-contact"])');
+
+    let pinnedLi = null;
+
+    const pinCaretAtEdges = () => {
+
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const atTop = window.scrollY <= 10;
+        // Guard on `scrollable` so a page too short to scroll counts as the top, not the bottom.
+        const atBottom = scrollable > 10 && window.scrollY >= scrollable - 10;
+        const li = atBottom ? bottomLi : atTop ? topLi : null;
+
+        caretPinned = !!li;
+
+        if (li === pinnedLi) return;
+
+        pinnedLi = li;
+
+        if (li) moveCaret(li, true);
+    };
+
+    // Throttle to one check per frame: reading scrollHeight forces a layout, and this runs on
+    // every scroll event.
+    let ticking = false;
+
+    const queueEdgeCheck = () => {
+
+        if (ticking) return;
+
+        ticking = true;
+
+        requestAnimationFrame(() => {
+            ticking = false;
+            pinCaretAtEdges();
+        });
+    };
+
+    window.addEventListener("scroll", queueEdgeCheck, { passive: true });
+    window.addEventListener("resize", queueEdgeCheck, { passive: true });
+
+    pinCaretAtEdges();
 }
