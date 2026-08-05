@@ -131,42 +131,32 @@ export const sectionTrackingInit = () => {
     const reviewsChrome = reviews.querySelector(".🎨lsdev-window__chrome")
     const offset = window.innerHeight * 0.05;
 
-    let currentIndex = 0;
-    let userHasScrolled = false;
-
     sectionObserver.observe(document.querySelector("#🫆lsdev-window--projects"));
 
-    window.addEventListener("scroll", () => {
-        userHasScrolled = true;
-    }, { passive: true, once: true });
+    // The sections that actually reveal something, in order. Projects is deliberately absent: it
+    // has no case below (the intro animation opens it), yet it used to take a turn in this
+    // sequence and burn a whole gap before About was even watched.
+    const revealTargets = targets.filter(Boolean).filter(el => el.id !== "🫆lsdev-window--projects");
 
-    const observer = new IntersectionObserver(async (entries, obs) => {
-        
-        const entry = entries.find(e => e.isIntersecting);
+    const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
 
-        if (!entry) return;
+    const revealSection = (el) => {
 
-        const el = entry.target;
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
         switch (el.id){
-            
+
             case "🫆lsdev-window--about":
 
-                if (!userHasScrolled) return;
-
-                // Slick measures slide widths at init, so the carousel needs layout. Give the
-                // reviews chrome layout just long enough to initialise it — this is synchronous,
-                // so the browser never paints the intermediate state and nothing flashes. It used
-                // to slideToggle the window open and straight back closed, which only stayed
-                // invisible while the slide-down was silently snapping; once the open actually
-                // animated, that hack became a visible open-then-close.
+                // The carousel measures slide widths at init, so it needs layout. Give the reviews
+                // chrome layout just long enough to initialise it — this is synchronous, so the
+                // browser never paints the intermediate state and nothing flashes.
                 reviewsChrome.style.display = "block";
                 reviewsChrome.style.visibility = "hidden";
                 initReviewsSlider();
                 reviewsChrome.style.removeProperty("display");
                 reviewsChrome.style.removeProperty("visibility");
-        
+
                 setTimeout(function(){
                     document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";
                     openWindow(el);
@@ -174,7 +164,7 @@ export const sectionTrackingInit = () => {
                     sectionObserver.observe(el);
                 }, 250);
                 break;
-            
+
             case "🫆lsdev-window--reviews":
 
                 setTimeout(function(){
@@ -197,24 +187,40 @@ export const sectionTrackingInit = () => {
                 setSize(document.querySelector("form"));
                 break;
         }
-            
+    };
+
+    // Sections reveal one at a time, in order, REVEAL_GAP apart. Each is only observed once its
+    // turn comes, which matters twice over: an IntersectionObserver reports the element's current
+    // state as soon as it is observed, so a section already scrolled past opens straight away
+    // instead of waiting to cross the threshold again — and nothing can fire ahead of its turn.
+    let currentIndex = 0;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+
+        const entry = entries.find(e => e.isIntersecting);
+
+        if (!entry) return;
+
         obs.unobserve(entry.target);
-        
-        setTimeout(function(){
+        revealSection(entry.target);
+
+        setTimeout(() => {
 
             currentIndex++;
 
-            if (currentIndex < targets.length) {
-                obs.observe(targets[currentIndex]);
-            } 
-            else {
-                obs.disconnect();
-            }
-        },1250);
+            if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
+            else obs.disconnect();
+        }, REVEAL_GAP);
     }, {
         threshold: .5,
         rootMargin: `0px 0px -${offset}px 0px`
     });
 
-    observer.observe(targets[0]);
+    // Start the sequence on the first scroll. Every window is collapsed to its title bar on load,
+    // so they can all be on screen at once — observing them before the visitor moves would fire
+    // them immediately, and invisibly, since the reviews window is still at opacity 0 until the
+    // About step restores it.
+    window.addEventListener("scroll", () => {
+        observer.observe(revealTargets[0]);
+    }, { passive: true, once: true });
 }
