@@ -1086,6 +1086,23 @@
                     background:transparent;
                     border:none;
                     font-size:1em;
+                    text-decoration:none;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        z-index: -1;                        /* above this element's bg, below its content */
+                        border-radius: inherit;
+                        pointer-events: none;
+                        background-image: radial-gradient(circle,  rgba(255,255,255,.8) 10px,  rgba(255,255,255,0));
+                        opacity: 0;
+                        transition: opacity .33s ease;
+                    }
+
+                    &:hover::after {
+                        opacity: 1;
+                    }
                 }
                 ::-webkit-scrollbar {
                     display:none;
