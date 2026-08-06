@@ -67,10 +67,12 @@ export const setSize = (el) => {
     el.style.height = el.offsetHeight + "px";
 
     window.addEventListener("resize", () => {
+        // Release the fixed height so the element can reflow to the new width, then re-pin it on
+        // the next frame once that reflow has happened.
         el.style.height = "";
-        requestAnimationFrame = () => {
+        requestAnimationFrame(() => {
             el.style.height = el.offsetHeight + "px";
-        }
+        });
     });
 }
 
