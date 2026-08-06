@@ -1858,6 +1858,8 @@ opacity: 0;
                 margin-top: 9px;
             }
             .🎨lsdev-contact__message-option {
+                margin-top: 0;
+                
                 &:not([disabled]):hover span, &:not([disabled]):focus span, &:not([disabled]).is-selected span {
                     background-color:#fef9f9;
                     outline:none;
