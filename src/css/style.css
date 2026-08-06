@@ -571,6 +571,7 @@
            the same overlay gradient with background-attachment:fixed. Fixed attachment anchors the
            gradient to the viewport — exactly how the page's fixed, full-viewport overlay resolves
            it — so the two line up wherever the pseudo happens to sit. */
+
         --💾lsdev-glitch-background-color: var(--💾lsdev-pink);
 
         .✨lsdev-fx-glitch {
@@ -1076,6 +1077,7 @@
                 scrollbar-width: none;
             }
             .🎨lsdev-window__menu {
+                display:flex;
                 position:relative;
                 white-space: nowrap;
                 overflow-x:scroll;
@@ -1090,6 +1092,7 @@
                 left:-2px;
                 
                 button, a {
+                    flex-shrink: 0;
                     position: relative;
                     padding: 15px 20px;
                     display: inline-block;
@@ -1101,10 +1104,19 @@
                     border:none;
                     font-size:1em;
                     text-decoration:none;
-                    transition:all .2s ease;
+                    background-color:transparent;
+                    transition:all .2s;
+                    outline:2px solid transparent;
+                    outline-offset: -2px;
+                    z-index:1;
 
                     &:hover {
-                        background-color:#f4dede;
+                        background-color:#d68bb7;
+                        color:white;
+                        outline-color: #f0bfdc;
+                        box-shadow:
+                            rgba(149, 157, 165, 0.15) 4px 0px 5px,
+                            rgba(149, 157, 165, 0.15) -4px 0px 5px;
                     }
                 }
                 ::-webkit-scrollbar {
@@ -1364,7 +1376,7 @@ opacity: 0;
         padding:20px;
 
         &:hover .🎨lsdev-project_client-info {
-            color:#cd7347;
+            color:var(--💾lsdev-darker-purple);;
         }
 
         &:hover .🎨lsdev-project_img-bg {
@@ -1419,6 +1431,7 @@ opacity: 0;
             font-family:"Silkscreen", sans-serif;
             text-transform:uppercase;
             pointer-events:none;
+            transition: color .2s ease;
             
             span:first-child {
                 flex-grow:1;
