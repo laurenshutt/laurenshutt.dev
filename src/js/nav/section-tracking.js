@@ -145,6 +145,14 @@ export const sectionTrackingInit = () => {
     // sequence and burn a whole gap before About was even watched.
     const revealTargets = targets.filter(Boolean).filter(el => el.id !== "🫆lsdev-window--projects");
 
+    // Hold the footer out of the flow until every section has revealed. On a fast scroll the
+    // visitor can reach the bottom before a window has opened, and the footer is then shoved down
+    // as it does. Deferred, it simply appears below them once everything has settled. The class is
+    // added from JS so the footer is never hidden for anyone without scripting.
+    const footer = document.querySelector("footer");
+
+    footer?.classList.add("is-deferred");
+
     const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
 
     const revealSection = (el) => {
@@ -204,7 +212,11 @@ export const sectionTrackingInit = () => {
 
     const observer = new IntersectionObserver((entries, obs) => {
 
-        const entry = entries.find(e => e.isIntersecting);
+        // A section is due when it scrolls into view — or when the visitor has already gone clean
+        // past it. On a fast scroll it can be above the viewport by the time its turn arrives, and
+        // it would then never intersect again, stalling the sequence and everything behind it.
+        const entry = entries.find(e => e.isIntersecting)
+            || entries.find(e => e.boundingClientRect.bottom <= 0);
 
         if (!entry) return;
 
@@ -216,7 +228,10 @@ export const sectionTrackingInit = () => {
             currentIndex++;
 
             if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
-            else obs.disconnect();
+            else {
+                obs.disconnect();
+                footer?.classList.remove("is-deferred");
+            }
         }, REVEAL_GAP);
     }, {
         threshold: .5,

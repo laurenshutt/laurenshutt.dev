@@ -1859,7 +1859,7 @@ opacity: 0;
             }
             .🎨lsdev-contact__message-option {
                 margin-top: 0;
-                
+
                 &:not([disabled]):hover span, &:not([disabled]):focus span, &:not([disabled]).is-selected span {
                     background-color:#fef9f9;
                     outline:none;
@@ -1882,8 +1882,6 @@ opacity: 0;
                 }
                 span {
                     display:block;
-                    margin-right: 5px;
-                    margin-bottom: 6px;
                     padding: 10px 20px;
                     color: black;
                     font-family: "Lato",sans-serif;
@@ -1894,7 +1892,7 @@ opacity: 0;
                     background-color: #fbe8e8;
                     transition:all .25s ease;
                     border: none;
-                    margin:10px;
+                    margin:10px 5px 10px 6px;
                 }
             }
             
@@ -1973,6 +1971,12 @@ opacity: 0;
 
 .🐱lsdev {
 
+/* Applied from JS until every section has revealed — see sectionTrackingInit. display:none rather
+   than hidden so it takes up no space: it then appears below the visitor instead of pushing the
+   page down under them. */
+footer.is-deferred {
+    display: none;
+}
 footer {
     display: flex;
     min-width:0;
