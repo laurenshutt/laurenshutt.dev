@@ -1881,7 +1881,7 @@ opacity: 0;
                     background-color:#fbe8e8;
                 }
                 span {
-                    display:block;
+                    display:inline-block;
                     padding: 10px 20px;
                     color: black;
                     font-family: "Lato",sans-serif;
@@ -1892,7 +1892,7 @@ opacity: 0;
                     background-color: #fbe8e8;
                     transition:all .25s ease;
                     border: none;
-                    margin:10px 5px 10px 6px;
+                    margin:8px 5px 8px 6px;
                 }
             }
             
