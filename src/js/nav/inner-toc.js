@@ -2,6 +2,54 @@ import {
     slideCaret
 } from './caret-slide.js';
 
+const slugify = (text) => text
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+// Rebuild the contents list from the page's own h2s, so it can't drift out of sync with the
+// article. Headings inside <details> are skipped: that's collapsed archive content, not part of
+// the page's top-level structure. Headings without an id get one derived from their text, so a
+// new section only has to exist to show up here. The links already in the markup act as the
+// no-JS fallback and are replaced wholesale when this runs.
+const buildLinks = (nav) => {
+
+    const list = nav.querySelector("ul");
+    const article = document.querySelector("article");
+
+    if (!list || !article) return;
+
+    const headings = [...article.querySelectorAll("h2")].filter(h2 => !h2.closest("details"));
+
+    if (!headings.length) return;
+
+    list.replaceChildren(...headings.map(h2 => {
+
+        if (!h2.id) {
+
+            const base = slugify(h2.textContent) || "section";
+            let id = base;
+            let n = 2;
+
+            while (document.getElementById(id)) id = `${base}-${n++}`;
+
+            h2.id = id;
+        }
+
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+
+        link.href = `#${h2.id}`;
+        link.textContent = h2.textContent.trim();
+        li.append(link);
+
+        return li;
+    }));
+};
+
 // Reuses the homepage caret-slide on the inner pages' "Contents" nav: the ">" tracks whichever
 // section heading was most recently scrolled past. The nav gets is-tracking so the CSS can hand
 // the caret from its static no-JS spot (inline transform beside the first item) to the JS-driven
@@ -11,6 +59,8 @@ export const innerToc = () => {
     const nav = document.querySelector(".🎨lsdev-toc");
 
     if (!nav) return;
+
+    buildLinks(nav);
 
     const caret = nav.querySelector(".🎨lsdev-toc__caret");
     const items = [...nav.querySelectorAll("li")];
