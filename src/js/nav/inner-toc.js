@@ -32,8 +32,12 @@ export const innerToc = () => {
     items.forEach(li => li.style.removeProperty("padding-left"));
 
     let current = null;
+    let locked = null;
 
     const update = () => {
+
+        // A click owns the highlight until its scroll settles — see the handler below.
+        if (locked) return;
 
         // Measured live and re-sorted each pass: the now page's <details> archive shifts every
         // heading below it when it opens or closes.
@@ -41,8 +45,11 @@ export const innerToc = () => {
             .map(pair => ({ ...pair, top: pair.target.getBoundingClientRect().top }))
             .sort((a, b) => a.top - b.top);
 
-        // The current section is the last heading above the reading line, 40% down the viewport…
-        const line = window.innerHeight * 0.4;
+        // The current section is the last heading above the reading line. That line sits near the
+        // top rather than mid-viewport because clicking a toc link parks its heading at y=0: with
+        // a line 40% down, every heading in the first 40% counted as passed, so any section
+        // shorter than that handed the highlight straight to the one after it.
+        const line = 120;
         let active = ordered[0];
 
         ordered.forEach(pair => {
@@ -77,6 +84,35 @@ export const innerToc = () => {
         });
     };
 
+    // Clicking a link claims the highlight immediately and holds it while the smooth scroll runs,
+    // so the caret goes straight to the destination instead of chasing every section on the way.
+    // Released on scrollend, with a timeout for browsers that don't fire it.
+    let releaseTimer = null;
+
+    const release = () => {
+
+        if (!locked) return;
+
+        clearTimeout(releaseTimer);
+        locked = null;
+        update();
+    };
+
+    nav.addEventListener("click", (event) => {
+
+        const li = event.target.closest('a[href^="#"]')?.closest("li");
+
+        if (!li || !pairs.some(pair => pair.li === li)) return;
+
+        locked = li;
+        current = li;
+        slideCaret({ nav, caret, items, li });
+
+        clearTimeout(releaseTimer);
+        releaseTimer = setTimeout(release, 1200);
+    });
+
+    window.addEventListener("scrollend", release);
     window.addEventListener("scroll", queueUpdate, { passive: true });
     window.addEventListener("resize", queueUpdate, { passive: true });
     document.querySelectorAll("details").forEach(d => d.addEventListener("toggle", queueUpdate));
