@@ -85,6 +85,16 @@ export const innerToc = () => {
     let locked = null;
     let hovered = null;
 
+    // Move the caret and mark where it landed. The indent keys off is-caret rather than
+    // is-highlighted because the two diverge while hovering: the highlight stays on the section
+    // being read, the caret (and its indent) follows the pointer.
+    const placeCaret = (li, highlight) => {
+
+        items.forEach(item => item.classList.toggle("is-caret", item === li));
+
+        slideCaret({ nav, caret, items, li, highlight });
+    };
+
     const update = () => {
 
         // A click owns the highlight until its scroll settles — see the handler below.
@@ -117,11 +127,11 @@ export const innerToc = () => {
         if (active.li === current) return;
 
         current = active.li;
-        slideCaret({ nav, caret, items, li: active.li });
+        placeCaret(active.li, true);
 
         // The highlight above is still correct while hovering, but the caret belongs on whatever
         // the pointer is previewing — put it back.
-        if (hovered) slideCaret({ nav, caret, items, li: hovered, highlight: false });
+        if (hovered) placeCaret(hovered, false);
     };
 
     // One measurement per frame: the rects force layout and scroll events outpace paint.
@@ -161,7 +171,7 @@ export const innerToc = () => {
 
         locked = li;
         current = li;
-        slideCaret({ nav, caret, items, li });
+        placeCaret(li, true);
 
         clearTimeout(releaseTimer);
         releaseTimer = setTimeout(release, 1200);
@@ -178,14 +188,17 @@ export const innerToc = () => {
 
         const destination = li ?? current;
 
-        if (destination) slideCaret({ nav, caret, items, li: destination, highlight: false });
+        if (destination) placeCaret(destination, false);
     };
 
     nav.addEventListener("mouseover", (event) => {
 
+        // Any li inside this nav is a contents entry, so containment is the whole test. Matching
+        // against the captured `pairs` would silently stop previewing if the list were ever
+        // rebuilt underneath us.
         const li = event.target.closest("li");
 
-        previewCaret(li && pairs.some(pair => pair.li === li) ? li : null);
+        previewCaret(li && nav.contains(li) ? li : null);
     });
 
     nav.addEventListener("mouseleave", () => previewCaret(null));

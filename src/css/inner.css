@@ -81,7 +81,9 @@
                 ul li {
                     transition: padding-left 220ms cubic-bezier(.22,.61,.36,1);
 
-                    &.is-highlighted {
+                    /* Keyed to the caret, not the highlight: hovering slides the caret to a
+                       different item while is-highlighted stays on the section being read. */
+                    &.is-caret {
                         padding-left: 20px;
                     }
                 }
