@@ -1,8 +1,10 @@
 
 .🐱lsdev {
-    html, body {
-        scroll-behavior: smooth;
-    }
+    /* Declared directly here because .🐱lsdev IS the <html> element. Nesting `html, body { … }`
+       inside it would compile to a descendant selector, which can never match <html>, and
+       scroll-behavior only drives viewport scrolling from the root element — never from body. */
+    scroll-behavior: smooth;
+
     body {
         background-image: 
             linear-gradient(to right bottom, rgb(255, 255, 255) 0px, rgb(255, 255, 255) 25vw, rgb(255, 253, 253) 33vw, rgba(253, 236, 237, 0.5) 82.5%);
