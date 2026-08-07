@@ -248,7 +248,7 @@
                         </div>
                         <div class="🎨lsdev-tama">
                             <span>
-                                Last evolved:
+                                Evolved:
                             </span>
                             <span>
                                 06.16.2026
@@ -673,7 +673,7 @@
         </footer>
     </body>
     <script type="module" src="/src/main-inner.js"></script>
-    <script>
+        <script>
         const pinnedEl = document.querySelector("body > main > div > div > div");
         const pinnedElHeight = pinnedEl.offsetHeight;
         const pinnedElRect = pinnedEl.getBoundingClientRect();
@@ -682,6 +682,22 @@
         const pinPoint = "50px";
         const toc = document.querySelector(".🎨lsdev-toc");
         let firstH2Top;
+
+        
+        async function measure() {
+            
+            await document.fonts?.ready;
+
+            requestAnimationFrame(() => {
+                
+                const firstH2 = document.querySelector("article h2:first-of-type");
+                firstH2Top = firstH2.getBoundingClientRect().top + window.scrollY;
+
+                toc.style.top = `${firstH2Top}px`;
+            });
+        }
+
+        window.addEventListener("load", measure);
             
         
         window.addEventListener("scroll", function() {
