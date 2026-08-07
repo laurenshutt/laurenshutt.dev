@@ -61,6 +61,26 @@
                     }
                 }
             }
+
+            /* JS caret tracking (inner-toc.js adds is-tracking and clears the caret's inline
+               transform + the first item's inline padding). The caret anchors to the nav's top
+               and slides via --caret-y, matching the homepage nav's timing; the indent follows
+               the highlighted item. Without JS the static inline styles keep the original look. */
+            &.is-tracking {
+
+                .🎨lsdev-toc__caret {
+                    top: 0;
+                    transform: translateY(var(--caret-y, 9px));
+                    transition: transform 220ms cubic-bezier(.22,.61,.36,1);
+                }
+                ul li {
+                    transition: padding-left 220ms cubic-bezier(.22,.61,.36,1);
+
+                    &.is-highlighted {
+                        padding-left: 20px;
+                    }
+                }
+            }
         }
 
         article {

@@ -1,32 +1,24 @@
-import { 
+import {
     initDom
 } from '../dom.js';
+
+import {
+    slideCaret
+} from './caret-slide.js';
 
 const dom = initDom();
 const {mainNav, mainNavItems, caret} = dom;
 
+// Homepage wrapper around the shared caret-slide: same signature as always, with the homepage
+// nav baked in. The -3px offset is the original alignment nudge.
 export const moveCaret = (li, changedSection) => {
 
-    const navTop = mainNav.getBoundingClientRect().top;
-    const y = li.getBoundingClientRect().top - navTop;
-    
-    caret.style.setProperty("--caret-y", `${y - 3}px`);
-
-    if (changedSection === true) {
-        
-        mainNavItems.forEach(li => {
-
-            const link = li.querySelector("a");
-            
-            li.classList.remove("is-highlighted");
-
-            if (link) link.removeAttribute("aria-current");
-        });
-
-        li.classList.add("is-highlighted");
-
-        const link = li.querySelector("a");
-        
-        if (link) link.setAttribute("aria-current", "location");
-    }
+    slideCaret({
+        nav: mainNav,
+        caret,
+        items: mainNavItems,
+        li,
+        highlight: changedSection === true,
+        offset: -3
+    });
 };
