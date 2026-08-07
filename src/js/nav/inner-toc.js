@@ -83,6 +83,7 @@ export const innerToc = () => {
 
     let current = null;
     let locked = null;
+    let hovered = null;
 
     const update = () => {
 
@@ -117,6 +118,10 @@ export const innerToc = () => {
 
         current = active.li;
         slideCaret({ nav, caret, items, li: active.li });
+
+        // The highlight above is still correct while hovering, but the caret belongs on whatever
+        // the pointer is previewing — put it back.
+        if (hovered) slideCaret({ nav, caret, items, li: hovered, highlight: false });
     };
 
     // One measurement per frame: the rects force layout and scroll events outpace paint.
@@ -161,6 +166,29 @@ export const innerToc = () => {
         clearTimeout(releaseTimer);
         releaseTimer = setTimeout(release, 1200);
     });
+
+    // Hovering a link previews it: the caret slides across with its usual transition while the
+    // highlighted item stays put, and returns to the tracked section on the way out. Delegated
+    // rather than bound per item, since the list is rebuilt from the page's headings.
+    const previewCaret = (li) => {
+
+        if (li === hovered) return;
+
+        hovered = li;
+
+        const destination = li ?? current;
+
+        if (destination) slideCaret({ nav, caret, items, li: destination, highlight: false });
+    };
+
+    nav.addEventListener("mouseover", (event) => {
+
+        const li = event.target.closest("li");
+
+        previewCaret(li && pairs.some(pair => pair.li === li) ? li : null);
+    });
+
+    nav.addEventListener("mouseleave", () => previewCaret(null));
 
     window.addEventListener("scrollend", release);
     window.addEventListener("scroll", queueUpdate, { passive: true });
