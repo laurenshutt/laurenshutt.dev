@@ -1101,22 +1101,14 @@
                     color: var(--💾lsdev-lighter-purple);
                     line-height: 1;
                     background:transparent;
-                    border:none;
                     font-size:1em;
                     text-decoration:none;
                     background-color:transparent;
                     transition:all .2s;
-                    outline:2px solid transparent;
-                    outline-offset: -2px;
-                    z-index:1;
 
                     &:hover {
                         background-color:#d68bb7;
                         color:white;
-                        outline-color: #f0bfdc;
-                        box-shadow:
-                            rgba(149, 157, 165, 0.15) 4px 0px 5px,
-                            rgba(149, 157, 165, 0.15) -4px 0px 5px;
                     }
                 }
                 ::-webkit-scrollbar {
