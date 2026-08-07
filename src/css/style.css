@@ -1354,7 +1354,11 @@ opacity: 0;
     padding:30px 35px 30px 30px !important;
     align-self: start;
     counter-reset: item-counter;
-    overflow:scroll;
+    /* No overflow here on purpose: .🎨lsdev-projects__grid-container above already scrolls, and a
+       second scroll container nested inside it broke keyboard navigation. Focusing an element makes
+       the browser reveal it within every scrollable ancestor, so the outer container kept scrolling
+       to align this grid — which starts at the top of its scrollable area — sending it back to the
+       top on every Tab. */
     position:relative;
     margin-bottom:0 !important;
     background:none !important;

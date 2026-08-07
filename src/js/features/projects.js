@@ -2,6 +2,10 @@ import {
     createMouseTracker
 } from "../hud/mouse-coords.js";
 
+import {
+    staggerCardsIn
+} from "../windows.js";
+
 export const scrollProjects = () => {
 
     if (window.innerWidth <= 1035) return;
@@ -47,7 +51,20 @@ export const scrollProjects = () => {
 
         const driveDown = px > 0 && !atBottom;                  // grid fills downward
         const driveUp = window.scrollY <= 0 && px < 0 && !atTop; // grid rewinds, only at page top
-        if (!driveDown && !driveUp) return;                     // otherwise let the page scroll
+
+        if (!driveDown && !driveUp) {
+
+            // The page should scroll. Returning here isn't enough when the pointer is over the grid:
+            // it's overflow:scroll, so the browser would scroll that container natively instead of
+            // the page. Take the wheel over and move the page ourselves so the hijack rules apply
+            // wherever the pointer happens to be.
+            if (event.target.closest("#🫆lsdev-projects__grid-container")) {
+                event.preventDefault();
+                window.scrollBy(0, px);
+            }
+
+            return;
+        }
 
         event.preventDefault();
         const max = scrollContainer.scrollHeight - scrollContainer.clientHeight;
@@ -79,16 +96,26 @@ export const filterProjects = () => {
 
         // Step 3: Show only filtered ones
         setTimeout(() => {
-            
+
+            const matching = [];
+
             projects.forEach(project => {
-                
+
                 const filters = project.dataset.filterby.split(",");
 
                 if (filter === "all" || filters.includes(filter)) {
                     project.style.display = "";
                     project.classList.remove("is-filtered");
+
+                    matching.push(project);
                 }
             });
+
+            // Deal the whole matching set back in, staggered, exactly as the grid does after a
+            // window un-maximises — every filter click re-animates, not just the cards that
+            // happened to be hidden beforehand. Called in the same task as the un-hiding above, so
+            // they're held hidden before the browser paints and none flash in ahead of their turn.
+            staggerCardsIn(matching);
         }, 0);
     });
 };

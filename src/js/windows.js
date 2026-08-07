@@ -16,26 +16,51 @@ const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place afte
 // actually STARTS at its staggered time, which also spreads the rasterization so no single frame
 // is heavy. The card being closed (.is-flip-landed) already animated in via its image's own FLIP,
 // so it's skipped and left visible.
-const revealGridImages = (windowEl) => {
-    const cards = [...windowEl.querySelectorAll(".🎨lsdev-projects__project")]
-        .filter(el => !el.classList.contains("is-flip-landed"))
+// Slide the given cards into place one at a time, in reading order. Each card's animation actually
+// STARTS at its staggered time (rather than all starting at once with a CSS delay), which also
+// spreads the rasterisation so no single frame is heavy. Callers pass whichever cards should
+// animate; they are held hidden first so none of them flash before their turn.
+export const staggerCardsIn = (cards) => {
+
+    // A card only earns a turn if the visitor can actually see it. Testing against the viewport
+    // alone isn't enough: the grid clips with overflow:scroll, so a card scrolled out of view
+    // inside it still reports a rect that lands on screen. Those would take their turn first and
+    // hold up the cards that are genuinely visible. Anything skipped here simply appears at once,
+    // which is invisible to the visitor by definition.
+    const scroller = document.getElementById("🫆lsdev-projects__grid-container");
+    const clip = scroller?.getBoundingClientRect();
+
+    const top = Math.max(0, clip ? clip.top : 0);
+    const bottom = Math.min(window.innerHeight, clip ? clip.bottom : window.innerHeight);
+
+    const ordered = cards
         .map(el => ({ el, r: el.getBoundingClientRect() }))
-        .filter(o => o.r.width > 0 && o.r.bottom > 0 && o.r.top < window.innerHeight)
+        .filter(o => o.r.width > 0 && o.r.bottom > top && o.r.top < bottom)
         .sort((a, b) => (a.r.top - b.r.top) || (a.r.left - b.r.left))
         .map(o => o.el);
 
-    // Hold the on-screen cards hidden, then drop the scale-time class so the rest of the window
-    // (shadows, the focal image) is back to normal while the cards wait their turn.
-    cards.forEach(el => el.classList.add("is-pending-reveal"));
-    windowEl.classList.remove("is-flipping");
+    ordered.forEach(el => el.classList.add("is-pending-reveal"));
 
-    cards.forEach((el, i) => {
+    ordered.forEach((el, i) => {
         setTimeout(() => {
             el.classList.remove("is-pending-reveal");
             el.classList.add("is-sliding-in");
             setTimeout(() => el.classList.remove("is-sliding-in"), 400);
         }, i * CARD_REVEAL_STAGGER);
     });
+
+    return ordered;
+};
+
+const revealGridImages = (windowEl) => {
+    const cards = [...windowEl.querySelectorAll(".🎨lsdev-projects__project")]
+        .filter(el => !el.classList.contains("is-flip-landed"));
+
+    staggerCardsIn(cards);
+
+    // Drop the scale-time class so the rest of the window (shadows, the focal image) is back to
+    // normal while the cards wait their turn.
+    windowEl.classList.remove("is-flipping");
     // Note: .is-flip-landed is owned and removed by closeProjectDetail (per-card), not here, so
     // overlapping flips can't strip each other's exemption.
 };
