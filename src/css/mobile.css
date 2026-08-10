@@ -118,7 +118,7 @@
         div:has(> .has-glitch){
             margin-bottom:33vh;
             top:50vh;
-            transform:translateY(-50s%);
+            transform:translateY(-50%);
             position:relative;
         }
         .has-glitch {
@@ -185,9 +185,18 @@
         .🎨lsdev-sidebar-nav {
             /*animation:none !important; /* change later to stretch across */
             opacity:1;
-            height:30px !important;
-            width:100vw;
+            height:40px !important;
+            /* 100% not 100vw: this nav is position:fixed, so 100% resolves against the viewport
+               minus the scrollbar, whereas 100vw includes the scrollbar gutter and pushed the bar
+               (and its full-width ul) past the visible area — the dead space down the right. */
+            width:100%;
             display:block;
+            background-image: 
+                linear-gradient(
+                    to right, 
+                    #f8c9d9,
+                    #f3a6c1 110%
+                );
 
             ul {
                 flex-direction:row;
@@ -211,10 +220,10 @@
 
                 li {
                     margin:unset;
+                    padding:0;
 
                     a,button {
-                        font-size:14px;
-
+                        font-size:16px;
                     }
 
                     &:first-child {
@@ -289,7 +298,7 @@
         .🎨lsdev-projects__grid {
             padding:12px 15px 30px 10px !important;
 
-            
+
 
             .🎨lsdev-projects__project {
                 padding:15px;

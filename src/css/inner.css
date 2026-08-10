@@ -8,6 +8,7 @@
     body {
         background-image: 
             linear-gradient(to right bottom, rgb(255, 255, 255) 0px, rgb(255, 255, 255) 25vw, rgb(255, 253, 253) 33vw, rgba(253, 236, 237, 0.5) 82.5%);
+        margin:0;
     }
     ul, ul li {
         font-family:"Lato", sans-serif;
@@ -256,4 +257,81 @@
             }
         }
     }
+}
+/* Below the desktop layout's comfortable width, pull the column back off the sidebar rail
+   (it sits at left:-76px above this) and let it span the viewport instead of the 700px
+   article's natural width, with matching breathing room down the right. */
+@media screen and (max-width: 1350px) {
+
+    .🐱lsdev main > div:first-child {
+        left: 80px;
+        width: calc(100vw - 80px);
+    }
+    .🐱lsdev main article {
+        padding-right: 80px;
+    }
+}
+
+@media screen and (max-width:1035px){
+    .🐱lsdev .🎨lsdev-toc {
+        display:none;
+    }
+    .🐱lsdev main > div:first-child {
+        left:80px;
+        display:block;
+        width:calc(100% - 160px);
+        padding:0;
+    }
+    .🐱lsdev main article {
+        max-width:unset;
+        padding:0;
+    }
+}
+
+@media screen and (max-width:740px){
+    body > main > div > article > div:nth-child(3) {
+        display:block !important;
+    }
+    .🐱lsdev main > div:first-child {
+        left:30px;
+        display:block;
+        width:calc(100% - 60px);
+        padding:0;
+    }
+}
+
+/* Content sized for the desktop layout, clamped once the column narrows. These are what push the
+   document wider than the viewport, which is what shows up as dead space to the right of the page:
+   the reading grid deliberately bleeds 15% past the article, and the tama/read-and-share rows are
+   fit-content flex rows that never wrap, so they hold their full desktop length no matter how
+   narrow the screen gets. Scoped with .🐱lsdev to outrank the page's inline <style> block. */
+@media screen and (max-width: 1350px) {
+
+    .🐱lsdev .reading-list {
+        width: 100%;
+        grid-template-columns:225px 225px 225px;
+
+
+    }
+    .🐱lsdev .🎨lsdev-read-and-share,
+    .🐱lsdev .🎨lsdev-tama {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+}
+@media screen and (max-width:870px){
+    .🐱lsdev .reading-list {
+        grid-template-columns: 250px 250px;
+    }
+}
+@media screen and (max-width:580px){
+    .🐱lsdev .reading-list {
+        width: 100%;
+        grid-template-columns:1fr;
+        
+        li {
+            max-width:200px;
+        }
+    }
+    
 }
