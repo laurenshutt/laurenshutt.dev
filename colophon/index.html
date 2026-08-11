@@ -616,6 +616,9 @@
                 firstH2Top = firstH2.getBoundingClientRect().top + window.scrollY;
 
                 toc.style.top = `${firstH2Top}px`;
+
+                // Now that it sits where it belongs, fade and lift it in (see inner.css).
+                toc.classList.add("is-positioned");
             });
         }
 

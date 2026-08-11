@@ -129,15 +129,26 @@
 
     .🐱lsdev {
 
-        html, 
-        body {    
+        /* The single knob for type scale. .🐱lsdev IS <html>, so this is the root font size that
+           every rem below resolves against. It used to sit in the html, body block below, where
+           the nested `html` half could never match, so it only reached body and rem silently
+           resolved against the browser's 16px default.
+           Anchored to reach the full 18px at 1920 — the width this was designed at — and ease to
+           16px by 700, so laptop screens sit slightly below the design size instead of holding it
+           flat. To retune: raise 0.164vw for a steeper drop, or the 1.125rem cap for a larger
+           design size.
+           Bounds are in rem, not px, so a reader who has raised their browser's default font still
+           gets proportionally larger text. */
+        font-size: clamp(1rem, 0.928rem + 0.164vw, 1.125rem);
+
+        html,
+        body {
             position: relative;
             box-sizing: border-box;
             height: 100%;
             margin: 0;
             padding: 0;
-            font-size: 18px;
-            overscroll-behavior: none;                             
+            overscroll-behavior: none;
         }
         nav {
             pointer-events:all;
@@ -153,7 +164,7 @@
             padding: 0;
         } 
         button {
-            font-size:18px;
+            font-size:1rem;
             background-color: transparent;
             border: none;
         }
@@ -222,7 +233,7 @@
 
         h1 {
             font-family: var(--💾lsdev-pixel-font);
-            font-size: 7.5vw;
+            font-size: clamp(2.5rem, 7.5vw, 10rem);
             font-weight: normal;
             line-height: 1;
             color: var(--💾lsdev-gold);
@@ -250,7 +261,7 @@
             color: var(--💾lsdev-black);
         }
         code {
-            font-size:16px;
+            font-size:0.8889rem;
             padding:0 3px 0 0;
             margin-left:4px;
             font-weight:normal;
@@ -400,7 +411,7 @@
             transform: translate(-50%, -62.5%);
             transition: all .4s ease;
             font-family: var(--💾lsdev-pixel-font);
-            font-size: 7.5vw;
+            font-size: clamp(2.5rem, 7.5vw, 10rem);
             font-weight: normal;
             line-height: 1;
             color: var(--💾lsdev-gold);
@@ -1137,7 +1148,7 @@
                 background:white;
                 padding:8px;
                 font-family:'Courier New', Courier, monospace;
-                font-size:13px;
+                font-size:0.7222rem;
                 margin-left: calc(var(--💾lsdev-window-l-r-padding) * -1);
                 width: fit-content;
             }
@@ -1150,7 +1161,7 @@
             font-family: 'Silkscreen';
             border-radius: 8px;
             padding: 10px 18px 20px 18px;
-            font-size: 18px;
+            font-size: 1rem;
             transform: perspective(800px) rotateX(5deg);
             box-shadow:
                 #dc9bc1 0 -5px 0 inset,
@@ -1227,7 +1238,7 @@
             transition: opacity 0.15s ease;
             background: var(--💾lsdev-purple);
             font-family:var(--💾lsdev-sans-font);
-            font-size:14px;
+            font-size:0.7778rem;
             color: white;
             border-radius: 6px;
             padding: 10px 15px;
@@ -1472,7 +1483,7 @@ opacity: 0;
     
     p {
         padding-bottom:20px;
-        font-size:19px;
+        font-size:1.0556rem;
         line-height:1.6;
 
         a {
@@ -1599,7 +1610,7 @@ opacity: 0;
     }
     #🫆lsdev-reviews-carousel__pause-button.is-paused::before {
         content:"▶";
-        font-size:14px;
+        font-size:0.7778rem;
     }
 
     .🎨lsdev-window--reviews {
@@ -1681,7 +1692,7 @@ opacity: 0;
                     }
                     p {
                         line-height:1.4;
-                        font-size:17px;
+                        font-size:0.9444rem;
                     }
                 }
             }
@@ -1784,7 +1795,7 @@ opacity: 0;
                     padding-left:18px;
                     color: black;
                     font-family: "Lato", sans-serif;
-                    font-size: 16px !important;
+                    font-size: 0.8889rem !important;
                     font-weight: 300;
                     letter-spacing: .5px;
                     border-radius: 50px;
@@ -1895,7 +1906,7 @@ opacity: 0;
                         padding: 10px 20px;
                         color: black;
                         font-family: "Lato",sans-serif;
-                        font-size: 16px;
+                        font-size: 0.8889rem;
                         font-weight: 300;
                         letter-spacing: .5px;
                         border-radius: 50px;
@@ -2071,7 +2082,7 @@ left:116px;
 letter-spacing:-1px;
 color:#8c3267;
 font-family:var(--💾lsdev-pixel-font);
-font-size:15px;
+font-size:0.8333rem;
 opacity:0;
 transition:bottom .3s ease;
 
@@ -2217,11 +2228,11 @@ body.is-loading {
     border-radius:8px;
 }
 .role p {
-    font-size:17px;
+    font-size:0.9444rem;
     padding-bottom:17px;
 }
 .role h3 {
-    font-size:16px;
+    font-size:0.8889rem;
 }
 .🎨lsdev-project-modal__secondary-image {
     display:flex;

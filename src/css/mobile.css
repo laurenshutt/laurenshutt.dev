@@ -123,7 +123,7 @@
         }
         .has-glitch {
             width:auto;
-            font-size:17.5vw;
+            font-size:clamp(3rem, 17.5vw, 12rem);
             text-align:center;
             position:relative;
             top:unset;
@@ -136,7 +136,7 @@
             position:relative;
             left: unset;
             text-align: center;
-            font-size: 6vw;
+            font-size: clamp(1.125rem, 6vw, 4rem);
             top:unset;
             padding-top:20px;
         }
@@ -223,7 +223,7 @@
                     padding:0;
 
                     a,button {
-                        font-size:16px;
+                        font-size:0.8889rem;
                     }
 
                     &:first-child {
@@ -267,7 +267,7 @@
 
             .🎨lsdev-window__title-bar {
                 padding: 8px 0;
-                font-size:17px;
+                font-size:0.9444rem;
 
                 .🎨lsdev-window__controls {
                     [class*="🎨lsdev-window__button"] {
@@ -282,7 +282,7 @@
             .🎨lsdev-window__menu {
                 button, a {
                     padding:8px 12px;
-                    font-size:16px;
+                    font-size:0.8889rem;
                 }
             }
             .🎨lsdev-window__content {
