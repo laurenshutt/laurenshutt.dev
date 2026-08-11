@@ -316,6 +316,12 @@
             margin-top:20px;
             flex-direction:column;
         }
+        /* Open windows above are pinned to calc(100vh - 100px), which projects and about fill but
+           a single review doesn't — leaving dead space below the carousel. Let this one size to
+           its content instead. Higher specificity than the .is-open rule, so no !important. */
+        .🎨lsdev-window.🎨lsdev-window--reviews.is-open {
+            height:auto;
+        }
         .🎨lsdev-window.🎨lsdev-window--reviews.is-open .🎨lsdev-window__content {
             height:unset !important;
         }
