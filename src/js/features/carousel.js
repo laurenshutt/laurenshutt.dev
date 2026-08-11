@@ -6,40 +6,60 @@ export const initReviewsSlider = () => {
     const nextBtn = document.getElementById("🫆lsdev-reviews-carousel__next-button");
     const pauseBtn = document.getElementById("🫆lsdev-reviews-carousel__pause-button");
 
-    const slidesToShow = 2;
+    // Below this, two reviews side by side get too narrow to read, so drop to one.
+    const minSlideWidth = 320;
     const autoplaySpeed = 7500;
 
-    let index = slidesToShow;
+    let slidesToShow = 0;
+    let allSlides = [];
+    let index = 0;
     let isPaused = false;
     let interval;
 
-    // --- CLONE SLIDES (infinite loop effect)
-    const setupClones = () => {
-        const firstClones = slides.slice(0, slidesToShow).map(s => s.cloneNode(true));
-        const lastClones = slides.slice(-slidesToShow).map(s => s.cloneNode(true));
+    // Measured from the track itself rather than the viewport, so it also responds to the window
+    // being maximised or restored — not just the screen changing size. A width of 0 means the
+    // reviews window is closed, in which case keep whatever we already had.
+    const slidesThatFit = () => {
+        const width = track.getBoundingClientRect().width;
 
-        lastClones.forEach(c => track.prepend(c));
-        firstClones.forEach(c => track.append(c));
-    };
+        if (!width) return slidesToShow || 2;
 
-    setupClones();
-
-    const allSlides = Array.from(track.children);
-
-    const setLayout = () => {
-        const width = 100 / slidesToShow;
-
-        allSlides.forEach(slide => {
-            slide.style.flex = `0 0 ${width}%`;
-        });
-
-        track.style.display = "flex";
-        track.style.transition = "transform 0.5s ease";
+        return width < minSlideWidth * 2 ? 1 : 2;
     };
 
     const moveTo = (i, animate = true) => {
         track.style.transition = animate ? "transform 0.5s ease" : "none";
         track.style.transform = `translateX(-${i * (100 / slidesToShow)}%)`;
+    };
+
+    // --- (Re)build the loop clones for a given slide count.
+    // The count decides how many slides are cloned onto each end, how wide each one is, and where
+    // the loop wraps, so changing it means rebuilding rather than just reassigning.
+    const build = (count) => {
+
+        slidesToShow = count;
+
+        track.querySelectorAll("[data-carousel-clone]").forEach(clone => clone.remove());
+
+        const firstClones = slides.slice(0, count).map(s => s.cloneNode(true));
+        const lastClones = slides.slice(-count).map(s => s.cloneNode(true));
+
+        [...firstClones, ...lastClones].forEach(c => c.setAttribute("data-carousel-clone", ""));
+
+        // Spread rather than prepending one at a time, which would reverse their order.
+        track.prepend(...lastClones);
+        track.append(...firstClones);
+
+        allSlides = Array.from(track.children);
+
+        allSlides.forEach(slide => {
+            slide.style.flex = `0 0 ${100 / count}%`;
+        });
+
+        track.style.display = "flex";
+
+        index = count;
+        moveTo(index, false);
     };
 
     const next = () => {
@@ -74,9 +94,18 @@ export const initReviewsSlider = () => {
     const pause = () => clearInterval(interval);
 
     // init
-    setLayout();
-    moveTo(index, false);
+    build(slidesThatFit());
     play();
+
+    // Rebuild only when the number of visible slides actually changes. Watching the track covers
+    // both viewport resizes and the window being maximised; build() sets slidesToShow up front, so
+    // the resize it triggers can't recurse.
+    new ResizeObserver(() => {
+
+        const count = slidesThatFit();
+
+        if (count !== slidesToShow) build(count);
+    }).observe(track);
 
     // controls
     nextBtn.addEventListener("click", next);
