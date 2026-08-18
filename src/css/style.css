@@ -711,7 +711,7 @@
 
         .🎨lsdev-hud {
             
-            margin-bottom:max(40px, 10vw);
+            margin-bottom:max(40px, 5vw);
             padding-left:9px;
             
             color:#8c3267;
