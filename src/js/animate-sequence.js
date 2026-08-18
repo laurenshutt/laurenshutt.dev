@@ -30,6 +30,10 @@ import {
 } from "./features/icebreakers.js";
 
 import {
+    charms
+} from "./features/charms.js";
+
+import {
     tooltips
 } from "./features/tooltips.js";
 
@@ -101,6 +105,7 @@ export const animateSequence = async () => {
     });
 
     weather();
+    charms();
     suggestIcebreaker();
     tooltips();
     buttonPress();
