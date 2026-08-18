@@ -13,27 +13,97 @@
     }
 }
 
+/* MacBook Air sizes and below (maximized or not). Tightens the hero column: less space to its
+   left, a smaller gap before the windows, and everything sitting higher up the page. The larger
+   screen this was designed on keeps the original, roomier spacing.
+   The intro text and nav tops keep their laddered vw terms — only the fixed part drops by 30px,
+   so they stay in step with the name as its vw font grows. The same 30px comes off the matching
+   entries in the narrower blocks below, or they would put it back. */
+@media screen and (max-width:1440px){
+    .🐱lsdev {
+        /* Flat 16.8px for the whole band, down from ~17.2px. The base curve only spans 16.5-17.2px
+           between 1035 and 1440, so fluid type earns nothing here and a single readable value is
+           easier to verify than an intercept + vw. Everything sized in rem or em follows from
+           this, including the pixel-font headings. */
+        font-size: 1.05rem;
+
+        .has-glitch.moved {
+            top:55px;
+            left:80px;
+            font-size:4.8vw;
+        }
+        /* Scoped to the contact block on purpose: the bare h2 rule this overrides also feeds the
+           window title bars, which set their own size and shouldn't move. */
+        .🎨lsdev-contact h2 {
+            font-size:2.25em;
+        }
+        .🎨lsdev-intro-text {
+            top:calc(90px + 9.1vw);
+            left:90px;
+        }
+        .🎨lsdev-nav {
+            top:calc(95px + 15.1vw);
+            left:90px;
+        }
+        main > div:nth-child(2) {
+            margin:45px 40px 0 100px;
+        }
+        /* Taller projects window, sized to leave the about window's title bar just peeking below
+           it. Derived from what sits above and below the grid in this band:
+             45px column margin + 52px title bar + 60px filter menu + 23px bottom padding
+             + 7.5vh window margin-bottom + ~55px peek
+           so the grid gets the rest: 100vh - 7.5vh - 235px. Raise the 235px to show more of the
+           about window, lower it for a taller grid.
+           The peek is deliberately smaller than half the about bar: its reveal observer needs 50%
+           visibility (less a 5vh bottom margin) to fire, so it still waits for a scroll rather than
+           opening on load. */
+        .🎨lsdev-projects__grid-container {
+            height:calc(92.5vh - 235px);
+        }
+        /* The pink frame around each window: side padding, plus the bottom once it's open.
+           Trimmed by roughly the same proportion as the title bar above it. */
+        .🎨lsdev-window {
+            padding:0 25px;
+
+            &.is-open {
+                padding-bottom:25px;
+            }
+        }
+        /* The bar's height is this padding plus its tallest child, which is the buttons below. */
+        .🎨lsdev-window .🎨lsdev-window__title-bar {
+            padding:15px 0;
+        }
+        /* Matches the nesting depth style.css declares these at, so it wins on source order rather
+           than needing !important. The 1035 block below sets its own smaller size for mobile. */
+        .🎨lsdev-window .🎨lsdev-window__title-bar .🎨lsdev-window__controls [class*="🎨lsdev-window__button"] {
+            padding:4px;
+
+            &::after {
+                width:15px;
+                height:15px;
+            }
+        }
+    }
+}
+
 @media screen and (max-width:1420px){
     .🎨lsdev-intro-text {
-        top:calc(120px + 10vw);
+        top:calc(90px + 9.1vw);
         width:18vw;
 
     }
     .🎨lsdev-nav {
-        top:calc(125px + 18.25vw);
+        top:calc(95px + 17.35vw);
     }
 }
 
 @media screen and (max-width: 1370px){
     .🐱lsdev {
-        .🎨lsdev-projects__grid {
-            grid-template-columns: 1fr 1fr;
-        }
         h1.moved {
             font-size:5.25vw;
         }
         .🎨lsdev-nav {
-            top:calc(125px + 16.5vw);
+            top:calc(95px + 15.6vw);
         }
     }
 }
@@ -45,11 +115,11 @@
         }
         .🎨lsdev-nav {
             left:90px;
-            top:calc(125px + 19vw);
+            top:calc(95px + 18.1vw);
             
         }
         .🎨lsdev-intro-text {
-            top:calc(120px + 10.5vw);
+            top:calc(90px + 9.6vw);
             width:21vw;
         }
     }
@@ -57,14 +127,16 @@
 
 @media screen and (max-width:1200px){
     .🐱lsdev {
+        /* Scaled by the same ratio as the 1440 reduction (5.25 -> 4.8vw), so the name still grows
+           proportionally on narrower screens instead of jumping back up 28% at this breakpoint. */
         .has-glitch.moved {
-            font-size:5.75vw;
+            font-size:4.9vw;
         }
         .🐱lsdev .🎨lsdev-intro-text {
-            top: calc(120px + 11vw);
+            top: calc(90px + 10.3vw);
         }
         .🎨lsdev-nav {
-            top: calc(125px + 20vw);
+            top: calc(95px + 19.3vw);
         }
     }
 }
@@ -72,7 +144,19 @@
 @media screen and (max-width:1150px){
     .🐱lsdev {
         .🎨lsdev-nav {
-            top: calc(125px + 21vw);
+            top: calc(95px + 20.3vw);
+        }
+    }
+}
+
+/* Three project cards stay across until the window genuinely can't hold them. This used to drop to
+   two at 1370, which caught laptop widths (and any desktop window narrowed by docked devtools).
+   The card artwork below scales with the column, so the narrower columns still read properly.
+   This is the one number to move if three-up starts feeling cramped. */
+@media screen and (max-width:1100px){
+    .🐱lsdev {
+        .🎨lsdev-projects__grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 }
@@ -86,10 +170,10 @@
             font-size:6.5vw;
         }
         .🎨lsdev-projects__grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
         }
         .🎨lsdev-nav {
-            top: calc(125px + 21.5vw);
+            top: calc(95px + 20.8vw);
         }
     }
 }

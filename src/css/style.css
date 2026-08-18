@@ -349,7 +349,7 @@
     .🐱lsdev {
 
         .🎨lsdev-intro-text {
-            position: fixed; 
+            position: fixed;
             width: 20vw;
             top: calc(120px + 9vw);
             left: 120px;
@@ -1360,7 +1360,11 @@ opacity: 0;
     top:-2px;
     display:grid;
     position:relative;
-    grid-template-columns: 1fr 1fr 1fr;
+    /* minmax(0, 1fr), not 1fr: plain 1fr means minmax(auto, 1fr), and that auto floor is
+       min-content — so a card that can't shrink past its content pushes its column wider than its
+       share. Columns then come out unequal and their total overruns the window, cutting off the
+       last one. A 0 floor lets every column hold its fraction exactly. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-row-gap:15px;
     padding:30px 35px 30px 30px !important;
     align-self: start;
@@ -1402,7 +1406,11 @@ opacity: 0;
             text-align:left;
         }
         .🎨lsdev-project_img-bg {
-            padding: 35px;
+            /* Percentage padding resolves against the column width, so the gradient frame keeps its
+               proportion as the columns narrow instead of a fixed 35px swallowing them at three-up.
+               8.75% lands on ~35px at the width this was designed at; the bounds stop the frame
+               vanishing on small cards or ballooning on a maximised window. */
+            padding: clamp(12px, 8.75%, 35px);
             overflow: hidden;
             background-image: linear-gradient(
                 to bottom right,
@@ -1483,7 +1491,7 @@ opacity: 0;
     
     p {
         padding-bottom:20px;
-        font-size:1.0556rem;
+        font-size:1rem;
         line-height:1.6;
 
         a {
@@ -1692,7 +1700,7 @@ opacity: 0;
                     }
                     p {
                         line-height:1.4;
-                        font-size:0.9444rem;
+                        font-size:1rem;
                     }
                 }
             }
@@ -2228,7 +2236,7 @@ body.is-loading {
     border-radius:8px;
 }
 .role p {
-    font-size:0.9444rem;
+    font-size:1rem;
     padding-bottom:17px;
 }
 .role h3 {
