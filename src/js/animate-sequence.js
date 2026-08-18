@@ -82,7 +82,7 @@ export const animateSequence = async () => {
     const glitchInner = document.querySelectorAll(".has-glitch span");
     const introTexts = document.querySelectorAll(".🎨lsdev-intro-text");
     const stage = document.getElementById("🫆lsdev-stage");
-    const sidebarNav = document.getElementById("🫆lsdev-sidebar-nav");
+    const sidebarNav = document.getElementById("🫆lsdev-external-nav");
     const firstWindow = document.querySelector(".🎨lsdev-window");
     const firstWindowChrome = document.querySelector(".🎨lsdev-window__chrome");
     const lastI = setElementIndices();
@@ -111,7 +111,7 @@ export const animateSequence = async () => {
     buttonPress();
     toggleMusic();
 
-    if (window.innerWidth >= 1035) glitchOuter[0].classList.add("moved");
+    if (window.innerWidth >= 1035) glitchOuter[0].classList.add("is-moved");
 
     stage.style.display = "block";
 

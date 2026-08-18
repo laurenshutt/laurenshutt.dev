@@ -1,10 +1,10 @@
 @media screen and (max-width:1600px){
     .🐱lsdev {
-        .has-glitch.moved {
+        .has-glitch.is-moved {
             font-size:5.25vw;
         }
         .🎨lsdev-intro-text {
-            top:calc(120px + 10vw);
+            margin-top:calc(120px + 10vw);
             width:23vw;
         }
         .🎨lsdev-nav {
@@ -29,7 +29,7 @@
            this, including the pixel-font headings. */
         font-size: 1.05rem;
 
-        .has-glitch.moved {
+        .has-glitch.is-moved {
             top:55px;
             left:80px;
             font-size:4.8vw;
@@ -40,8 +40,7 @@
             font-size:2.25em;
         }
         .🎨lsdev-intro-text {
-            top:calc(90px + 9.1vw);
-            left:90px;
+            margin-top:calc(9.1vw + 45px);
         }
         .🎨lsdev-nav {
             top:calc(95px + 15.1vw);
@@ -90,7 +89,7 @@
 
 @media screen and (max-width:1420px){
     .🎨lsdev-intro-text {
-        top:calc(90px + 9.1vw);
+       margin-top:calc(90px + 9.1vw);
         width:18vw;
 
     }
@@ -101,7 +100,7 @@
 
 @media screen and (max-width: 1370px){
     .🐱lsdev {
-        h1.moved {
+        h1.is-moved {
             font-size:5.25vw;
         }
         .🎨lsdev-nav {
@@ -112,7 +111,7 @@
 
 @media screen and (max-width:1275px){
     .🐱lsdev {
-        .🐱lsdev .has-glitch.moved {
+        .🐱lsdev .has-glitch.is-moved {
             width:5.5vw;
         }
         .🎨lsdev-nav {
@@ -121,7 +120,7 @@
             
         }
         .🎨lsdev-intro-text {
-            top:calc(90px + 9.6vw);
+            margin-top:calc(30px + 9.6vw);
             width:21vw;
         }
     }
@@ -131,11 +130,11 @@
     .🐱lsdev {
         /* Scaled by the same ratio as the 1440 reduction (5.25 -> 4.8vw), so the name still grows
            proportionally on narrower screens instead of jumping back up 28% at this breakpoint. */
-        .has-glitch.moved {
+        .has-glitch.is-moved {
             font-size:4.9vw;
         }
         .🐱lsdev .🎨lsdev-intro-text {
-            top: calc(90px + 10.3vw);
+            margin-top: calc(90px + 10.3vw);
         }
         .🎨lsdev-nav {
             top: calc(95px + 19.3vw);
@@ -168,7 +167,7 @@
         main {
             grid-template-columns: minmax(0, .55fr) minmax(0, 1fr);
         }
-        h1.moved {
+        h1.is-moved {
             font-size:6.5vw;
         }
         .🎨lsdev-projects__grid {

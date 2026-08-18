@@ -140,6 +140,8 @@ const setOpen = (open) => {
 
     elements.panel.classList.toggle("is-open", open);
     elements.backdrop.classList.toggle("is-open", open);
+    // Inline, for the reason noted where the backdrop is created.
+    elements.backdrop.setBlur?.(open ? "5px" : "0px");
     elements.toggle.setAttribute("aria-expanded", String(open));
 
     if (open) {
@@ -177,6 +179,18 @@ const buildUi = () => {
     const backdrop = document.createElement("div");
 
     backdrop.className = "🎨lsdev-charms-backdrop";
+
+    // The blur is set here rather than in the stylesheet. It kept going missing from the CSS the
+    // browser actually received, and inline styles can't be dropped by anything in between. Note
+    // the element must never carry opacity < 1: that would make it its own backdrop root, cutting
+    // it off from the page behind and leaving nothing to blur. The fade is the wash and the radius.
+    const blur = (radius) => {
+        backdrop.style.backdropFilter = `blur(${radius})`;
+        backdrop.style.webkitBackdropFilter = `blur(${radius})`;
+    };
+
+    blur("0px");
+    backdrop.setBlur = blur;
 
     document.body.append(backdrop, panel);
 
