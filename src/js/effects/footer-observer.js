@@ -11,7 +11,7 @@ export const watchFooter = () => {
                 coolStuff.style.marginBottom = "130px";
             } 
             else {
-                coolStuff.style.marginBottom = "max(40px, 5vw)";
+                coolStuff.style.marginBottom = "max(40px, 4vw)";
             }
         });
 
