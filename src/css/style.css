@@ -721,7 +721,7 @@
 
             opacity:0;
             
-            transition:bottom .3s ease;
+            transition:margin .3s ease;
 
             &.is-animated {
                 animation-name: ✨lsdev-fx-fade-in-up;

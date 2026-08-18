@@ -8,10 +8,10 @@ export const watchFooter = () => {
         entries.forEach((entry) => {
             
             if (entry.isIntersecting) {
-                coolStuff.style.bottom = "130px";
+                coolStuff.style.marginBottom = "130px";
             } 
             else {
-                coolStuff.style.bottom = "40px";
+                coolStuff.style.marginBottom = "40px";
             }
         });
 
