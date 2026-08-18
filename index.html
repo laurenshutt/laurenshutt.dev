@@ -588,59 +588,77 @@
             <main class="🎨lsdev-page">
                 <aside>
                     <div class="🎨lsdev-page__sidebar">
-                        <p class="🎨lsdev-intro-text">
-                            Hello! 👋🏻 I’m a front-end developer currently working for
-                            <a 
-                                class="🎨lsdev-link"
-                                href="https://partnerships.vt.edu/about/creative-studio"
-                                rel="noopener noreferrer"
-                                target="_blank">
-                                <span>Virginia Tech</span>
-                            </a>.
-                        </p>
-                        <nav 
-                            aria-label="On-page navigation"
-                            class="🎨lsdev-on-page-nav" 
-                            id="🫆lsdev-on-page-nav">
-                            <span 
-                                aria-hidden="true"  
-                                class="🎨lsdev-on-page-nav__caret"></span>
-                            <ul class="🎨lsdev-on-page-nav__list">
-                                <li class="🎨lsdev-on-page-nav__item">
-                                    <a 
-                                        aria-current="location"
-                                        aria-label="Work portfolio" 
-                                        class="🎨lsdev-on-page-nav__link"
-                                        href="#🫆lsdev-window--projects">
-                                        Work portfolio
-                                    </a>
-                                </li>
-                                <li class="🎨lsdev-on-page-nav__item">
-                                    <a 
-                                        aria-label="About me" 
-                                        class="🎨lsdev-on-page-nav__link"
-                                        href="#🫆lsdev-window--about">
-                                        About <span>me</span>
-                                    </a>
-                                </li>
-                                <li class="🎨lsdev-on-page-nav__item">
-                                    <a 
-                                        aria-label="Client reviews" 
-                                        class="🎨lsdev-on-page-nav__link"
-                                        href="#🫆lsdev-window--reviews">
-                                        <span>Client</span> reviews
-                                    </a>
-                                </li>
-                                <li class="🎨lsdev-on-page-nav__item">
-                                    <a 
-                                        aria-label="Contact me" 
-                                        class="🎨lsdev-on-page-nav__link"
-                                        href="#🫆lsdev-contact">
-                                        Contact <span>me</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="🎨lsdev-page__sidebar-top">
+                            <p class="🎨lsdev-intro-text">
+                                Hello! 👋🏻 I’m a front-end developer currently working for
+                                <a 
+                                    class="🎨lsdev-link"
+                                    href="https://partnerships.vt.edu/about/creative-studio"
+                                    rel="noopener noreferrer"
+                                    target="_blank">
+                                    <span>Virginia Tech</span>
+                                </a>.
+                            </p>
+                            <nav 
+                                aria-label="On-page navigation"
+                                class="🎨lsdev-on-page-nav" 
+                                id="🫆lsdev-on-page-nav">
+                                <span 
+                                    aria-hidden="true"  
+                                    class="🎨lsdev-on-page-nav__caret"></span>
+                                <ul class="🎨lsdev-on-page-nav__list">
+                                    <li class="🎨lsdev-on-page-nav__item">
+                                        <a 
+                                            aria-current="location"
+                                            aria-label="Work portfolio" 
+                                            class="🎨lsdev-on-page-nav__link"
+                                            href="#🫆lsdev-window--projects">
+                                            Work portfolio
+                                        </a>
+                                    </li>
+                                    <li class="🎨lsdev-on-page-nav__item">
+                                        <a 
+                                            aria-label="About me" 
+                                            class="🎨lsdev-on-page-nav__link"
+                                            href="#🫆lsdev-window--about">
+                                            About <span>me</span>
+                                        </a>
+                                    </li>
+                                    <li class="🎨lsdev-on-page-nav__item">
+                                        <a 
+                                            aria-label="Client reviews" 
+                                            class="🎨lsdev-on-page-nav__link"
+                                            href="#🫆lsdev-window--reviews">
+                                            <span>Client</span> reviews
+                                        </a>
+                                    </li>
+                                    <li class="🎨lsdev-on-page-nav__item">
+                                        <a 
+                                            aria-label="Contact me" 
+                                            class="🎨lsdev-on-page-nav__link"
+                                            href="#🫆lsdev-contact">
+                                            Contact <span>me</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="🎨lsdev-page__sidebar-bottom">
+                            <div class="🎨lsdev-hud">
+                            <div class="🎨lsdev-hud__clock">
+                                Blacksburg ·
+                                <div 
+                                    class="🎨lsdev-hud__time" 
+                                    id="🫆lsdev-hud__time"></div>
+                                <div id="timezone"></div>
+                            </div>
+                            <div 
+                                class="🎨lsdev-hud__weather" 
+                                id="🫆lsdev-hud__weather"></div>
+                            <div 
+                                class="🎨lsdev-hud__coords" 
+                                id="🫆lsdev-hud__coords"></div>
+                        </div>
                     </div>
                 </aside>
                 
@@ -650,7 +668,9 @@
                             class="🎨lsdev-window" 
                             id="🫆lsdev-window--projects">
                             <div class="🎨lsdev-window__title-bar">
-                                <h2 aria-label="Recent projects">
+                                <h2 
+                                    aria-label="Recent projects"
+                                    class="🎨lsdev-window__title">
                                     projects.ls
                                 </h2>
                                 <div class="🎨lsdev-window__controls">
@@ -965,7 +985,9 @@
                             class="🎨lsdev-window" 
                             id="🫆lsdev-window--about">
                             <div class="🎨lsdev-window__title-bar">
-                                <h2 aria-label="About me">
+                                <h2 
+                                    aria-label="About me"
+                                    class="🎨lsdev-window__title">
                                     about.ls
                                 </h2>
                                 <div class="🎨lsdev-window__controls">
@@ -1051,7 +1073,9 @@
                             class="🎨lsdev-window 🎨lsdev-window--reviews" 
                             id="🫆lsdev-window--reviews">
                             <div class="🎨lsdev-window__title-bar">
-                                <h2 aria-label="Rave reviews">
+                                <h2 
+                                    aria-label="Rave reviews"
+                                    class="🎨lsdev-window__title">
                                     rave_reviews.ls
                                 </h2>
                                 <div class="🎨lsdev-window__controls">
@@ -1367,21 +1391,6 @@
                     </div>
                 </div>
             </footer>
-            <div class="🎨lsdev-hud">
-                <div class="🎨lsdev-hud__clock">
-                    Blacksburg ·
-                    <div 
-                        class="🎨lsdev-hud__time" 
-                        id="🫆lsdev-hud__time"></div>
-                    <div id="timezone"></div>
-                </div>
-                <div 
-                    class="🎨lsdev-hud__weather" 
-                    id="🫆lsdev-hud__weather"></div>
-                <div 
-                    class="🎨lsdev-hud__coords" 
-                    id="🫆lsdev-hud__coords"></div>
-            </div>
         </div>
         <audio 
             src="https://laurenshutt.dev/sunday-morning.mp3" 

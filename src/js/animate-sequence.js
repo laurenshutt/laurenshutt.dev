@@ -34,6 +34,10 @@ import {
 } from "./features/charms.js";
 
 import {
+    moveTitleIntoSidebar
+} from "./effects/move-title.js";
+
+import {
     tooltips
 } from "./features/tooltips.js";
 
@@ -111,9 +115,12 @@ export const animateSequence = async () => {
     buttonPress();
     toggleMusic();
 
-    if (window.innerWidth >= 1035) glitchOuter[0].classList.add("is-moved");
-
+    // The stage has to be on screen before the title moves: its destination is inside the sidebar,
+    // and a display:none ancestor measures as zero. Everything in here is still faded out at this
+    // point, so revealing it early shows nothing.
     stage.style.display = "block";
+
+    if (window.innerWidth >= 1035) moveTitleIntoSidebar(glitchOuter[0]);
 
     await delay(500);
 

@@ -1,11 +1,18 @@
+@media screen and (min-width:1601px){
+    .🐱lsdev {
+        .🎨lsdev-intro-text {
+            width: 33ch;
+        }
+    }
+}
+
 @media screen and (max-width:1600px){
     .🐱lsdev {
         .has-glitch.is-moved {
             font-size:5.25vw;
         }
         .🎨lsdev-intro-text {
-            margin-top:calc(120px + 10vw);
-            width:23vw;
+            width: 33ch;
         }
         .🎨lsdev-nav {
             top:calc(125px + 16vw);
@@ -29,21 +36,16 @@
            this, including the pixel-font headings. */
         font-size: 1.05rem;
 
-        /* No `left` here on purpose. The sidebar's padding is 80px at every width, so the nav
-           links sit at 110px throughout — the title should match them at every width too, and the
-           base rule's bearing-corrected value already does. The old 80px here predates the sidebar
-           restructure and pulled the title 30px left of the nav. */
+        /* Size only. The title sits in the sidebar's flow once it settles, so it picks up the
+           column's padding automatically and there is no position to override at any breakpoint —
+           the bearing correction on its margin is in em and scales with this font-size on its own. */
         .🎨lsdev-page-title.is-moved {
-            top:55px;
             font-size:4.8vw;
         }
         /* Scoped to the contact block on purpose: the bare h2 rule this overrides also feeds the
            window title bars, which set their own size and shouldn't move. */
         .🎨lsdev-contact h2 {
             font-size:2.25em;
-        }
-        .🎨lsdev-intro-text {
-            margin-top:calc(9.1vw + 45px);
         }
         .🎨lsdev-nav {
             top:calc(95px + 15.1vw);
@@ -92,7 +94,6 @@
 
 @media screen and (max-width:1420px){
     .🎨lsdev-intro-text {
-       margin-top:calc(90px + 9.1vw);
         width:18vw;
 
     }
@@ -123,7 +124,6 @@
             
         }
         .🎨lsdev-intro-text {
-            margin-top:calc(30px + 9.6vw);
             width:21vw;
         }
     }
@@ -135,9 +135,6 @@
            proportionally on narrower screens instead of jumping back up 28% at this breakpoint. */
         .has-glitch.is-moved {
             font-size:4.9vw;
-        }
-        .🐱lsdev .🎨lsdev-intro-text {
-            margin-top: calc(90px + 10.3vw);
         }
         .🎨lsdev-nav {
             top: calc(95px + 19.3vw);
