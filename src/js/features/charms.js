@@ -169,7 +169,7 @@ const buildUi = () => {
     panel.setAttribute("aria-label", "Charms");
     panel.innerHTML = `
         <div class="🎨lsdev-charms-panel__bar">
-            <span>Charms Earned</span>
+            <span>Charms Collected</span>
             <span class="🎨lsdev-charms-panel__count"></span>
         </div>
         <ul class="🎨lsdev-charms-panel__grid"></ul>
