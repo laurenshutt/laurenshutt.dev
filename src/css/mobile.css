@@ -29,9 +29,12 @@
            this, including the pixel-font headings. */
         font-size: 1.05rem;
 
-        .has-glitch.is-moved {
+        /* No `left` here on purpose. The sidebar's padding is 80px at every width, so the nav
+           links sit at 110px throughout — the title should match them at every width too, and the
+           base rule's bearing-corrected value already does. The old 80px here predates the sidebar
+           restructure and pulled the title 30px left of the nav. */
+        .🎨lsdev-page-title.is-moved {
             top:55px;
-            left:80px;
             font-size:4.8vw;
         }
         /* Scoped to the contact block on purpose: the bare h2 rule this overrides also feeds the

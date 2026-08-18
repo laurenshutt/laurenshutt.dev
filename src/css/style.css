@@ -445,7 +445,14 @@
             
             &.is-moved {
                 top: 85px;
-                left: 110px;
+                /* Aligned to the intro text: the sidebar's 80px padding plus the intro's own 9px
+                   padding-left. The sidebar padding is the same at every breakpoint, so this one
+                   value holds at all widths and no override is needed below.
+                   The subtraction cancels Silkscreen's left side bearing — the glyph sits inset
+                   within its advance width, so a box at 89px would leave the letterforms visibly
+                   right of the intro text. In em, not px, because bearing is a fraction of the em
+                   and this title is sized in vw; a fixed pixel correction would drift with width. */
+                left: calc(80px + 9px - 0.18em);
                 width: 25%;
                 margin: 0;
                 font-size: 4.6vw;
@@ -929,6 +936,8 @@
 
     .🐱lsdev {
 
+        /* external nav */
+
         .🎨lsdev-external-nav {
             
             display:flex;
@@ -1020,8 +1029,8 @@
 
         .🎨lsdev-external-nav__icon--music::before {
 
-            --size: 28px;
             --icon:url("/img/icons/music.svg");
+            --size: 28px;
             
             width:var(--size);
             height:var(--size);
@@ -1032,8 +1041,8 @@
 
         .🎨lsdev-external-nav__icon--music[aria-pressed="true"]::before {
 
-            --size: 26px;
             --icon: url("/img/icons/music-off.svg");
+            --size: 26px;
 
             width:var(--size);
             height:var(--size);
@@ -1044,46 +1053,75 @@
         }
 
         .🎨lsdev-external-nav__icon--github::before {
-            mask-image: url("/img/icons/github.svg");
-            -webkit-mask-image: url("/img/icons/github.svg");
-            width: 28px;   
-            height: 28px;
+
+            --icon: url("/img/icons/github.svg");
+            --size: 28px;
+
+            width: var(--size);   
+            height: var(--size);
+
+            mask-image: var(--icon);
+            -webkit-mask-image: var(--icon);
         }
 
         .🎨lsdev-external-nav__icon--linkedin::before {
-            mask-image: url("/img/icons/linkedIn.svg");
-            -webkit-mask-image: url("/img/icons/linkedIn.svg");
+
+            --icon: url("/img/icons/linkedIn.svg");
+
+            mask-image: var(--icon);
+            -webkit-mask-image: var(--icon);
         }
 
         .🎨lsdev-external-nav__icon--twitch::before {
-            mask-image: url("/img/icons/twitch.svg");
-            -webkit-mask-image: url("/img/icons/twitch.svg");
-            width: 28px;   
-            height: 28px;
+
+            --icon: url("/img/icons/twitch.svg");
+            --size: 28px;
+
+            width: var(--size);   
+            height: var(--size);
+
+            mask-image: var(--icon);
+            -webkit-mask-image: var(--icon);
         }
 
         .🎨lsdev-external-nav__icon--charms::before {
-            mask-image: url("/img/icons/diamond.svg");
-            -webkit-mask-image: url("/img/icons/diamond.svg");
-            width: 28px;   
-            height: 28px;
+
+            --icon: url("/img/icons/diamond.svg");
+            --size: 27px;
+
+            width: var(--size);   
+            height: var(--size);
+
+            mask-image: var(--icon);
+            -webkit-mask-image: var(--icon);
         }
 
         
+        /* windows */
 
         .🎨lsdev-window {
+            
+            --💾lsdev-window-l-r-padding: 60px;
             --💾lsdev-window-gradient: linear-gradient(
                     to right, 
                     #f3a6c1, 
                     #f8c9d9
                 );
-            --💾lsdev-window-l-r-padding: 60px;
-            background: var(--💾lsdev-window-gradient);
-            margin-bottom:max(40px, 7.5vh);
-            padding:0 25px;
-            opacity:0;
+
             position:relative;
             transform:translateY(-10px);
+
+            box-sizing:border-box;
+            margin-bottom:max(40px, 7.5vh);
+            padding:0 25px;  
+            border-radius:10px;
+    
+            background: var(--💾lsdev-window-gradient);
+            box-shadow: 
+                rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, 
+                rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+            opacity:0;
+            
             transition:
                 padding-bottom .25s linear,
                 height 500ms cubic-bezier(.22,1,.36,1),
@@ -1092,28 +1130,28 @@
                 left 500ms cubic-bezier(.22,1,.36,1),
                 box-shadow 2s ease .4s,
                 transform 500ms ease;
-            border-radius:10px;
-            box-sizing:border-box;
-            box-shadow: 
-                rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, 
-                rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
             
             &::after {
+                
+                content: "";
+
+                position: absolute; 
                 right: 0px; 
                 bottom: 0; 
+                
                 width: 1px; 
-                content: "";
-                position: absolute; 
-                border-radius:inherit;
-                background: white; 
                 height:100%;
+                border-radius:inherit;
+                
+                background: white; 
             }
+
             &.is-animated {
                 animation-name: ✨lsdev-fx-fade-in-down;
-                animation-duration: 250ms;
-                animation-timing-function: linear;
-                animation-fill-mode: forwards;
                 animation-delay:calc(var(--i) * 250ms);
+                animation-duration: 250ms;
+                animation-fill-mode: forwards;
+                animation-timing-function: linear;
             }
             &.is-not-animated {
                 animation: none;
