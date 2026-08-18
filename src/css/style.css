@@ -876,6 +876,12 @@
                         width: 28px;   
                         height: 28px;
                     }
+                    .🎨lsdev-sidebar-nav__icon--charms::before {
+                        mask-image: url("/img/icons/diamond.svg");
+                        -webkit-mask-image: url("/img/icons/diamond.svg");
+                        width: 28px;   
+                        height: 28px;
+                    }
                 }
             }
         }
@@ -2370,7 +2376,7 @@ body.is-loading {
     position: relative;
     margin-top: 3px;
 }
-.🐱lsdev .🎨lsdev-hud__charms-toggle {
+/*.🐱lsdev .🎨lsdev-hud__charms-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2383,15 +2389,14 @@ body.is-loading {
     color: inherit;
     cursor: pointer;
     pointer-events: all;
-    /* Quiet until the first charm is found, so it invites a look without demanding one. */
     opacity: .55;
     transition: opacity .2s ease;
-}
-.🐱lsdev .🎨lsdev-hud__charms.has-charms .🎨lsdev-hud__charms-toggle,
+}*/
+/*.🐱lsdev .🎨lsdev-hud__charms.has-charms .🎨lsdev-hud__charms-toggle,
 .🐱lsdev .🎨lsdev-hud__charms-toggle:hover,
 .🐱lsdev .🎨lsdev-hud__charms-toggle:focus-visible {
     opacity: 1;
-}
+}*/
 
 
 #🫆lsdev-charms-panel > div > span:nth-child(1),

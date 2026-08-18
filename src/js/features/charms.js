@@ -154,25 +154,6 @@ const buildUi = () => {
 
     if (!hud || elements) return;
 
-    const wrap = document.createElement("div");
-    wrap.className = "🎨lsdev-hud__charms";
-
-    // Before anything is found this is a bare "?" with no count and no label — an invitation with
-    // no instructions. The first unlock is what makes the system introduce itself.
-    wrap.innerHTML = `
-        <button
-            type="button"
-            class="🎨lsdev-hud__charms-toggle"
-            aria-expanded="false"
-            aria-controls="🫆lsdev-charms-panel"
-            aria-label="Charms collected">
-            <span class="🎨lsdev-hud__charms-label"></span>
-            <span class="🎨lsdev-hud__charms-mark">?</span>
-        </button>
-    `;
-
-    hud.append(wrap);
-
     // The panel lives on <body>, not inside the HUD. The HUD keeps a transform after its fade-in
     // (fill-mode:forwards leaves it at translateY(0)), and a transformed ancestor becomes the
     // containing block for position:fixed descendants — so a panel nested inside it would resolve
@@ -200,17 +181,15 @@ const buildUi = () => {
     document.body.append(backdrop, panel);
 
     elements = {
-        wrap,
         panel,
         backdrop,
-        toggle: wrap.querySelector(".🎨lsdev-hud__charms-toggle"),
-        label: wrap.querySelector(".🎨lsdev-hud__charms-label"),
-        mark: wrap.querySelector(".🎨lsdev-hud__charms-mark"),
+        toggle: document.querySelector(".🎨lsdev-hud__charms-toggle"),
         count: panel.querySelector(".🎨lsdev-charms-panel__count"),
         grid: panel.querySelector(".🎨lsdev-charms-panel__grid")
     };
 
-    elements.toggle.addEventListener("click", () => {
+    elements.toggle.addEventListener("click", (element) => {
+        console.log(element);
         setOpen(!elements.panel.classList.contains("is-open"));
     });
 
@@ -224,7 +203,7 @@ const buildUi = () => {
 
     document.addEventListener("pointerdown", (event) => {
         if (!elements.panel.classList.contains("is-open")) return;
-        if (!wrap.contains(event.target) && !panel.contains(event.target)) setOpen(false);
+        if (!panel.contains(event.target)) setOpen(false);
     });
 
     refreshIndicator();
@@ -236,9 +215,9 @@ const refreshIndicator = () => {
 
     const found = CHARMS.filter(charm => earned[charm.id]).length;
 
-    elements.wrap.classList.toggle("has-charms", found > 0);
+    /*elements.wrap.classList.toggle("has-charms", found > 0);
     elements.label.textContent = found ? `charms ${found}/${CHARMS.length}` : "";
-    elements.mark.textContent = found ? "◈" : "?";
+    elements.mark.textContent = found ? "◈" : "?";*/
 };
 
 // --- awarding --------------------------------------------------------------------------------
