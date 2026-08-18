@@ -13,13 +13,15 @@
     }
 }
 
-/* MacBook Air sizes and below (maximized or not). Tightens the hero column: less space to its
-   left, a smaller gap before the windows, and everything sitting higher up the page. The larger
-   screen this was designed on keeps the original, roomier spacing.
+/* Unmaximized laptop windows only. The cutoff sits one pixel under a maximized MacBook Air
+   viewport (1440), so maximized falls through to the 1600 block above and keeps the original,
+   roomier design. max-width is inclusive, which is why this is 1439 and not 1440.
+   Tightens the hero column: less space to its left, a smaller gap before the windows, and
+   everything sitting higher up the page.
    The intro text and nav tops keep their laddered vw terms — only the fixed part drops by 30px,
    so they stay in step with the name as its vw font grows. The same 30px comes off the matching
    entries in the narrower blocks below, or they would put it back. */
-@media screen and (max-width:1440px){
+@media screen and (max-width:1439px){
     .🐱lsdev {
         /* Flat 16.8px for the whole band, down from ~17.2px. The base curve only spans 16.5-17.2px
            between 1035 and 1440, so fluid type earns nothing here and a single readable value is
