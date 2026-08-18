@@ -2410,17 +2410,24 @@ body.is-loading {
     position: fixed;
     inset: 0;
     z-index: 1500;
-    background: rgba(120, 60, 90, .28);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    opacity: 0;
+    background-color: rgba(120, 60, 90, 0);
+    backdrop-filter: blur(0.01px);
+    -webkit-backdrop-filter: blur(0.01px);
     visibility: hidden;
-    /* Only opacity animates — the blur radius stays put, which keeps this to a composite rather
-       than re-blurring the viewport every frame. */
-    transition: opacity .28s ease, visibility .28s;
+    /* Deliberately no opacity here. An element with opacity < 1 becomes its own backdrop root,
+       which cuts it off from the page behind it — so the filter has nothing to sample and Chrome
+       renders no blur at all. The fade is done with the blur radius and the wash instead, and
+       visibility keeps it out of the way when closed. */
+    transition:
+        background-color .28s ease,
+        backdrop-filter .28s ease,
+        -webkit-backdrop-filter .28s ease,
+        visibility .28s;
 }
 .🐱lsdev .🎨lsdev-charms-backdrop.is-open {
-    opacity: 1;
+    background-color: rgba(120, 60, 90, .28);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     visibility: visible;
 }
 
