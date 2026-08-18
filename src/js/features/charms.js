@@ -311,9 +311,47 @@ const watchProjectsGrid = () => {
     grid.addEventListener("scroll", check, { passive: true });
 };
 
+// Awarded for reaching the end of the page, which is the contact section — it runs from just under
+// halfway down to the footer.
+//
+// Deliberately measured against the scroll position rather than by observing the section itself.
+// Contact starts around 1000px into a ~2700px page and is 1500px tall, so the moment its top edge
+// enters the viewport the visitor is only about a fifth of the way down — an intersection test
+// fires there, long before they have arrived at anything. Where the scrollbar has got to has no
+// such ambiguity, and it is what the charm claims: scrolled to the bottom.
+const watchContactSection = () => {
+
+    if (hasCharm("maxed_scroll")) return;
+
+    const check = (event) => {
+
+        // What scrolls the page changes with the breakpoint — the document on desktop,
+        // #🫆lsdev-stage once the mobile styles give it its own overflow. Scroll events do not
+        // bubble, so this listens in the capture phase and sorts out the source here. Other
+        // scrollers on the page (the projects grid keeps its own) are not the page and are ignored.
+        const target = event.target;
+        const isDocument = target === document || target === document.documentElement;
+
+        if (!isDocument && target.id !== "🫆lsdev-stage") return;
+
+        const scroller = isDocument ? document.scrollingElement : target;
+
+        // A few pixels of slack: sub-pixel layout and elastic scrolling mean the bottom is rarely
+        // hit exactly.
+        if (scroller.scrollTop + scroller.clientHeight < scroller.scrollHeight - 8) return;
+
+        awardCharm("maxed_scroll");
+
+        document.removeEventListener("scroll", check, true);
+    };
+
+    document.addEventListener("scroll", check, { capture: true, passive: true });
+};
+
 export const charms = () => {
     buildUi();
 
     watchNightOwl();
     watchProjectsGrid();
+    watchContactSection();
 };
