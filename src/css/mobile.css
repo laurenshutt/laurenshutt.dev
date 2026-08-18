@@ -34,7 +34,7 @@
            between 1035 and 1440, so fluid type earns nothing here and a single readable value is
            easier to verify than an intercept + vw. Everything sized in rem or em follows from
            this, including the pixel-font headings. */
-        font-size: 1.05rem;
+        font-size: 16px;
 
         /* Size only. The title sits in the sidebar's flow once it settles, so it picks up the
            column's padding automatically and there is no position to override at any breakpoint —
@@ -93,6 +93,7 @@
 }
 
 @media screen and (max-width:1420px){
+    
     .🎨lsdev-intro-text {
         width:18vw;
 

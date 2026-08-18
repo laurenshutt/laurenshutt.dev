@@ -129,6 +129,9 @@
 
     .🐱lsdev {
 
+        font-size: 18px;
+
+
         html,
         body {
 
@@ -139,7 +142,6 @@
             padding: 0;
             box-sizing: border-box;
 
-            font-size: 16px;
 
             cursor: 
                 var(--💾lsdev-cursor), 
@@ -1685,13 +1687,10 @@
     top:-2px;
     display:grid;
     position:relative;
-    /* minmax(0, 1fr), not 1fr: plain 1fr means minmax(auto, 1fr), and that auto floor is
-       min-content — so a card that can't shrink past its content pushes its column wider than its
-       share. Columns then come out unequal and their total overruns the window, cutting off the
-       last one. A 0 floor lets every column hold its fraction exactly. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-row-gap:15px;
-    padding:30px 35px 30px 30px !important;
+    row-gap:50px;
+    column-gap:40px;
+    padding:40px 45px 40px 40px !important;
     align-self: start;
     counter-reset: item-counter;
     /* No overflow here on purpose: .🎨lsdev-projects__grid-container above already scrolls, and a
@@ -1709,7 +1708,6 @@
         flex-direction: column;
         pointer-events: all;
         cursor: pointer;
-        padding:20px;
 
         &:hover .🎨lsdev-project_client-info {
             color:var(--💾lsdev-darker-purple);;
@@ -1731,11 +1729,7 @@
             text-align:left;
         }
         .🎨lsdev-project_img-bg {
-            /* Percentage padding resolves against the column width, so the gradient frame keeps its
-               proportion as the columns narrow instead of a fixed 35px swallowing them at three-up.
-               8.75% lands on ~35px at the width this was designed at; the bounds stop the frame
-               vanishing on small cards or ballooning on a maximised window. */
-            padding: clamp(12px, 8.75%, 35px);
+            padding: clamp(12px, 14%, 35px);
             overflow: hidden;
             background-image: linear-gradient(
                 to bottom right,
@@ -1749,7 +1743,7 @@
             img {
                 width:100%;
                 aspect-ratio: 16/10;
-                border-radius:6px;
+                border-radius:3px;
             }
 
             &.is-expanded {
