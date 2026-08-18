@@ -74,9 +74,9 @@ let elements = null;
 const formatDate = (iso) =>
     new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 
-// Both the panel and the toast sit in the empty stretch of the left column between the bottom of
-// the section nav and the top of the HUD. That gap can't be expressed in CSS — the nav's top is a
-// vw-based calc and the HUD is anchored to the viewport bottom — so it's measured at open time.
+// The toast sits in the empty stretch of the left column between the bottom of the section nav
+// and the top of the HUD. That gap can't be expressed in CSS — the nav's top is a vw-based calc
+// and the HUD is anchored to the viewport bottom — so it's measured when the toast is shown.
 const placeInGap = (el) => {
 
     const hud = document.querySelector(".🎨lsdev-hud");
@@ -139,11 +139,11 @@ const setOpen = (open) => {
     if (!elements) return;
 
     elements.panel.classList.toggle("is-open", open);
+    elements.backdrop.classList.toggle("is-open", open);
     elements.toggle.setAttribute("aria-expanded", String(open));
 
     if (open) {
         renderPanel();
-        placeInGap(elements.panel);
         elements.panel.focus();
     }
 };
@@ -192,11 +192,17 @@ const buildUi = () => {
         <ul class="🎨lsdev-charms-panel__grid"></ul>
     `;
 
-    document.body.append(panel);
+    // Backdrop before the panel so it paints beneath it; both are z-indexed regardless.
+    const backdrop = document.createElement("div");
+
+    backdrop.className = "🎨lsdev-charms-backdrop";
+
+    document.body.append(backdrop, panel);
 
     elements = {
         wrap,
         panel,
+        backdrop,
         toggle: wrap.querySelector(".🎨lsdev-hud__charms-toggle"),
         label: wrap.querySelector(".🎨lsdev-hud__charms-label"),
         mark: wrap.querySelector(".🎨lsdev-hud__charms-mark"),
@@ -314,10 +320,6 @@ const watchProjectsGrid = () => {
 
 export const charms = () => {
     buildUi();
-
-    window.addEventListener("resize", () => {
-        if (elements?.panel.classList.contains("is-open")) placeInGap(elements.panel);
-    }, { passive: true });
 
     watchNightOwl();
     watchProjectsGrid();
