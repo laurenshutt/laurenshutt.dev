@@ -1,3 +1,4 @@
+@layer responsive {
 @media screen and (min-width:1601px){
     .🐱lsdev {
         .🎨lsdev-intro-text {
@@ -71,7 +72,7 @@
         .🎨lsdev-window {
             padding:0 25px;
 
-            &.is-open {
+            &[data-open] {
                 padding-bottom:25px;
             }
         }
@@ -81,7 +82,7 @@
         }
         /* Matches the nesting depth style.css declares these at, so it wins on source order rather
            than needing !important. The 1035 block below sets its own smaller size for mobile. */
-        .🎨lsdev-window .🎨lsdev-window__title-bar .🎨lsdev-window__controls [class*="🎨lsdev-window__button"] {
+        .🎨lsdev-window .🎨lsdev-window__title-bar .🎨lsdev-window__controls .🎨lsdev-window__control {
             padding:4px;
 
             &::after {
@@ -259,7 +260,7 @@
                     > div:nth-child(2) fieldset {
                         display:block !important;
 
-                        label:has(input[type=radio]) {
+                        .🎨lsdev-contact__mission {
                             display:inline-block;
                         }
                     }
@@ -338,7 +339,7 @@
             height:calc(100vh - 100px - 160px);
         }
         .🎨lsdev-window {
-            --💾lsdev-window-l-r-padding: 20px;
+            --lsdev-window-l-r-padding: 20px;
             width: calc(100vw - 40px);
             padding:0 20px;
             border-radius:8px;
@@ -346,7 +347,7 @@
             margin-right:auto;
             margin-bottom:max(40px, 8vh);
 
-            &.is-open {
+            &[data-open] {
                 padding-bottom:20px;
                 height:calc(100vh - 100px);
             }
@@ -356,7 +357,7 @@
                 font-size:0.9444rem;
 
                 .🎨lsdev-window__controls {
-                    [class*="🎨lsdev-window__button"] {
+                    .🎨lsdev-window__control {
                         &::after {
                             width: 14px;
                             height: 14px;
@@ -365,7 +366,7 @@
                 }
             }
 
-            .🎨lsdev-window__menu {
+            .🎨lsdev-window__menu-bar {
                 button, a {
                     padding:8px 12px;
                     font-size:0.8889rem;
@@ -389,7 +390,7 @@
             .🎨lsdev-projects__project {
                 padding:15px;
 
-                .🎨lsdev-project_client-info {
+                .🎨lsdev-project__client-info {
                     margin-bottom:5px;
                 }
 
@@ -398,17 +399,17 @@
                 }
             }
         }
-        #🫆lsdev-window--about > div.🎨lsdev-window__chrome > div > div {
+        #🫆lsdev-window--about > div.🎨lsdev-window__body > div > div {
             margin-top:20px;
             flex-direction:column;
         }
         /* Open windows above are pinned to calc(100vh - 100px), which projects and about fill but
            a single review doesn't — leaving dead space below the carousel. Let this one size to
-           its content instead. Higher specificity than the .is-open rule, so no !important. */
-        .🎨lsdev-window.🎨lsdev-window--reviews.is-open {
+           its content instead. Higher specificity than the [data-open] rule, so no !important. */
+        .🎨lsdev-window[data-variant="reviews"][data-open] {
             height:auto;
         }
-        .🎨lsdev-window.🎨lsdev-window--reviews.is-open .🎨lsdev-window__content {
+        .🎨lsdev-window[data-variant="reviews"][data-open] .🎨lsdev-window__content {
             height:unset !important;
         }
         .🎨lsdev-hud {
@@ -437,4 +438,5 @@
             }
         }
     }
+}
 }

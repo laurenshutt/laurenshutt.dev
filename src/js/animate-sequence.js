@@ -88,7 +88,7 @@ export const animateSequence = async () => {
     const stage = document.getElementById("🫆lsdev-stage");
     const sidebarNav = document.getElementById("🫆lsdev-external-nav");
     const firstWindow = document.querySelector(".🎨lsdev-window");
-    const firstWindowChrome = document.querySelector(".🎨lsdev-window__chrome");
+    const firstWindowBody = document.querySelector(".🎨lsdev-window__body");
     const lastI = setElementIndices();
 
     let gridResizeTimer;
@@ -141,17 +141,17 @@ export const animateSequence = async () => {
     requestAnimationFrame(() => {
         
         Array.from(windows).forEach(window => {
-            window.classList.add("is-animated");                        
+            window.dataset.animation = "in";                        
         });
 
         setTimeout(function(){
             
-            slideToggle(firstWindowChrome);
+            slideToggle(firstWindowBody);
             
-            firstWindow.classList.add("is-open");
+            firstWindow.dataset.open = "";
 
             Array.from(windows).forEach(window => {
-                window.classList.add("is-not-animated");                        
+                window.dataset.animation = "none";                        
             });
 
             scrollProjects();
@@ -196,11 +196,11 @@ export const animateSequence = async () => {
             const elements = document.querySelectorAll(".✨lsdev-fx-glitch");
             
             elements.forEach(el => {
-                el.style.setProperty("--💾lsdev-glitch-animation-state-before", "none"); // Reset animation
-                el.style.setProperty("--💾lsdev-glitch-animation-state-after", "none");
+                el.style.setProperty("--lsdev-glitch-animation-state-before", "none"); // Reset animation
+                el.style.setProperty("--lsdev-glitch-animation-state-after", "none");
                 void el.offsetWidth; // Force reflow to restart animation
-                el.style.setProperty("--💾lsdev-glitch-animation-state-before", "✨lsdev-fx-glitch-before 10s linear alternate-reverse");
-                el.style.setProperty("--💾lsdev-glitch-animation-state-after", "✨lsdev-fx-glitch-after 9s linear alternate-reverse");
+                el.style.setProperty("--lsdev-glitch-animation-state-before", "✨lsdev-fx-glitch-before 10s linear alternate-reverse");
+                el.style.setProperty("--lsdev-glitch-animation-state-after", "✨lsdev-fx-glitch-after 9s linear alternate-reverse");
             });
 
             // Schedule the next animation

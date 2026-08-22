@@ -1,7 +1,7 @@
 export const toggleMusic = () => {
     
     const audio =  document.querySelector("audio");
-    const button = document.querySelector(".🎨lsdev-external-nav__icon--music");
+    const button = document.querySelector('[data-icon="music"]');
 
     button.addEventListener("click",function(){
 

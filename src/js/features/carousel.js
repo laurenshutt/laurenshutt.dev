@@ -1,5 +1,5 @@
 export const initReviewsSlider = () => {
-    const track = document.getElementById("🫆lsdev-reviews__carousel");
+    const track = document.getElementById("🫆lsdev-reviews-carousel__track");
     const slides = Array.from(track.children);
 
     const prevBtn = document.getElementById("🫆lsdev-reviews-carousel__prev-button");
@@ -10,6 +10,10 @@ export const initReviewsSlider = () => {
     const minSlideWidth = 320;
     const autoplaySpeed = 7500;
 
+    // Reduced motion: never auto-advance. Collapsing CSS durations isn't enough --
+    // an unattended carousel that keeps moving is the thing the setting asks us to stop.
+    const stillness = matchMedia("(prefers-reduced-motion: reduce)");
+
     let slidesToShow = 0;
     let allSlides = [];
     let index = 0;
@@ -19,12 +23,17 @@ export const initReviewsSlider = () => {
     // Measured from the track itself rather than the viewport, so it also responds to the window
     // being maximised or restored — not just the screen changing size. A width of 0 means the
     // reviews window is closed, in which case keep whatever we already had.
+    // The breakpoint now lives in CSS (@container reviews (width < 640px)); this just reads
+    // back the number CSS decided, so the flex-basis and the translate maths can't disagree.
+    // A width of 0 means the reviews window is closed -- keep whatever we already had.
     const slidesThatFit = () => {
-        const width = track.getBoundingClientRect().width;
+        if (!track.getBoundingClientRect().width) return slidesToShow || 2;
 
-        if (!width) return slidesToShow || 2;
+        const declared = parseInt(
+            getComputedStyle(track).getPropertyValue("--lsdev-carousel-slides"), 10
+        );
 
-        return width < minSlideWidth * 2 ? 1 : 2;
+        return Number.isFinite(declared) && declared > 0 ? declared : 2;
     };
 
     const moveTo = (i, animate = true) => {
@@ -51,10 +60,6 @@ export const initReviewsSlider = () => {
         track.append(...firstClones);
 
         allSlides = Array.from(track.children);
-
-        allSlides.forEach(slide => {
-            slide.style.flex = `0 0 ${100 / count}%`;
-        });
 
         track.style.display = "flex";
 
@@ -88,6 +93,7 @@ export const initReviewsSlider = () => {
     });
 
     const play = () => {
+        if (stillness.matches) return;
         interval = setInterval(next, autoplaySpeed);
     };
 
@@ -112,7 +118,7 @@ export const initReviewsSlider = () => {
     prevBtn.addEventListener("click", prev);
 
     pauseBtn.addEventListener("click", () => {
-        pauseBtn.classList.toggle("is-paused");
+        pauseBtn.toggleAttribute("data-paused");
 
         if (isPaused) {
             play();

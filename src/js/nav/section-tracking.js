@@ -46,7 +46,7 @@ const targets = [
 ];
 /*const initReviewsSlider = () => {
 
-    const $slider = $("#🫆lsdev-reviews__carousel");
+    const $slider = $("#🫆lsdev-reviews-carousel__track");
     const pauseBtn = document.getElementById("🫆lsdev-reviews-carousel__pause-button");
     let isPaused = false;
 
@@ -60,7 +60,7 @@ const targets = [
 
     pauseBtn.addEventListener("click",function(){
         
-        pauseBtn.classList.toggle("is-paused");
+        pauseBtn.toggleAttribute("data-paused");
 
         if (isPaused) {
             $slider.slick('slickPlay');
@@ -130,12 +130,12 @@ export const sectionObserver = new IntersectionObserver((entries) => {
 export const sectionTrackingInit = () => {
 
     const openWindow = (window, skipIsOpen) => {
-        const chrome = window.querySelector(".🎨lsdev-window__chrome");
-        !skipIsOpen && window.classList.add("is-open");
-        slideToggle(chrome);
+        const windowBody = window.querySelector(".🎨lsdev-window__body");
+        !skipIsOpen && window.toggleAttribute("data-open", true);
+        slideToggle(windowBody);
     }
     const reviews = document.getElementById("🫆lsdev-window--reviews")
-    const reviewsChrome = reviews.querySelector(".🎨lsdev-window__chrome")
+    const reviewsBody = reviews.querySelector(".🎨lsdev-window__body")
     const offset = window.innerHeight * 0.05;
 
     sectionObserver.observe(document.querySelector("#🫆lsdev-window--projects"));
@@ -164,13 +164,13 @@ export const sectionTrackingInit = () => {
             case "🫆lsdev-window--about":
 
                 // The carousel measures slide widths at init, so it needs layout. Give the reviews
-                // chrome layout just long enough to initialise it — this is synchronous, so the
+                // body layout just long enough to initialise it — this is synchronous, so the
                 // browser never paints the intermediate state and nothing flashes.
-                reviewsChrome.style.display = "block";
-                reviewsChrome.style.visibility = "hidden";
+                reviewsBody.style.display = "block";
+                reviewsBody.style.visibility = "hidden";
                 initReviewsSlider();
-                reviewsChrome.style.removeProperty("display");
-                reviewsChrome.style.removeProperty("visibility");
+                reviewsBody.style.removeProperty("display");
+                reviewsBody.style.removeProperty("visibility");
 
                 setTimeout(function(){
                     document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";

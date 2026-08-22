@@ -37,7 +37,7 @@ export const scrollProjects = () => {
 
     const handleScroll = (event) => {
 
-        if (document.querySelector(".🎨lsdev-window.is-maximized")) return;
+        if (document.querySelector('.🎨lsdev-window[data-view="maximized"]')) return;
         if (event.target.closest("#🫆lsdev-projects__menu")) return;
 
         // Normalize wheel delta to pixels (some mice report lines/pages) for consistent speed.
@@ -83,7 +83,7 @@ export const filterProjects = () => {
     
     nav.addEventListener("click", (event) => {
         
-        const button = event.target.closest("button");
+        const button = event.target.closest(".🎨lsdev-window__menu-title");
 
         if (!button) return;
 
@@ -91,7 +91,7 @@ export const filterProjects = () => {
 
         // Step 2: Hide all projects
         projects.forEach(project => {
-            project.classList.add("is-filtered");
+            project.dataset.filtered = "";
         });
 
         // Step 3: Show only filtered ones
@@ -105,7 +105,7 @@ export const filterProjects = () => {
 
                 if (filter === "all" || filters.includes(filter)) {
                     project.style.display = "";
-                    project.classList.remove("is-filtered");
+                    project.removeAttribute("data-filtered");
 
                     matching.push(project);
                 }

@@ -114,13 +114,13 @@ const closeProjectDetail = () => {
     // overlapping open/close operations can't strip each other's exemption.
     card.classList.add("is-flip-landed");
     setTimeout(() => card.classList.remove("is-flip-landed"), animationDuration + 80);
-    const client = card.querySelector(".🎨lsdev-project_client-info");
+    const client = card.querySelector(".🎨lsdev-project__client-info");
     const projectName = card.querySelector("p");
 
     // The image is still portaled to <body> from the open. Keep it there so the window's
     // transform FLIP (in shrinkMaximizedWindow) can't affect it, FLIP it independently back
     // onto its grid tile, then reparent it home at the end.
-    const projectImg = document.querySelector(".🎨lsdev-project_img-bg.is-portaled");
+    const projectImg = document.querySelector(".🎨lsdev-project__img-bg.is-portaled");
 
     // Restore visibility on ALL other cards — symmetric with showProject(), which hides every
     // other card. Restoring a still-filtered (display:none) card is a no-op, but it clears the
@@ -186,20 +186,20 @@ const closeProjectDetail = () => {
     projectDetailOpen = null;
     document.body.style.overflow = "";
 }
-export const closeWindow = (window) => window.classList.remove("is-open");
+export const closeWindow = (window) => window.removeAttribute("data-open");
 
 const createClone = (window) => {
     const clone = window.cloneNode(true)
-    clone.classList.add("is-clone");
+    clone.dataset.clone = "";
     window.after(clone);
     clones.set(window, clone);
 }
-const handleMinimizeDuringShrink = (window, chrome) => {
+const handleMinimizeDuringShrink = (window, windowBody) => {
     closeWindow(window);
-    slideToggle(chrome);
+    slideToggle(windowBody);
 };
-const maximizeWindow = (window) => window.classList.add("is-maximized");
-const openWindow = (window) => window.classList.add("is-open");
+const maximizeWindow = (window) => window.dataset.view = "maximized";
+const openWindow = (window) => window.dataset.open = "";
 const removeClone = (window) => {
     const clone = clones.get(window);
     clone?.remove();
@@ -213,9 +213,9 @@ const showProject = (project) => {
     savedGridScroll = gridContainer ? gridContainer.scrollTop : 0;
 
     const content = document.getElementById("🫆lsdev-project-content--" + project.id.split("--")[1]);
-    const client = project.querySelector(".🎨lsdev-project_client-info");
+    const client = project.querySelector(".🎨lsdev-project__client-info");
     const projectName = project.querySelector("p");
-    const projectImg = project.querySelector(".🎨lsdev-project_img-bg");
+    const projectImg = project.querySelector(".🎨lsdev-project__img-bg");
     const otherProjects = 
         [...document.querySelectorAll(".🎨lsdev-projects__project")]
         .filter(el => el !== project);
@@ -321,7 +321,7 @@ const showProject = (project) => {
 const shrinkMaximizedWindow = (window, minimizeClicked) => {
     
     const normalRect = originalWindowRects.get(window);
-    const chrome = window.querySelector(".🎨lsdev-window__chrome");
+    const windowBody = window.querySelector(".🎨lsdev-window__body");
 
     if (!normalRect) return;
 
@@ -335,11 +335,11 @@ const shrinkMaximizedWindow = (window, minimizeClicked) => {
 
     if (minimizeClicked){
         setTimeout(() => {
-            handleMinimizeDuringShrink(window, chrome);
+            handleMinimizeDuringShrink(window, windowBody);
         }, animationDuration - 50);
     }
 };
-const unmaximizeWindow = (window) => window.classList.remove("is-maximized");
+const unmaximizeWindow = (window) => window.removeAttribute("data-view");
 
 let projectDetailOpen = null;
 let savedGridScroll = 0;
@@ -349,22 +349,22 @@ let savedImgTile = null; // the project image's grid-tile rect at open, for the 
 
 export const minimizeWindows = (() => {
     
-    const minimizeButtons = document.querySelectorAll(".🎨lsdev-window__button--minimize");
+    const minimizeButtons = document.querySelectorAll('.🎨lsdev-window__control[data-control="minimize"]');
 
     const minimizeButtonClick = (e) => {
 
         const button = e.currentTarget;
         const window = button.closest(".🎨lsdev-window"); 
-        const chrome = window.querySelector(".🎨lsdev-window__chrome");
-        const isMaximized = window.classList.contains("is-maximized"); 
+        const windowBody = window.querySelector(".🎨lsdev-window__body");
+        const isMaximized = window.dataset.view === "maximized"; 
  
 
         if (isMaximized){
             shrinkMaximizedWindow(window, true);
         }
         else {
-            slideToggle(chrome);
-            window.classList.toggle("is-open");
+            slideToggle(windowBody);
+            window.toggleAttribute("data-open");
         }
 
         if (projectDetailOpen){
@@ -379,16 +379,16 @@ export const minimizeWindows = (() => {
 
 export const maximizeWindows = (() => {
     
-    const maximizeButtons = document.querySelectorAll(".🎨lsdev-window__button--maximize");
+    const maximizeButtons = document.querySelectorAll('.🎨lsdev-window__control[data-control="maximize"]');
     const projects = document.querySelectorAll(".🎨lsdev-projects__project");
 
     const maximizeButtonClick = (e, project) => {
         
         const button = e.currentTarget;
         const windowEl = button.closest(".🎨lsdev-window");
-        const chrome = windowEl.querySelector(".🎨lsdev-window__chrome");
-        const isMaximized = windowEl.classList.contains("is-maximized");
-        const isOpen = windowEl.classList.contains("is-open");
+        const windowBody = windowEl.querySelector(".🎨lsdev-window__body");
+        const isMaximized = windowEl.dataset.view === "maximized";
+        const isOpen = windowEl.hasAttribute("data-open");
 
         if (!isMaximized) {
 
@@ -404,7 +404,7 @@ export const maximizeWindows = (() => {
             }
 
             if (!isOpen) {
-                slideToggle(chrome, 100);
+                slideToggle(windowBody, 100);
                 openWindow(windowEl);
             }
 
@@ -443,7 +443,7 @@ export const maximizeWindows = (() => {
     });
 })();
 
-document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => {
+document.querySelectorAll('.🎨lsdev-window__control[data-control="close"]').forEach(button => {
     
     button.addEventListener("click", e => {
         
@@ -462,7 +462,7 @@ document.querySelectorAll(".🎨lsdev-window__button--close").forEach(button => 
             return;
         }
 
-        windowToClose.classList.add("is-poofing");
+        windowToClose.dataset.poofing = "";
 
         setTimeout(() => {
 

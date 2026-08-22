@@ -540,7 +540,8 @@
                     <li class="🎨lsdev-external-nav__item">
                         <a
                             aria-label="Github profile" 
-                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon--github"
+                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
+                            data-icon="github"
                             href="https://github.com/laurenshutt/"
                             rel="me"
                             target="_blank"></a>
@@ -548,7 +549,8 @@
                     <li class="🎨lsdev-external-nav__item">
                         <a
                             aria-label="LinkedIn profile" 
-                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon--linkedin" 
+                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
+                            data-icon="linkedin" 
                             href="https://www.linkedin.com/in/laurenshutt/"
                             rel="me"
                             target="_blank"></a>
@@ -557,14 +559,16 @@
                         <button 
                             aria-label="Turn music on" 
                             aria-pressed="false" 
-                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon--music"></button>
+                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
+                            data-icon="music"></button>
                     </li>
                     <li class="🎨lsdev-external-nav__item">
                         <button 
                             aria-controls="🫆lsdev-charms-panel"
                             aria-expanded="false"
                             aria-label="Open modal to see charms earned" 
-                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon--charms 🎨lsdev-hud__charms-toggle"></button>
+                            class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon 🎨lsdev-hud__charms-toggle"
+                            data-icon="charms"></button>
                     </li>
                 </ul>
                 <ul style="display:none;">
@@ -676,57 +680,67 @@
                                 <div class="🎨lsdev-window__controls">
                                     <button 
                                         aria-label="Collapse the projects section" 
-                                        class="🎨lsdev-window__button--minimize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="minimize"></button>
                                     <button 
                                         aria-label="Make the projects section full screen" 
-                                        class="🎨lsdev-window__button--maximize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="maximize"></button>
                                     <button 
                                         aria-label="Hide the projects section" 
-                                        class="🎨lsdev-window__button--close"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="close"></button>
                                 </div>
                             </div>
-                            <div class="🎨lsdev-window__chrome">
+                            <div class="🎨lsdev-window__body">
                                 <nav 
                                     aria-label="Filter projects by role or technology"
-                                    class="🎨lsdev-window__menu"  
+                                    class="🎨lsdev-window__menu-bar"  
                                     id="🫆lsdev-projects__menu">
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="all" 
                                         aria-label="Show all projects" 
                                         aria-pressed="true">
                                         All
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="designed-developed" 
                                         aria-label="Show only projects with roles of designer and devloper" 
                                         aria-pressed="false">
                                         Designed & Developed
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="developed" 
                                         aria-label="Show only projects with role of developer" 
                                         aria-pressed="false">
                                         Developed
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="aem" 
                                         aria-label="Show only projects where Adobe Experience Manager was used" 
                                         aria-pressed="false">
                                         Adobe Experience Manager
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="surreal" 
                                         aria-label="Show only projects where Surreal CMS was used" 
                                         aria-pressed="false">
                                         Surreal CMS
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="wp" 
                                         aria-label="Show only projects where WordPress was used" 
                                         aria-pressed="false">
                                         WordPress
                                     </button>
                                     <button 
+                                        class="🎨lsdev-window__menu-title"
                                         data-filter="cascade" 
                                         aria-label="Show only projects where CascadeCMS was used" 
                                         aria-pressed="false">
@@ -734,128 +748,213 @@
                                     </button>
                                 </nav>
                                 <div 
-                                class="🎨lsdev-projects__grid-container" 
-                                id="🫆lsdev-projects__grid-container">
+                                    class="🎨lsdev-projects__grid-container" 
+                                    id="🫆lsdev-projects__grid-container">
                                     <div 
-                                    class="🎨lsdev-window__content 🎨lsdev-projects__grid"
-                                    id="🫆lsdev-projects__grid">
-                                        <button class="🎨lsdev-projects__project" data-filterby="developed,aem" id="🫆lsdev-project--partnerships" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--partnerships">
-                                            <div class="🎨lsdev-project_client-info">
+                                        class="🎨lsdev-window__content 🎨lsdev-projects__grid"
+                                        id="🫆lsdev-projects__grid">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="developed,aem" 
+                                            id="🫆lsdev-project--partnerships" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--partnerships">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 Innovation and Partnerships Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/partnerships.png" alt="Innovation and Partnerships Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/partnerships.png" 
+                                                    alt="Innovation and Partnerships Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed,developed,aem" id="🫆lsdev-project--vt-made" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--vt-made">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed,developed,aem" 
+                                            id="🫆lsdev-project--vt-made" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--vt-made">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 Virginia Tech MADE Webpage
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/vtmade.png" alt="Virginia Tech MADE Webpage" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img" 
+                                                    src="/img/projects/vtmade.png" 
+                                                    alt="Virginia Tech MADE Webpage" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed,developed,aem" id="🫆lsdev-project--carbon-colab" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--carbon-colab">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed,developed,aem" 
+                                            id="🫆lsdev-project--carbon-colab" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--carbon-colab">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 Carbon Colab Webpage
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/carbon-colab.webp" alt="Carbon Colab Webpage" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/carbon-colab.webp" 
+                                                    alt="Carbon Colab Webpage" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="developed,aem" id="🫆lsdev-project--ai-summit" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--ai-summit">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="developed,aem" 
+                                            id="🫆lsdev-project--ai-summit" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--ai-summit">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 AI Summit Webpage
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/ai-summit.png" alt="AI Summit Webpage" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/ai-summit.png" 
+                                                    alt="AI Summit Webpage" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,surreal" id="🫆lsdev-project--phase" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--phase">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,surreal" 
+                                            id="🫆lsdev-project--phase" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--phase">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Phase, Inc.
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 Phase, Inc. Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/phase.png" alt="Phase, Inc. Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/phase.png" 
+                                                    alt="Phase, Inc. Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,wp" id="🫆lsdev-project--isec" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--isec">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,wp" 
+                                            id="🫆lsdev-project--isec" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--isec">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     The Catholic University of America
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p class="🎨lsdev-u-desktop">
+                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-desktop">
                                                 ISEC Website
                                             </p>
-                                            <p class="🎨lsdev-u-mobile">
+                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-mobile">
                                                 ISEC Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/isec.png" alt="Institute for the Study of Eastern Christianity Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/isec.png" 
+                                                    alt="Institute for the Study of Eastern Christianity Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed" id="🫆lsdev-project--gkce" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--gkce">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed" 
+                                            id="🫆lsdev-project--gkce" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--gkce">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     G.K. Chesterton Entertainment
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 G.K. Chesterton Entertainment Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/gkce.png" alt="G.K. Chesterton Entertainment Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/gkce.png" 
+                                                    alt="G.K. Chesterton Entertainment Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="developed" id="🫆lsdev-project--bugs" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--bugs">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="developed" 
+                                            id="🫆lsdev-project--bugs" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--bugs">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     CALS Magazine
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 From Pests to Protein
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/pests.png" alt="From Pests to Protein" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/pests.png" 
+                                                    alt="From Pests to Protein" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="wp" id="🫆lsdev-project--uccmc" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--uccmc">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="wp" 
+                                            id="🫆lsdev-project--uccmc" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--uccmc">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span class="🎨lsdev-u-desktop">
                                                     Ukrainian Catholic Archeparchy of Philadelphia
                                                 </span>
@@ -864,123 +963,208 @@
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p class="🎨lsdev-u-desktop">
+                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-desktop">
                                                 Ukrainian Catholic Crisis Media Center Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/uccmc.png" alt="Ukrainian Catholic Crisis Media Center Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/uccmc.png" 
+                                                    alt="Ukrainian Catholic Crisis Media Center Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,cascade" id="🫆lsdev-project--trs" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--trs">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,cascade" 
+                                            id="🫆lsdev-project--trs" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--trs">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     The Catholic University of America
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 School of Theology and Religious Studies Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/trs.png" alt="School of Theology and Religious Studies Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/trs.png" 
+                                                    alt="School of Theology and Religious Studies Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,cascade" id="🫆lsdev-project--rollovers" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--rollovers">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,cascade" 
+                                            id="🫆lsdev-project--rollovers" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--rollovers">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     The Catholic University of America
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 School of Theology and Religious Studies Rollover Classes App
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/rollover-app.png" alt="School of Theology and Religious Studies Rollover Classes App" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/rollover-app.png" 
+                                                    alt="School of Theology and Religious Studies Rollover Classes App" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="developed" id="🫆lsdev-project--google-scholar" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--google-scholar">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="developed" 
+                                            id="🫆lsdev-project--google-scholar" 
+                                            aria-haspopup="dialog"
+                                            aria-controls="🫆lsdev-project-content--google-scholar">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 Google Scholar Plugin
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/scholar.png" alt="Google Scholar Plugin" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/scholar.png" 
+                                                    alt="Google Scholar Plugin" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="developed" id="🫆lsdev-project--strategic-plan" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--strategic-plan">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="developed" 
+                                            id="🫆lsdev-project--strategic-plan" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--strategic-plan">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 CALS Strategic Plan Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/strategic-plan.png" alt="CALS Strategic Plan Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/strategic-plan.png" 
+                                                    alt="CALS Strategic Plan Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,aem" id="🫆lsdev-project--sesqui" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--sesqui">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,aem" 
+                                            id="🫆lsdev-project--sesqui" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--sesqui">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 CALS Sequicentennial Webpage
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/sesqui.png" alt="CALS Sequicentennial Webpage" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/sesqui.png" 
+                                                    alt="CALS Sequicentennial Webpage" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,aem" id="🫆lsdev-project--yearbook" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--yearbook">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,aem" 
+                                            id="🫆lsdev-project--yearbook" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--yearbook">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 CALS Digital Yearbook
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/digital-yearbook.png" alt="CALS Digital Yearbook" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/digital-yearbook.png" 
+                                                    alt="CALS Digital Yearbook" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed,aem" id="🫆lsdev-project--cals" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--cals">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed,aem" 
+                                            id="🫆lsdev-project--cals" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--cals">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 CALS Homepage
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/cals-homepage.png" alt="CALS Homepage" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/cals-homepage.png" 
+                                                    alt="CALS Homepage" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
-                                        <button class="🎨lsdev-projects__project" data-filterby="designed-developed" id="🫆lsdev-project--cpes" aria-haspopup="dialog" aria-controls="🫆lsdev-project-content--cpes">
-                                            <div class="🎨lsdev-project_client-info">
+                                        <button 
+                                            class="🎨lsdev-projects__project" 
+                                            data-filterby="designed-developed" 
+                                            id="🫆lsdev-project--cpes" 
+                                            aria-haspopup="dialog" 
+                                            aria-controls="🫆lsdev-project-content--cpes">
+                                            <div class="🎨lsdev-project__client-info">
                                                 <span>
                                                     Virginia Tech
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p>
+                                            <p class="🎨lsdev-project__project-name">
                                                 CPES Conference Website
                                             </p>
-                                            <div class="🎨lsdev-project_img-bg">
-                                                <img src="/img/projects/cpes-conference.png" alt="CPES Conference Website" loading="eager" fetchpriority="high">
+                                            <div class="🎨lsdev-project__img-bg">
+                                                <img 
+                                                    class="🎨lsdev-project__img"
+                                                    src="/img/projects/cpes-conference.png" 
+                                                    alt="CPES Conference Website" 
+                                                    loading="eager" 
+                                                    fetchpriority="high">
                                             </div>
                                         </button>
                                     </div>
@@ -999,44 +1183,53 @@
                                 <div class="🎨lsdev-window__controls">
                                     <button 
                                         aria-label="Collapse the about section" 
-                                        class="🎨lsdev-window__button--minimize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="minimize"></button>
                                     <button 
                                         aria-label="Make the about section full screen" 
-                                        class="🎨lsdev-window__button--maximize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="maximize"></button>
                                     <button 
                                         aria-label="Hide the about section" 
-                                        class="🎨lsdev-window__button--close"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="close"></button>
                                 </div>
                             </div>
-                            <div class="🎨lsdev-window__chrome">
+                            <div class="🎨lsdev-window__body">
                                 <nav 
-                                    class="🎨lsdev-window__menu" 
+                                    class="🎨lsdev-window__menu-bar" 
                                     id="🫆lsdev-about__menu">
                                     <div>
-                                        <a href="/now">
+                                        <a 
+                                            class="🎨lsdev-window__menu-title"
+                                            href="/now">
                                             /now
                                         </a>
-                                        <a href="/colophon">
+                                        <a 
+                                            class="🎨lsdev-window__menu-title"
+                                            href="/colophon">
                                             /colophon
                                         </a>
-                                        <a>
+                                        <a class="🎨lsdev-window__menu-title">
                                             Download résumé
                                         </a>
                                     </div>
                                 </nav>
                                 <div class="🎨lsdev-window__content 🎨lsdev-about__content">
-                                    <p class="🎨lsdev-u-desktop">
+                                    <p class="🎨lsdev-u-desktop 🎨lsdev-about__text">
                                         Hi there, I’m Lauren! I’m a self-taught, front-end developer from Anchorage, Alaska; now living in Blacksburg, Virginia. I’m driven by relentless curiosity and a love for designing imaginative digital solutions. If you’re a CliftonStrengths person, you can
                                         <a
+                                            class="🎨lsdev-window__link"
                                             href="/Shutt-Lauren-SIGNATURE_THEME.pdf"
                                             target="_blank"
                                             aria-label="Read my CliftonStrengths report (PDF)">
                                             <span>read my report here</span>
                                         </a>.
                                     </p>
-                                    <p class="🎨lsdev-u-desktop">
+                                    <p class="🎨lsdev-u-desktop 🎨lsdev-about__text">
                                         Since 2016, I’ve been building the web for Virginia Tech, currently in the Office of
                                         <a
+                                            class="🎨lsdev-window__link"
                                             href="https://partnerships.vt.edu"
                                             target="_blank"
                                             rel="noopener noreferrer">
@@ -1054,7 +1247,7 @@
                                             <span>two underfed cats and a pittski</span>
                                         </span>.
                                     </p>
-                                    <p class="🎨lsdev-u-mobile">
+                                    <p class="🎨lsdev-u-mobile 🎨lsdev-about__text">
                                         Hi there, I’m Lauren! 👋🏻 A self-taught developer driven by relentless curiosity and a love for designing imaginative corners of the internet. If you’re a CliftonStrengths person, you can <a href="/Shutt-Lauren-SIGNATURE_THEME.pdf" target="_blank"><span>read my report</span></a>. Since 2016, I’ve been building the web for Virginia Tech.
                                     </p>
                                     <div class="🎨lsdev-icebreaker">
@@ -1076,7 +1269,8 @@
                             </div>
                         </div>
                         <div 
-                            class="🎨lsdev-window 🎨lsdev-window--reviews" 
+                            class="🎨lsdev-window" 
+                            data-variant="reviews"
                             id="🫆lsdev-window--reviews">
                             <div class="🎨lsdev-window__title-bar">
                                 <h2 
@@ -1087,62 +1281,70 @@
                                 <div class="🎨lsdev-window__controls">
                                     <button 
                                         aria-label="Collapse the reviews section" 
-                                        class="🎨lsdev-window__button--minimize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="minimize"></button>
                                     <button 
                                         aria-label="Make the reviews section full screen" 
-                                        class="🎨lsdev-window__button--maximize"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="maximize"></button>
                                     <button 
                                         aria-label="Hide the reviews section" 
-                                        class="🎨lsdev-window__button--close"></button>
+                                        class="🎨lsdev-window__control"
+                                        data-control="close"></button>
                                 </div>
                             </div>
-                            <div class="🎨lsdev-window__chrome">
+                            <div class="🎨lsdev-window__body">
                                 <nav 
-                                    class="🎨lsdev-window__menu"
+                                    class="🎨lsdev-window__menu-bar"
                                     id="🫆lsdev-reviews__menu">
                                     <div>
                                         <button
+                                            class="🎨lsdev-window__menu-title"
+                                            data-variant="carousel-previous"
                                             aria-label="Previous review"
-                                            aria-controls="🫆lsdev-reviews__carousel"
+                                            aria-controls="🫆lsdev-reviews-carousel__track"
                                             id="🫆lsdev-reviews-carousel__prev-button">
                                             &lt;  Prev
                                         </button>
                                         <button 
+                                            class="🎨lsdev-window__menu-title"
+                                            data-variant="carousel-next"
                                             aria-label="Next review"
-                                            aria-controls="🫆lsdev-reviews__carousel"
+                                            aria-controls="🫆lsdev-reviews-carousel__track"
                                             id="🫆lsdev-reviews-carousel__next-button">
                                             Next &gt;
-                                        </a>
+                                        </button>
                                         <button 
+                                            class="🎨lsdev-window__menu-title"
+                                            data-variant="carousel-pause"
                                             aria-label="Pause the reviews carousel"
-                                            aria-controls="🫆lsdev-reviews__carousel"
+                                            aria-controls="🫆lsdev-reviews-carousel__track"
                                             id="🫆lsdev-reviews-carousel__pause-button">
                                             Pause
                                         </button>
                                     </div>
                                 </nav>
                                 <div class="🎨lsdev-window__content">
-                                    <div class="carousel-viewport">
+                                    <div class="🎨lsdev-reviews-carousel">
                                         <div 
-                                            class="🎨lsdev-reviews__carousel carousel-track"
-                                            id="🫆lsdev-reviews__carousel">
-                                            <div>
-                                                <div class="🎨lsdev-reviews__review-container">
-                                                    <div class="🎨lsdev-reviews__review">
-                                                        <div class="🎨lsdev-review__content">
-                                                            <p>
-                                                                Lauren has a rare alchemy of creative vision, technical ability, and collaborative spirit. She always finds a way to say yes&mdash;to ideas, challenges, or new directions&mdash;through smart and strategic problem-solving. Her holistic thinking is invaluable, and her end-to-end perspective offers clarity and cohesion to every project she engages. Working with her is a joy; I’d partner again in a heartbeat.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="🎨lsdev-review__attribution">
-                                                        <img src="img/portraits/zeke.png" />
-                                                        <div class="🎨lsdev-attribution__content">
+                                            class="🎨lsdev-reviews-carousel__track"
+                                            id="🫆lsdev-reviews-carousel__track">
+                                            <div class="🎨lsdev-reviews-carousel__slide">
+                                                <div class="🎨lsdev-reviews-carousel__review">
+                                                    <p class="🎨lsdev-reviews-carousel__review-text">
+                                                        Lauren has a rare alchemy of creative vision, technical ability, and collaborative spirit. She always finds a way to say yes&mdash;to ideas, challenges, or new directions&mdash;through smart and strategic problem-solving. Her holistic thinking is invaluable, and her end-to-end perspective offers clarity and cohesion to every project she engages. Working with her is a joy; I’d partner again in a heartbeat.
+                                                    </p>
+                                                    <div class="🎨lsdev-reviews-carousel__review-attribution">
+                                                        <img 
+                                                            class="🎨lsdev-reviews-carousel__review-avatar" 
+                                                            src="img/portraits/zeke.png" />
+                                                        <div class="🎨lsdev-reviews-carousel__attribution-content">
                                                             <a 
+                                                                class="🎨lsdev-reviews-carousel__attribution-name-link"
                                                                 href="https://www.linkedin.com/in/zekebarlow"
                                                                 target="_blank"
                                                                 rel="noopener noreferrer">
-                                                                <h3>
+                                                                <h3 class="🎨lsdev-reviews-carousel__attribution-name-heading">
                                                                     Zeke Barlow
                                                                 </h3>
                                                             </a>
@@ -1153,23 +1355,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <div class="🎨lsdev-reviews__review-container">
-                                                    <div class="🎨lsdev-reviews__review">
-                                                        <div class="🎨lsdev-review__content">
-                                                            <p>
-                                                                Always insightful and creative, Lauren’s warm personality and can-do attitude speak to a strong person who has continually impressed me. She brought creativity, technical expertise, and genuine care to the development of our website, helping communicate our mission in a way that feels engaging and authentic. She is a trusted collaborator who produces work of the highest caliber.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="🎨lsdev-review__attribution">
-                                                        <img src="img/portraits/frmark.png" />
-                                                        <div class="🎨lsdev-attribution__content">
+                                            <div class="🎨lsdev-reviews-carousel__slide">
+                                                <div class="🎨lsdev-reviews-carousel__review">
+                                                    <p class="🎨lsdev-reviews-carousel__review-text">
+                                                        Always insightful and creative, Lauren’s warm personality and can-do attitude speak to a strong person who has continually impressed me. She brought creativity, technical expertise, and genuine care to the development of our website, helping communicate our mission in a way that feels engaging and authentic. She is a trusted collaborator who produces work of the highest caliber.
+                                                    </p>
+                                                    <div class="🎨lsdev-reviews-carousel__review-attribution">
+                                                        <img 
+                                                            class="🎨lsdev-reviews-carousel__review-avatar"
+                                                            src="img/portraits/frmark.png" />
+                                                        <div class="🎨lsdev-reviews-carousel__attribution-content">
                                                             <a 
+                                                                class="🎨lsdev-reviews-carousel__attribution-name-link"
                                                                 href="https://www.linkedin.com/in/fr-mark-morozowich-2026b111/"
                                                                 rel="noopener noreferrer"
                                                                 target="_blank">
-                                                                <h3>
+                                                                <h3 class="🎨lsdev-reviews-carousel__attribution-name-heading">
                                                                     Very Rev. Mark Morozowich
                                                                 </h3>
                                                             </a>
@@ -1180,23 +1381,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <div class="🎨lsdev-reviews__review-container">
-                                                    <div class="🎨lsdev-reviews__review">
-                                                        <div class="🎨lsdev-review__content">
-                                                            <p>
-                                                                I want to give out a huge shoutout to Lauren. As a media company, I wanted people to land on our page and just for it to hit them in a visually beautiful and dynamic way. I personally feel that she has accomplished that. Lauren, God bless you, thank you for sticking with me. And please check out some of the other work that Lauren's doing. She just has such a beautiful heart.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="🎨lsdev-review__attribution">
-                                                        <img src="img/portraits/maria.png" />
-                                                        <div class="🎨lsdev-attribution__content">
+                                            <div class="🎨lsdev-reviews-carousel__slide">
+                                                <div class="🎨lsdev-reviews-carousel__review">
+                                                    <p class="🎨lsdev-reviews-carousel__review-text">
+                                                        I want to give out a huge shoutout to Lauren. As a media company, I wanted people to land on our page and just for it to hit them in a visually beautiful and dynamic way. I personally feel that she has accomplished that. Lauren, God bless you, thank you for sticking with me. And please check out some of the other work that Lauren's doing. She just has such a beautiful heart.
+                                                    </p>
+                                                    <div class="🎨lsdev-reviews-carousel__review-attribution">
+                                                        <img 
+                                                            class="🎨lsdev-reviews-carousel__review-avatar"
+                                                            src="img/portraits/maria.png" />
+                                                        <div class="🎨lsdev-reviews-carousel__attribution-content">
                                                             <a 
+                                                                class="🎨lsdev-reviews-carousel__attribution-name-link"
                                                                 href="https://www.linkedin.com/in/maria-vargo-19274745/"
                                                                 target="_blank"
                                                                 rel="noopener noreferrer">
-                                                                <h3>
+                                                                <h3 class="🎨lsdev-reviews-carousel__attribution-name-heading">
                                                                     Maria Vargo
                                                                 </h3>
                                                             </a>
@@ -1207,23 +1407,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <div class="🎨lsdev-reviews__review-container">
-                                                    <div class="🎨lsdev-reviews__review">
-                                                        <div class="🎨lsdev-review__content">
-                                                            <p>
-                                                                Lauren creates custom web applications and bespoke features that push the boundaries of web technologies. Her compassionate approach stands out, demonstrating her dedication to fostering inclusivity and accessibility in the digital realm. This characteristic has been evident in her impressive list of clients throughout her career.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="🎨lsdev-review__attribution">
-                                                        <img src="img/portraits/chandler.png" />
-                                                        <div class="🎨lsdev-attribution__content">
-                                                            <a 
+                                            <div class="🎨lsdev-reviews-carousel__slide">
+                                                <div class="🎨lsdev-reviews-carousel__review">
+                                                    <p class="🎨lsdev-reviews-carousel__review-text">
+                                                        Lauren creates custom web applications and bespoke features that push the boundaries of web technologies. Her compassionate approach stands out, demonstrating her dedication to fostering inclusivity and accessibility in the digital realm. This characteristic has been evident in her impressive list of clients throughout her career.
+                                                    </p>
+                                                    <div class="🎨lsdev-reviews-carousel__review-attribution">
+                                                        <img 
+                                                            class="🎨lsdev-reviews-carousel__review-avatar"
+                                                            src="img/portraits/chandler.png" />
+                                                        <div class="🎨lsdev-reviews-carousel__attribution-content">
+                                                            <a  
+                                                                class="🎨lsdev-reviews-carousel__attribution-name-link"
                                                                 href="https://www.linkedin.com/in/scott-b-chandler-92b22826a/"
                                                                 target="_blank"
                                                                 rel="noopener noreferrer">
-                                                                <h3>
+                                                                <h3 class="🎨lsdev-reviews-carousel__attribution-name-heading">
                                                                     Scott Chandler
                                                                 </h3>
                                                             </a>
@@ -1245,20 +1444,22 @@
                             <h2 aria-label="Ready to get started?">
                                 <span data-text="Ready to get started?"></span>
                             </h2>
-                            <p>
+                            <p class="🎨lsdev-contact__text">
                                 If you’re looking for someone to bring clarity, creativity, and care to your next project &mdash; let’s talk!
                             </p>
-                            <form novalidate>
+                            <form 
+                                class="🎨lsdev-contact__form"
+                                novalidate>
                                 <div class="🎨lsdev-contact__col">
-                                    <fieldset>
-                                        <legend>
+                                    <fieldset class="🎨lsdev-contact__fieldset">
+                                        <legend class="🎨lsdev-contact__legend">
                                             Message
                                         </legend>
                                         <button 
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I like your work, particularly...">
-                                            <span>
+                                            <span class="🎨lsdev-contact__pill">
                                                 I like your work
                                             </span>
                                         </button>
@@ -1266,7 +1467,7 @@
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I need a new website, here’s what I’m hoping to create...">
-                                            <span>
+                                            <span class="🎨lsdev-contact__pill">
                                                 I need a new website
                                             </span>
                                         </button>
@@ -1274,7 +1475,7 @@
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I want to redesign my website, here is my inspiration...">
-                                            <span>  
+                                            <span class="🎨lsdev-contact__pill">  
                                                 I want to redesign my website
                                             </span>
                                         </button>
@@ -1282,7 +1483,7 @@
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I need a specific feature, let me describe it to you...">
-                                            <span>
+                                            <span class="🎨lsdev-contact__pill">
                                                 I need a specific feature
                                             </span>
                                         </button>
@@ -1290,7 +1491,7 @@
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I need help with my CMS, the system we are currently using is...">
-                                            <span>
+                                            <span class="🎨lsdev-contact__pill">
                                                 I need help with my CMS
                                             </span>
                                         </button>
@@ -1298,70 +1499,95 @@
                                             type="button"
                                             class="🎨lsdev-contact__message-option" 
                                             value="I need help with Notion, this is the database or page I want to create...">
-                                            <span>
+                                            <span class="🎨lsdev-contact__pill">
                                                 I need help with Notion
                                             </span>
                                         </button>
                                         <textarea
+                                            class="🎨lsdev-contact__message"
                                             placeholder="Your message here..."
                                             name="Message"
                                             required></textarea>
                                     </fieldset>
                                 </div>
                                 <div class="🎨lsdev-contact__col">
-                                    <fieldset>
-                                        <legend>
+                                    <fieldset class="🎨lsdev-contact__fieldset">
+                                        <legend class="🎨lsdev-contact__legend">
                                             Mission
                                         </legend>
-                                        <div style="display:flex;justify-content: space-around;width:100%">
-                                            <label for="🫆lsdev-mission--spark">
-                                                Spark
+                                        <div class="🎨lsdev-contact__missions">
+                                            <label 
+                                                class="🎨lsdev-contact__mission"
+                                                data-variant="spark"
+                                                for="🫆lsdev-mission--spark">
                                                 <input
+                                                    class="🎨lsdev-contact__field"
                                                     type="radio"
                                                     name="Stakes"
                                                     value="Spark"
                                                     id="🫆lsdev-mission--spark"
                                                     required/>
+                                                <span class="🎨lsdev-contact__pill">
+                                                    Spark
+                                                </span>
                                             </label>
-                                            <label for="🫆lsdev-mission--grow">
-                                                Grow
+                                            <label 
+                                                class="🎨lsdev-contact__mission"
+                                                data-variant="grow"
+                                                for="🫆lsdev-mission--grow">
                                                 <input 
+                                                    class="🎨lsdev-contact__field"
                                                     type="radio" 
                                                     name="Stakes" 
                                                     value="Grow" 
                                                     id="🫆lsdev-mission--grow"/>
+                                                <span class="🎨lsdev-contact__pill">
+                                                    Grow
+                                                </span>
                                             </label>
-                                            <label for="🫆lsdev-mission--optimize">
-                                                Optimize
+                                            <label 
+                                                class="🎨lsdev-contact__mission"
+                                                data-variant="optimize"
+                                                for="🫆lsdev-mission--optimize">
                                                 <input 
+                                                    class="🎨lsdev-contact__field"
                                                     type="radio" 
                                                     name="Stakes" 
                                                     value="Optimize" 
                                                     id="🫆lsdev-mission--optimize"/>
+                                                <span class="🎨lsdev-contact__pill">
+                                                    Optimize
+                                                </span>
                                             </label>
-                                            <label for="🫆lsdev-mission--rescue">
-                                                Rescue
+                                            <label 
+                                                class="🎨lsdev-contact__mission"
+                                                data-variant="rescue"
+                                                for="🫆lsdev-mission--rescue">
                                                 <input 
+                                                    class="🎨lsdev-contact__field"
                                                     type="radio" 
                                                     name="Stakes" 
                                                     value="Rescue" 
                                                     id="🫆lsdev-mission--rescue"/>
+                                                <span class="🎨lsdev-contact__pill">
+                                                    Rescue
+                                                </span>
                                             </label>
                                         </div>
-                                        
                                     </fieldset>
-                                    <fieldset>
-                                        <legend>
+                                    <fieldset class="🎨lsdev-contact__fieldset">
+                                        <legend class="🎨lsdev-contact__legend">
                                             Email address
                                         </legend>
                                         <input 
+                                            class="🎨lsdev-contact__field"
                                             name="Email" 
                                             type="email"
                                             aria-label="Email address" 
                                             autocomplete="on"
                                             required/>
                                     </fieldset>
-                                    <div>
+                                    <div class="🎨lsdev-contact__submit-container">
                                         <button 
                                             class="🎨lsdev-button" 
                                             type="submit">
