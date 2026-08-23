@@ -71,7 +71,7 @@
            submit in the second — and CSS cannot reparent, so both column wrappers are dropped out of
            the box tree with display: contents. Their fieldsets become direct children of the form,
            which turns into a grid and places all four explicitly. The wrappers still match
-           selectors, so the 1035 block below keeps working; it just puts them back to blocks. */
+           selectors, so the 1035 block below keeps working; it just puts them back to blocks. 
         .🎨lsdev-contact__form {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -80,22 +80,18 @@
         .🎨lsdev-contact__col {
             display: contents;
         }
-        /* buttons — left, top */
         .🎨lsdev-contact__col:first-child .🎨lsdev-contact__fieldset {
             grid-area: 1 / 1;
         }
-        /* missions — right, top */
         .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(1) {
             grid-area: 1 / 2;
         }
-        /* email — left, under the buttons. The point of all this. */
         .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(2) {
             grid-area: 2 / 1;
         }
-        /* submit — right, under the missions */
         .🎨lsdev-contact__submit-container {
             grid-area: 2 / 2;
-        }
+        }*/
         .🎨lsdev-nav {
             top:calc(95px + 15.1vw);
             left:90px;
