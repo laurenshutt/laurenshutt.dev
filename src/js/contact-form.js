@@ -47,7 +47,7 @@ export const contactForm = () => {
         });
 
         form.querySelectorAll("fieldset").forEach(fieldset => {
-            fieldset.classList.toggle("has-invalid", invalidFieldsets.has(fieldset));
+            fieldset.toggleAttribute("data-invalid", invalidFieldsets.has(fieldset));
         });
 
         errorMsg.style.opacity = invalidFieldsets.size ? "1" : "0";
@@ -60,7 +60,7 @@ export const contactForm = () => {
     ["focusout", "change"].forEach(type => {
 
         form.addEventListener(type, () => {
-            if (form.classList.contains("was-submitted")) validateForm();
+            if (form.hasAttribute("data-submitted")) validateForm();
         });
     });
 
@@ -68,7 +68,7 @@ export const contactForm = () => {
 
         e.preventDefault();
 
-        form.classList.add("was-submitted");
+        form.dataset.submitted = "";
 
         setTimeout(function(){
 
@@ -113,7 +113,7 @@ export const contactForm = () => {
         textarea.style.height = `${textarea.scrollHeight}px`;
     };
 
-    document.querySelectorAll(".🎨lsdev-contact__message-option").forEach(function(button){
+    document.querySelectorAll(".🎨lsdev-contact__pill[data-variant='message']").forEach(function(button){
         
         button.addEventListener("click",function(e){
             
@@ -122,18 +122,18 @@ export const contactForm = () => {
             textarea.value = e.currentTarget.value;
             
             document
-                .querySelectorAll(".🎨lsdev-contact__message-option.is-selected")
-                .forEach((selected) => selected !== button && selected.classList.remove("is-selected"));
+                .querySelectorAll(".🎨lsdev-contact__pill[data-variant='message'][data-selected]")
+                .forEach((selected) => selected !== button && selected.removeAttribute("data-selected"));
             
-                button.classList.toggle("is-selected");
+                button.toggleAttribute("data-selected");
             
-            if (!button.classList.contains("is-selected")){
+            if (!button.hasAttribute("data-selected")){
                 
-                button.classList.add("is-toggled");
+                button.dataset.toggled = "";
 
                 function removeToggle() {
                     button.blur();
-                    button.classList.remove("is-toggled");
+                    button.removeAttribute("data-toggled");
                 }
 
                 button.addEventListener("mouseout", removeToggle, { once: true });
@@ -149,8 +149,8 @@ export const contactForm = () => {
         const isEmpty = textarea.value.trim() === "";
 
         if (isEmpty){
-            document.querySelectorAll(".🎨lsdev-contact__message-option").forEach(function(button){
-                button.classList.remove("is-selected");
+            document.querySelectorAll(".🎨lsdev-contact__pill[data-variant='message']").forEach(function(button){
+                button.removeAttribute("data-selected");
             });
         }
 

@@ -21,6 +21,24 @@
     }
 }
 
+/* The missions row runs out of width before the rest of the form does, so it wraps here.
+   This used to be written as `#🫆lsdev-contact > form > div:nth-child(2) > fieldset:nth-child(1)
+   > div` — an id plus four structural steps — and needed !important to beat the specificity that
+   created. Every one of those elements has a name now, and being in the responsive layer it wins on
+   layer order alone. The third rule set a margin on the labels that simply restated the pill's own,
+   from when the label was a wrapper rather than the pill itself; it is gone. */
+@media screen and (max-width:1550px){
+    .🐱lsdev {
+        .🎨lsdev-contact__col:nth-child(2) {
+            flex-shrink: unset;
+        }
+        .🎨lsdev-contact__missions {
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+    }
+}
+
 /* Unmaximized laptop windows only. The cutoff sits one pixel under a maximized MacBook Air
    viewport (1440), so maximized falls through to the 1600 block above and keeps the original,
    roomier design. max-width is inclusive, which is why this is 1439 and not 1440.
@@ -47,6 +65,36 @@
            window title bars, which set their own size and shouldn't move. */
         .🎨lsdev-contact h2 {
             font-size:2.25em;
+        }
+        /* Email moves into the left column from this width down.
+           The markup puts it in the second column — buttons in the first, then missions, email and
+           submit in the second — and CSS cannot reparent, so both column wrappers are dropped out of
+           the box tree with display: contents. Their fieldsets become direct children of the form,
+           which turns into a grid and places all four explicitly. The wrappers still match
+           selectors, so the 1035 block below keeps working; it just puts them back to blocks. */
+        .🎨lsdev-contact__form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: start;
+        }
+        .🎨lsdev-contact__col {
+            display: contents;
+        }
+        /* buttons — left, top */
+        .🎨lsdev-contact__col:first-child .🎨lsdev-contact__fieldset {
+            grid-area: 1 / 1;
+        }
+        /* missions — right, top */
+        .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(1) {
+            grid-area: 1 / 2;
+        }
+        /* email — left, under the buttons. The point of all this. */
+        .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(2) {
+            grid-area: 2 / 1;
+        }
+        /* submit — right, under the missions */
+        .🎨lsdev-contact__submit-container {
+            grid-area: 2 / 2;
         }
         .🎨lsdev-nav {
             top:calc(95px + 15.1vw);
@@ -250,6 +298,14 @@
                 form {
                     display: block !important;
 
+                    /* Back to real boxes. The 1439 block above takes these out of the box tree to
+                       reshuffle the columns, which is meaningless once the form is single-column —
+                       and the rules just below still expect the wrappers to be laying their
+                       children out. */
+                    > .🎨lsdev-contact__col {
+                        display: block;
+                    }
+
                     > div:first-child button {
                         display:none;
 
@@ -260,7 +316,7 @@
                     > div:nth-child(2) fieldset {
                         display:block !important;
 
-                        .🎨lsdev-contact__mission {
+                        .🎨lsdev-contact__pill[data-variant="mission"] {
                             display:inline-block;
                         }
                     }

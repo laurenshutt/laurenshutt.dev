@@ -6,9 +6,10 @@ export function initDom() {
     const windows = document.querySelectorAll(".🎨lsdev-window");
     const contact = document.getElementById("🫆lsdev-contact");
     const contactH2Span = contact.querySelector("h2 span");
-    const contactEls = contact.querySelectorAll(
-        ":scope > p, fieldset, :scope div:has(>[type='submit'])"
-    );
+    // Whatever opted in, in markup order. This used to describe the shapes it expected to find —
+    // a direct child p, any fieldset, a div containing the submit — which meant CSS and JS each had
+    // their own idea of what gets revealed.
+    const contactEls = contact.querySelectorAll("[data-reveal]");
 
     return {
         mainNav,

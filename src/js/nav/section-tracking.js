@@ -147,11 +147,11 @@ export const sectionTrackingInit = () => {
 
     // Hold the footer out of the flow until every section has revealed. On a fast scroll the
     // visitor can reach the bottom before a window has opened, and the footer is then shoved down
-    // as it does. Deferred, it simply appears below them once everything has settled. The class is
-    // added from JS so the footer is never hidden for anyone without scripting.
+    // as it does. Deferred, it simply appears below them once everything has settled. The attribute
+    // is set from JS so the footer is never hidden for anyone without scripting.
     const footer = document.querySelector("footer");
 
-    footer?.classList.add("is-deferred");
+    if (footer) footer.dataset.deferred = "";
 
     const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
 
@@ -195,7 +195,7 @@ export const sectionTrackingInit = () => {
                 shuffleTextEffect(contactH2Span, 90, 45, 0.75);
                 setTimeout(function(){
                     contactEls.forEach(function(contactEl){
-                        contactEl.classList.add("is-animated");
+                        contactEl.dataset.animated = "";
                     });
                 },2000);
                 contactForm();
@@ -230,7 +230,7 @@ export const sectionTrackingInit = () => {
             if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
             else {
                 obs.disconnect();
-                footer?.classList.remove("is-deferred");
+                footer?.removeAttribute("data-deferred");
             }
         }, REVEAL_GAP);
     }, {

@@ -125,7 +125,7 @@ export const animateSequence = async () => {
     await delay(500);
 
     introTexts.forEach(function(el){
-        el.classList.add("is-animated");
+        el.dataset.animated = "";
     });
 
     await delay(500);
@@ -171,7 +171,7 @@ export const animateSequence = async () => {
 
     //await delay(750);
 
-    document.querySelector(".🎨lsdev-hud").classList.add("is-animated");
+    document.querySelector(".🎨lsdev-hud").dataset.animated = "";
 
 
     await delay(2500);

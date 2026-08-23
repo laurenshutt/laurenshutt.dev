@@ -13,7 +13,7 @@ export const initNavAnimations = (lastI) => {
 
     const lastNavItem = mainNavItems[mainNavItems.length - 1];
 
-    mainNavItems.forEach(item => item.classList.add("is-animated"));
+    mainNavItems.forEach(item => item.dataset.animated = "");
 
     caret.style.setProperty("--i", lastI + 1);
     caret.style.setProperty("--caret-y", "-3px");
