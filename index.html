@@ -463,7 +463,7 @@
 
         gtag('config', 'G-7CSJ2LD30K');
     </script>
-    <body class="is-loading">
+    <body data-loading>
         <div>
             <div 
                 class="🎨lsdev-bg-grid"
@@ -502,13 +502,15 @@
                 Hello! 👋🏻 I’m a front-end developer currently working for
                 <a 
                     href="https://partnerships.vt.edu/about/creative-studio" 
-                    rel="noopener noreferrer">
+                    rel="noopener noreferrer"
                     target="_blank" 
                     <span>Virginia Tech</span>
                 </a>.
             </p>
         </div>
-        <div id="🫆lsdev-stage">
+        <div 
+            class="🎨lsdev-stage"
+            id="🫆lsdev-stage">
             <nav 
                 aria-label="External navigation"
                 class="🎨lsdev-external-nav" 
@@ -670,6 +672,7 @@
                     <div>
                         <div 
                             class="🎨lsdev-window" 
+                            data-variant="projects"
                             id="🫆lsdev-window--projects">
                             <div class="🎨lsdev-window__title-bar">
                                 <h2 
@@ -1443,7 +1446,9 @@
                         <div 
                             class="🎨lsdev-contact" 
                             id="🫆lsdev-contact">
-                            <h2 aria-label="Ready to get started?">
+                            <h2 
+                                class="🎨lsdev-contact__heading"
+                                aria-label="Ready to get started?">
                                 <span data-text="Ready to get started?"></span>
                             </h2>
                             <p class="🎨lsdev-contact__text" data-reveal>
@@ -1462,7 +1467,7 @@
                                             class="🎨lsdev-contact__pill"
                                             data-variant="message" 
                                             value="I like your work, particularly...">
-I like your work
+                                            I like your work
                                         </button>
                                         <button 
                                             type="button"
@@ -1476,28 +1481,28 @@ I need a new website
                                             class="🎨lsdev-contact__pill"
                                             data-variant="message" 
                                             value="I want to redesign my website, here is my inspiration...">
-I want to redesign my website
+                                            I want to redesign my website
                                         </button>
                                         <button 
                                             type="button"
                                             class="🎨lsdev-contact__pill"
                                             data-variant="message" 
                                             value="I need a specific feature, let me describe it to you...">
-I need a specific feature
+                                            I need a specific feature
                                         </button>
                                         <button 
                                             type="button"
                                             class="🎨lsdev-contact__pill"
                                             data-variant="message" 
                                             value="I need help with my CMS, the system we are currently using is...">
-I need help with my CMS
+                                            I need help with my CMS
                                         </button>
                                         <button 
                                             type="button"
                                             class="🎨lsdev-contact__pill"
                                             data-variant="message" 
                                             value="I need help with Notion, this is the database or page I want to create...">
-I need help with Notion
+                                            I need help with Notion
                                         </button>
                                         <textarea
                                             class="🎨lsdev-contact__message 🎨lsdev-contact__field"
@@ -1621,16 +1626,16 @@ I need help with Notion
             class="🎨lsdev-project-modal" 
             id="🫆lsdev-project-modal">
             <div id="🫆lsdev-project-content--partnerships" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     Innovation and Partnerships Website
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     Virginia Tech’s Innovation and Partnerships is responsible for the university’s corporate engagement and major gifts. We needed a new website that went beyond the standard university template to better resonate with industry leaders, partners, and potential donors. The request was a clean, dynamic website that offers an intutive user experience and stays recognizably within the Virginia Tech brand.
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1644,16 +1649,16 @@ I need help with Notion
                 </p>
             </div>
             <div id="🫆lsdev-project-content--vt-made" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     VT MADE Website
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     The request was to design a landing page for a new advanced manufacturing lab, VT MADE, which showcased the unique positioning of Virginia Tech in the advanced manufacturing space. Primarily, we wanted to convey our interdisciplinary capabilities and the on-site resources we can offer across the manufacturing lifecycle.
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1667,16 +1672,16 @@ I need help with Notion
                 </p>
             </div>
             <div id="🫆lsdev-project-content--carbon-colab" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     Carbon CoLab Website
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     The request was to design a landing page for a new carbon sequestration lab that tells the story of its director, Ryan Pollea, and his research, with the goal of helping secure additional funding for the lab.
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1690,16 +1695,16 @@ I need help with Notion
                 </p>
             </div>
             <div id="🫆lsdev-project-content--ai-summit" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     AI Summit Website
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     Virginia Tech Innovation and Partnerships required an event website for their upcoming AI Summit. A third party designed the wireframes and I implemented them with additional effects to bring the page to life.
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1713,16 +1718,16 @@ I need help with Notion
                 </p>
             </div>
             <div id="🫆lsdev-project-content--phase" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     Phase, Inc. Website
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     The client was looking for a simple landing page for their startup company. And I quote, “please don’t spend too much time on this.”
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1733,16 +1738,16 @@ I need help with Notion
                 </p>
             </div>
             <div id="🫆lsdev-project-content--isec" hidden>
-                <h2>
+                <h2 class="🎨lsdev-project-modal__heading">
                     Institute for the Study of Eastern Christianity
                 </h2>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Client Brief
                 </h3>
                 <p>
                     As a newly-formed research insitute at The Catholic University of America, ISEC needed a website that could explain its mission, showcase its expertise, and offer resources to attract potential faculty and students. We wanted to evoke the visual language of Eastern Christian tradition while maintaining a modern feel and user experience.
                 </p>
-                <h3>
+                <h3 class="🎨lsdev-project-modal__subheading">
                     Approach
                 </h3>
                 <p>
@@ -1757,10 +1762,12 @@ I need help with Notion
         
         </div>
         <div 
-            class="🎨lsdev-project-modal__secondary-image" 
+            class="🎨lsdev-project-modal__secondary-image-container" 
+            data-variant="secondary-image-a"
             id="🫆lsdev-project-modal__secondary-image--a"></div>
         <div 
-            class="🎨lsdev-project-modal__secondary-image" 
+            class="🎨lsdev-project-modal__secondary-image-container" 
+            data-variant="secondary-image-b"
             id="🫆lsdev-project-modal__secondary-image--b"></div>
         <div 
             id="🫆lsdev-tooltip" 

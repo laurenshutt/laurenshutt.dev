@@ -6,7 +6,9 @@ const originalRects = new Map();
 const originalWindowRects = new Map();
 const clones = new WeakMap();
 const projectInfoModal = document.getElementById("🫆lsdev-project-modal");
-const projectSecondaryImages = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image");
+// The two fixed panels beside the modal. They hold the secondary image and the role text — the
+// __secondary-image class itself belongs to the <img> that goes inside one of them.
+const projectSecondaryPanels = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image-container");
 const animationDuration = 500;
 const BASE_TRANSFORM = "translateY(0px)"; // window's RESTING transform: the intro fade-in-down ends at translateY(0) with fill-mode:forwards, overriding the -10px CSS base
 const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place after a FLIP
@@ -14,7 +16,7 @@ const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place afte
 // After a window FLIP, slide each project card (its text AND image tile together) back into place
 // one at a time in reading order, instead of snapping them all on at once. Each card's animation
 // actually STARTS at its staggered time, which also spreads the rasterization so no single frame
-// is heavy. The card being closed (.is-flip-landed) already animated in via its image's own FLIP,
+// is heavy. The card being closed ([data-flip-landed]) already animated in via its image's own FLIP,
 // so it's skipped and left visible.
 // Slide the given cards into place one at a time, in reading order. Each card's animation actually
 // STARTS at its staggered time (rather than all starting at once with a CSS delay), which also
@@ -39,13 +41,13 @@ export const staggerCardsIn = (cards) => {
         .sort((a, b) => (a.r.top - b.r.top) || (a.r.left - b.r.left))
         .map(o => o.el);
 
-    ordered.forEach(el => el.classList.add("is-pending-reveal"));
+    ordered.forEach(el => el.dataset.pendingReveal = "");
 
     ordered.forEach((el, i) => {
         setTimeout(() => {
-            el.classList.remove("is-pending-reveal");
-            el.classList.add("is-sliding-in");
-            setTimeout(() => el.classList.remove("is-sliding-in"), 400);
+            el.removeAttribute("data-pending-reveal");
+            el.dataset.slidingIn = "";
+            setTimeout(() => el.removeAttribute("data-sliding-in"), 400);
         }, i * CARD_REVEAL_STAGGER);
     });
 
@@ -54,14 +56,14 @@ export const staggerCardsIn = (cards) => {
 
 const revealGridImages = (windowEl) => {
     const cards = [...windowEl.querySelectorAll(".🎨lsdev-projects__project")]
-        .filter(el => !el.classList.contains("is-flip-landed"));
+        .filter(el => !el.hasAttribute("data-flip-landed"));
 
     staggerCardsIn(cards);
 
     // Drop the scale-time class so the rest of the window (shadows, the focal image) is back to
     // normal while the cards wait their turn.
-    windowEl.classList.remove("is-flipping");
-    // Note: .is-flip-landed is owned and removed by closeProjectDetail (per-card), not here, so
+    windowEl.removeAttribute("data-flipping");
+    // Note: [data-flip-landed] is owned and removed by closeProjectDetail (per-card), not here, so
     // overlapping flips can't strip each other's exemption.
 };
 
@@ -83,7 +85,7 @@ const flipWindow = (windowEl, toMaximized) => {
     const sy = (first.height / last.height) || 1;
     windowEl.style.transformOrigin = "top left";
     windowEl.style.willChange = "transform";
-    windowEl.classList.add("is-flipping"); // drop shadows + heavy screenshots while scaling
+    windowEl.dataset.flipping = ""; // drop shadows + heavy screenshots while scaling
     windowEl.style.transform =
         `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy}) ${BASE_TRANSFORM}`;
     void windowEl.offsetWidth;
@@ -94,7 +96,7 @@ const flipWindow = (windowEl, toMaximized) => {
         windowEl.style.transform = "";
         windowEl.style.transformOrigin = "";
         windowEl.style.willChange = "";
-        revealGridImages(windowEl); // staggered slide-in, then drops is-flipping
+        revealGridImages(windowEl); // staggered slide-in, then drops [data-flipping]
     }, animationDuration);
 };
 
@@ -112,15 +114,15 @@ const closeProjectDetail = () => {
     // Its image FLIPs back on its own path, so exempt this card from the slide-in cascade. Drop
     // the marker per-card just after the reveal has read it (it runs at animationDuration), so
     // overlapping open/close operations can't strip each other's exemption.
-    card.classList.add("is-flip-landed");
-    setTimeout(() => card.classList.remove("is-flip-landed"), animationDuration + 80);
+    card.dataset.flipLanded = "";
+    setTimeout(() => card.removeAttribute("data-flip-landed"), animationDuration + 80);
     const client = card.querySelector(".🎨lsdev-project__client-info");
     const projectName = card.querySelector("p");
 
     // The image is still portaled to <body> from the open. Keep it there so the window's
     // transform FLIP (in shrinkMaximizedWindow) can't affect it, FLIP it independently back
     // onto its grid tile, then reparent it home at the end.
-    const projectImg = document.querySelector(".🎨lsdev-project__img-bg.is-portaled");
+    const projectImg = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
 
     // Restore visibility on ALL other cards — symmetric with showProject(), which hides every
     // other card. Restoring a still-filtered (display:none) card is a no-op, but it clears the
@@ -169,17 +171,17 @@ const closeProjectDetail = () => {
         // reparent home and strip every portal/FLIP inline style once it's back on its tile
         setTimeout(() => {
             if (imgHome) imgHome.parent.insertBefore(projectImg, imgHome.next);
-            projectImg.classList.remove("is-portaled");
+            projectImg.removeAttribute("data-portaled");
             projectImg.style.cssText = "";
             // reparenting re-grows the card, nudging the grid scroll — re-pin once
             if (gridContainer) gridContainer.scrollTop = savedGridScroll;
         }, animationDuration);
     }
 
-    [projectInfoModal, ...projectSecondaryImages].forEach(el => {
+    [projectInfoModal, ...projectSecondaryPanels].forEach(el => {
         el && (el.style.display = "none");
         requestAnimationFrame(() => {
-            el.classList.remove("fade-in");
+            el.removeAttribute("data-faded-in");
         });
     });
 
@@ -244,7 +246,7 @@ const showProject = (project) => {
     savedImgTile = first; // remember the tile rect so the close can FLIP straight back to it
     imgHome = { parent: projectImg.parentNode, next: projectImg.nextSibling };
     document.body.appendChild(projectImg);
-    projectImg.classList.add("is-portaled");
+    projectImg.dataset.portaled = "";
 
     // jump to the final expanded layout (no transition)
     projectImg.style.transition = "none";
@@ -273,7 +275,7 @@ const showProject = (project) => {
     projectImg.style.transform = "none";
     setTimeout(() => { projectImg.style.willChange = ""; }, 500);
     
-    [...projectSecondaryImages, projectInfoModal].forEach((el, index) => {
+    [...projectSecondaryPanels, projectInfoModal].forEach((el, index) => {
         
         if (!el) return;
 
@@ -283,19 +285,19 @@ const showProject = (project) => {
 
         requestAnimationFrame(() => {
             el.style.transitionDelay = `${delay + (index * 250)}ms`;
-            el.classList.add("fade-in");
+            el.dataset.fadedIn = "";
         });
     });
 
     const role = `
-        <div class="role">
-            <h3>
+        <div class="🎨lsdev-project-modal__secondary-info">
+            <h3 class="🎨lsdev-project-modal__subheading">
                 Role
             </h3>
             <p>
                 Designer & developer
             </p>
-            <h3 class="awards">
+            <h3 class="🎨lsdev-project-modal__subheading">
                 Awards
             </h3>
             <p>
@@ -315,8 +317,8 @@ const showProject = (project) => {
     // Projects without an authored write-up (07+) have no content div — guard so the
     // maximize still runs instead of throwing and leaving the window un-maximized.
     if (content) content.style.display = "block";
-    projectSecondaryImages[0].innerHTML = `<img src="img/projects/carbon-colab-mobile.png"/>`;
-    projectSecondaryImages[1].innerHTML = role;
+    projectSecondaryPanels[0].innerHTML = `<img class="🎨lsdev-project-modal__secondary-image" src="img/projects/carbon-colab-mobile.png"/>`;
+    projectSecondaryPanels[1].innerHTML = role;
 }
 const shrinkMaximizedWindow = (window, minimizeClicked) => {
     

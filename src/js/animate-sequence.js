@@ -156,7 +156,7 @@ export const animateSequence = async () => {
 
             scrollProjects();
             filterProjects();
-            document.body.classList.remove("is-loading");
+            document.body.removeAttribute("data-loading");
         }, 250 * windows.length + 100);
 
         sectionTrackingInit();

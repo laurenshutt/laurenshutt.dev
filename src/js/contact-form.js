@@ -81,12 +81,12 @@ export const contactForm = () => {
                 input.disabled = true;
             });
 
-            submitButton.classList.add("is-sending");
+            submitButton.dataset.sending = "";
             submitButton.disabled = true;
             submitButton.innerHTML = "Message sending";
 
             submitButton.addEventListener("mouseleave", () => {
-                submitButton.classList.add("is-idle");
+                submitButton.dataset.idle = "";
             });
 
             fetch('https://formsubmit.co/ajax/dae31ce907c2e0bb6d4f029f67ece4c7', {
@@ -98,7 +98,7 @@ export const contactForm = () => {
             })
             .then(response => response.json())
             .then(data => {
-                submitButton.classList.remove("is-sending");
+                submitButton.removeAttribute("data-sending");
                 submitButton.innerHTML = "Sent!";
                 console.log(data);
             })
