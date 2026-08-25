@@ -1394,7 +1394,7 @@
         box-sizing: border-box;
         margin-bottom: max(
             40px,
-            7.5vh);
+            10vh);
         padding: 0 25px;
         border-radius: 10px;
 
