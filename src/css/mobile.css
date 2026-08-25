@@ -59,7 +59,7 @@
            column's padding automatically and there is no position to override at any breakpoint —
            the bearing correction on its margin is in em and scales with this font-size on its own. */
         .🎨lsdev-page-title.is-moved {
-            font-size:4.8vw;
+            font-size:5.25vw;
         }
         /* Scoped to the contact block on purpose: the bare h2 rule this overrides also feeds the
            window title bars, which set their own size and shouldn't move. */
@@ -97,7 +97,7 @@
             left:90px;
         }
         main > div:nth-child(2) {
-            margin:45px 5vw 0 7.5vw;
+            margin:45px 5vw 0 8vw;
         }
         /* Taller projects window, sized to leave the about window's title bar just peeking below
            it. Derived from what sits above and below the grid in this band:

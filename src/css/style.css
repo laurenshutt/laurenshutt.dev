@@ -940,8 +940,6 @@
         pointer-events: none;
     }
 
-    /* Moved here from the reset, where it read as a mystery: it exists only to undo the
-       pointer-events: none above. */
     nav {
         pointer-events: all;
     }
@@ -950,7 +948,7 @@
         
         position: relative;
         
-        margin: 75px 5vw 0 120px;
+        margin: 75px 5vw 0 8vw;
     }
 
     /* #endregion */
@@ -1010,7 +1008,7 @@
             left: auto;
             width: min-content;
             transform: none;
-            font-size: 4.6vw; 
+            font-size: 5.5vw; 
             left:-6px;
         }
     }
@@ -1019,6 +1017,7 @@
 
         position: relative;
 
+        max-width:30ch;
         margin-top: 30px;
 
         line-height: 1.5;
@@ -1689,9 +1688,6 @@
         color:var(--💾lsdev-purple);
         font-weight:500;
         line-height:1;
-        /* Stated rather than inherited from the browser: this is the one named link in the design
-           that keeps an underline, and a[class] in the reset would otherwise clear it. */
-        text-decoration: underline;
         text-decoration:underline;
         
         transition: color .2s ease;
