@@ -97,7 +97,7 @@
             left:90px;
         }
         main > div:nth-child(2) {
-            margin:45px 40px 0 100px;
+            margin:45px 5vw 0 7.5vw;
         }
         /* Taller projects window, sized to leave the about window's title bar just peeking below
            it. Derived from what sits above and below the grid in this band:

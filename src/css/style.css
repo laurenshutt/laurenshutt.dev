@@ -950,7 +950,7 @@
         
         position: relative;
         
-        margin: 75px 40px 0 120px;
+        margin: 75px 5vw 0 120px;
     }
 
     /* #endregion */
@@ -991,7 +991,7 @@
         
         position: fixed;
         top: 50vh;
-        left: 50vw;
+        left: calc(50vw - 6px);
         
         width: 65%;
         transform: translate(
@@ -1011,6 +1011,7 @@
             width: min-content;
             transform: none;
             font-size: 4.6vw; 
+            left:-6px;
         }
     }
 
