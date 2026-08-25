@@ -609,9 +609,8 @@
     */
 
 
-    /* #region 05 · scene */
+    /* #region */
 
-    /* Declarations that belong to the root element itself. */
     .🐱lsdev {
         --lsdev-page-gradient: linear-gradient(
             to bottom right,
@@ -627,7 +626,6 @@
      * the single source of truth. 
      */
        
-
     .🎨lsdev-bg-grid {
         
         display: grid;
@@ -711,8 +709,6 @@
         pointer-events: none;
     }
 
-    /* #endregion */
-
     @keyframes ✨lsdev-fx-fade-trail {
         0% {
             opacity: 0.8;
@@ -735,6 +731,9 @@
         }
     }
 
+    /* #endregion */
+
+
 
 
 
@@ -750,7 +749,7 @@
 
     */
 
-    /* #region 06 · external nav */
+    /* #region */
 
     .🎨lsdev-external-nav {
         
@@ -814,8 +813,6 @@
     }
 
     .🎨lsdev-external-nav__icon {
-
-
 
         &::before {
 
@@ -927,10 +924,9 @@
 
     */
 
-    /* #region 07 · page layout */
 
-    /* The page grid is click-through so the scene behind it stays interactive; anything that
-       needs clicks turns them back on for itself. */
+    /* #region */
+
     .🎨lsdev-page {
         
         position: relative;
@@ -974,7 +970,8 @@
 
     */
 
-    /* #region 08 · sidebar */
+
+    /* #region */
 
     .🎨lsdev-page__sidebar {
             
@@ -1110,7 +1107,6 @@
         letter-spacing: -1px;
 
         transition: margin .3s ease;
-
     }
 
     .🎨lsdev-hud__clock {
@@ -1154,10 +1150,8 @@
     */
 
 
+    /* #region */
 
-    /* #region 09 · glitch */
-
-    /* Declarations that belong to the root element itself. */
     .🐱lsdev {
         --lsdev-glitch-background-color: var(--💾lsdev-pink);
     }
@@ -1173,7 +1167,6 @@
      * resolves it — so the two line up wherever the pseudo 
      * happens to sit. 
      */
-
 
     .✨lsdev-fx-glitch {
         
@@ -1234,8 +1227,6 @@
             --lsdev-glitch-animation-state-after, 
             none);
     }
-
-    /* #endregion */
 
     @keyframes ✨lsdev-fx-glitch-before {
         0% {
@@ -1369,6 +1360,9 @@
         }
     }
 
+    /* #endregion */
+
+
                     
 
 
@@ -1385,7 +1379,7 @@
     */
 
 
-    /* #region 10 · windows */
+    /* #region */
 
     .🎨lsdev-window {
 
@@ -1766,8 +1760,6 @@
         box-shadow: none !important;
     }
 
-    /* #endregion */
-
     @keyframes ✨lsdev-fx-stretch-down {
         from {
             opacity: .5;
@@ -1836,6 +1828,8 @@
         }
     }
 
+    /* #endregion */
+
 
 
 
@@ -1852,7 +1846,7 @@
     */
 
 
-    /* #region 11 · projects window */
+    /* #region */
 
     .🎨lsdev-window[data-variant="projects"][data-flipping] {
         --card-visibility: hidden;
@@ -1954,18 +1948,11 @@
         span:first-child {
             
             flex-grow:1;
-            /* Lets the name shrink past its longest word so the number keeps its place. A flex
-               item will not shrink below min-content by default, and name + number was
-               overflowing the card by a few pixels into the next grid column. */
             min-width: 0;
             
             text-align:left;
         }
 
-        /* :last-child, not :nth-child(2). The number lives in an empty span at the end, but four
-           cards carry a desktop/mobile pair of name spans, so position 2 there is the hidden
-           mobile duplicate — the counter was landing on a display:none element and never showed
-           (while still incrementing, which is why the sequence stayed right). */
         span:last-child{
             
             padding-left:20px;
@@ -2057,8 +2044,6 @@
         border-radius: var(--project-img-radius, 3px);
     } 
 
-    /* #endregion */
-
     @keyframes ✨lsdev-fx-img-slide-in {
         from { 
             opacity: 0; 
@@ -2069,6 +2054,8 @@
             transform: translateX(0); 
         }
     }
+
+    /* #endregion */
 
 
 
@@ -2086,7 +2073,7 @@
     */
 
 
-    /* #region 12 · project modal */
+    /* #region */
 
     .🎨lsdev-project-modal {
         
@@ -2213,7 +2200,7 @@
     */
 
 
-    /* #region 13 · about window */
+    /* #region */
 
     .🎨lsdev-about__content {
         padding-bottom:45px !important;
@@ -2312,8 +2299,7 @@
 
     */
 
-
-    /* #region 14 · testimonials window */
+    /* #region */
 
     .🎨lsdev-window[data-variant="reviews"] {
         --lsdev-window-content-overflow: hidden;
@@ -2472,7 +2458,7 @@
     */
 
 
-    /* #region 15 · contact form */
+    /* #region */
 
     .🎨lsdev-contact {
 
@@ -2660,8 +2646,6 @@
 
         &[data-variant="mission"] {
 
-            padding-left: 18px;
-
             white-space: nowrap;
             pointer-events: auto;
 
@@ -2731,10 +2715,7 @@
         gap:20px;
 
         height:60px;
-
     }
-
-
 
     /* #endregion */
                 
@@ -2754,7 +2735,7 @@
     */
 
 
-    /* #region 16 · footer */
+    /* #region */
 
     .🎨lsdev-footer {
         
