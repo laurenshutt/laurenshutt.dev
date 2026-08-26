@@ -2515,8 +2515,6 @@
             border .2s ease;
         transition-delay:calc(var(--i) * 250ms);
 
-        pointer-events: auto;
-
         &:has([required]) {
             --lsdev-required-marker: "*";
         }
@@ -2574,6 +2572,10 @@
     }
 
     .🎨lsdev-contact__missions {
+
+        /* Catch the pointer over the pill group only. On the fieldset this blanketed
+           roughly a third of the viewport and killed the background grid's hover. */
+        pointer-events: auto;
         
         display:flex;
         justify-content: space-around;
