@@ -1032,6 +1032,10 @@
         --animation-duration: 275ms;
         
         position: relative;
+
+        /* Same reason as the list inside it: full width here means the nav swallows
+           pointer events across the empty space beside the links. */
+        width: fit-content;
         
         margin-top: 30px;
         
@@ -1044,10 +1048,18 @@
         margin: 0;
         padding: 0 0 0 25px;
 
+        /* Shrink to the links. As a full-width block this list blanketed ~160px of empty
+           space to the right of every item, and since it takes pointer events that killed
+           the background grid's hover across the whole area above the HUD. Sizing it here
+           rather than using pointer-events keeps the li:mouseenter caret working. */
+        width: fit-content;
+
         cursor: pointer;
     }
 
     .🎨lsdev-on-page-nav__item {
+
+        width: fit-content;
 
         padding-bottom: 12.5px;
 
@@ -2399,10 +2411,10 @@
         align-self: flex-end;
         gap:10px;
         
+        width:100%;
         height:fit-content;
         min-height:170px;
         margin-bottom: 0px;
-        padding-left:30px;
     }
 
     .🎨lsdev-reviews-carousel__attribution-content {
