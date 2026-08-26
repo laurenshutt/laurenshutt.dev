@@ -2148,6 +2148,16 @@
         
         transition:opacity .5s ease .15s;
 
+        /* opacity:0 still hit-tests. These are position:fixed over the bottom-left of the
+           viewport, so while hidden they silently swallowed every pointer event there --
+           which killed the background grid's hover across that whole corner. Stay inert
+           until actually faded in. */
+        pointer-events: none;
+
+        &[data-faded-in] {
+            pointer-events: auto;
+        }
+
         /* These two live here, on the container, because that is the element carrying data-variant.
         Nested under the __secondary-image rule they compiled to `img[data-variant=…]` and matched
         nothing, so both panels sat at the container's left: 29px on top of each other. */
