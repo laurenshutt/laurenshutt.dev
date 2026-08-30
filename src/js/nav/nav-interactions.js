@@ -20,7 +20,7 @@ export const initNavAnimations = (lastI) => {
     caret.style.setProperty("opacity", "1");
             
     lastNavItem.addEventListener("animationend", () => {
-        mainNavItems[0].classList.add("is-highlighted");
+        mainNavItems[0].dataset.highlighted = "";
         caret.style.setProperty("transition-delay","100ms");
     }, { once: true });
 

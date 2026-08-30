@@ -68,6 +68,17 @@ export const initReviewsSlider = () => {
     };
 
     const next = () => {
+
+        // Normally the loop wraps in the transitionend handler below, but that only fires when the
+        // slide actually animates. It does not while the reviews window is closed — its body is
+        // display:none, and transitions do not run on unrendered elements — nor reliably in a
+        // background tab, where setInterval keeps firing but rendering is throttled. Left to drift,
+        // `index` walks off the end of the track and the window opens on empty space.
+        if (index >= slides.length + slidesToShow) {
+            index = slidesToShow;
+            moveTo(index, false);
+        }
+
         index++;
         moveTo(index);
     };
@@ -93,8 +104,18 @@ export const initReviewsSlider = () => {
     });
 
     const play = () => {
+
         if (stillness.matches) return;
-        interval = setInterval(next, autoplaySpeed);
+
+        // Autoplay starts here, at init — which happens during the ABOUT reveal, a section earlier
+        // than this carousel's own. Between the two the reviews window is still closed, so these
+        // ticks would advance a carousel nobody can see and it would open partway through its
+        // sequence instead of on the first slide. Same "no width means the window is closed" test
+        // slidesThatFit() uses.
+        interval = setInterval(() => {
+            if (!track.getBoundingClientRect().width) return;
+            next();
+        }, autoplaySpeed);
     };
 
     const pause = () => clearInterval(interval);

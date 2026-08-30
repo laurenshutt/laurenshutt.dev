@@ -85,12 +85,12 @@ export const innerToc = () => {
     let locked = null;
     let hovered = null;
 
-    // Move the caret and mark where it landed. The indent keys off is-caret rather than
-    // is-highlighted because the two diverge while hovering: the highlight stays on the section
+    // Move the caret and mark where it landed. The indent keys off data-caret rather than
+    // data-highlighted because the two diverge while hovering: the highlight stays on the section
     // being read, the caret (and its indent) follows the pointer.
     const placeCaret = (li, highlight) => {
 
-        items.forEach(item => item.classList.toggle("is-caret", item === li));
+        items.forEach(item => item.toggleAttribute("data-caret", item === li));
 
         slideCaret({ nav, caret, items, li, highlight });
     };

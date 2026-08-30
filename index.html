@@ -464,7 +464,7 @@
         gtag('config', 'G-7CSJ2LD30K');
     </script>
     <body data-loading>
-        <div>
+        <div class="🎨lsdev-bg">
             <div 
                 class="🎨lsdev-bg-grid"
                 id="🫆lsdev-bg-grid"></div>
@@ -473,39 +473,40 @@
                 id="🫆lsdev-floating-squares"></canvas>
             <div class="🎨lsdev-bg-grid__gradient-overlay"></div>
         </div>
-        <h1 
-            class="🎨lsdev-page-title 🎨lsdev-u-desktop has-glitch"
-            aria-label="Lauren Shutt">
+        <h1
+            class="🎨lsdev-page-title has-glitch"
+            aria-label="Lauren Shutt"
+            data-show-on="desktop">
             <span 
                 class="✨lsdev-fx-glitch" 
                 data-text="Lauren Shutt">
             </span>
         </h1>
-        <div class="🎨lsdev-u-mobile">
-            <span
-                class="has-glitch" 
-                aria-hidden="true">
+        <div 
+            class="🎨lsdev-mobile-hero"
+            data-show-on="mobile">
+            <h1
+                class="🎨lsdev-page-title has-glitch"
+                aria-hidden="true"
+                aria-label="Lauren Shutt">
                 <span 
                     class="✨lsdev-fx-glitch" 
                     data-text="Lauren">
                 </span>
-            </span>
-            <span 
-                class="has-glitch"
-                aria-hidden="true">
                 <span 
                     class="✨lsdev-fx-glitch" 
                     data-text="Shutt">
                 </span>
-            </span>
+            </h1>
             <p 
                 class="🎨lsdev-intro-text" 
                 data-reveal>
                 Hello! 👋🏻 I’m a front-end developer currently working for
-                <a 
-                    href="https://partnerships.vt.edu/about/creative-studio" 
+                <a
+                    class="🎨lsdev-link"
+                    href="https://partnerships.vt.edu/about/creative-studio"
                     rel="noopener noreferrer"
-                    target="_blank" 
+                    target="_blank">
                     <span>Virginia Tech</span>
                 </a>.
             </p>
@@ -575,29 +576,12 @@
                             data-icon="charms"></button>
                     </li>
                 </ul>
-                <ul style="display:none;">
-                    <li>
-                        <a>Colophon</a>
-                    </li>
-                    <li>
-                        <a>Now</a>
-                    </li>
-                    <li>
-                        <a>LinkedIn</a>
-                    </li>
-                    <li>
-                        <a>Github</a>
-                    </li>
-                    <li>
-                        <a>VT</a>
-                    </li>
-                </ul>
             </nav>
             <main class="🎨lsdev-page">
                 <aside>
                     <div class="🎨lsdev-page__sidebar">
                         <div class="🎨lsdev-page__sidebar-top">
-                            <p class="🎨lsdev-intro-text" data-reveal>
+                            <p class="🎨lsdev-intro-text" data-reveal data-show-on="desktop">
                                 Hello! 👋🏻 I’m a front-end developer currently working for
                                 <a 
                                     class="🎨lsdev-link"
@@ -611,10 +595,20 @@
                                 class="🎨lsdev-on-page-nav" 
                                 id="🫆lsdev-on-page-nav"
                                 aria-label="On-page navigation">
-                                <span 
+                                <button
+                                    class="🎨lsdev-button 🎨lsdev-on-page-nav__toggle"
+                                    id="🫆lsdev-on-page-nav__toggle"
+                                    type="button"
+                                    aria-expanded="false"
+                                    aria-controls="🫆lsdev-on-page-nav__list">
+                                    Sections
+                                </button>
+                                <span
                                     class="🎨lsdev-on-page-nav__caret"
                                     aria-hidden="true"></span>
-                                <ul class="🎨lsdev-on-page-nav__list">
+                                <ul
+                                    class="🎨lsdev-on-page-nav__list"
+                                    id="🫆lsdev-on-page-nav__list">
                                     <li 
                                         class="🎨lsdev-on-page-nav__item" 
                                         data-reveal>
@@ -895,10 +889,10 @@
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-desktop">
+                                            <p class="🎨lsdev-project__project-name" data-show-on="desktop">
                                                 ISEC Website
                                             </p>
-                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-mobile">
+                                            <p class="🎨lsdev-project__project-name" data-show-on="mobile">
                                                 ISEC Website
                                             </p>
                                             <div class="🎨lsdev-project__img-bg">
@@ -965,15 +959,15 @@
                                             aria-haspopup="dialog" 
                                             aria-controls="🫆lsdev-project-content--uccmc">
                                             <div class="🎨lsdev-project__client-info">
-                                                <span class="🎨lsdev-u-desktop">
+                                                <span data-show-on="desktop">
                                                     Ukrainian Catholic Archeparchy of Philadelphia
                                                 </span>
-                                                <span class="🎨lsdev-u-mobile">
+                                                <span data-show-on="mobile">
                                                     Ukrainian Catholic Archeparchy of Philadelphia
                                                 </span>
                                                 <span></span>
                                             </div>
-                                            <p class="🎨lsdev-project__project-name 🎨lsdev-u-desktop">
+                                            <p class="🎨lsdev-project__project-name" data-show-on="desktop">
                                                 Ukrainian Catholic Crisis Media Center Website
                                             </p>
                                             <div class="🎨lsdev-project__img-bg">
@@ -1226,7 +1220,7 @@
                                     </div>
                                 </nav>
                                 <div class="🎨lsdev-window__content 🎨lsdev-about__content">
-                                    <p class="🎨lsdev-u-desktop 🎨lsdev-about__text">
+                                    <p class="🎨lsdev-about__text" data-show-on="desktop">
                                         Hi there, I’m Lauren! I’m a self-taught, front-end developer from Anchorage, Alaska; now living in Blacksburg, Virginia. I’m driven by relentless curiosity and a love for designing imaginative digital solutions. If you’re a CliftonStrengths person, you can
                                         <a
                                             class="🎨lsdev-window__link"
@@ -1236,7 +1230,7 @@
                                             <span>read my report here</span>
                                         </a>.
                                     </p>
-                                    <p class="🎨lsdev-u-desktop 🎨lsdev-about__text">
+                                    <p class="🎨lsdev-about__text" data-show-on="desktop">
                                         Since 2016, I’ve been building the web for Virginia Tech, currently in the Office of
                                         <a
                                             class="🎨lsdev-window__link"
@@ -1247,6 +1241,9 @@
                                         </a>.
                                         I’ve completed award-winning work in K-12 and higher education, including the Anchorage School District, Georgetown University, The Catholic University of America, and The Augustine Institute.
                                     </p>
+                                    <p class="🎨lsdev-about__text" data-show-on="mobile">
+                                        Hi there, I’m Lauren! 👋🏻 A self-taught developer driven by relentless curiosity and a love for designing imaginative corners of the internet. If you’re a CliftonStrengths person, you can <a class="🎨lsdev-window__link" href="/Shutt-Lauren-SIGNATURE_THEME.pdf" target="_blank" rel="noopener noreferrer"><span>read my report</span></a>. Since 2016, I’ve been building the web for Virginia Tech.
+                                    </p>
                                     <p>
                                         Outside of work I’m an avid hobby collector. You can find me tending a heavily-modded Stardew farm, crafting, or writing; usually in a cuddle puddle of 
                                         <span 
@@ -1256,9 +1253,6 @@
                                             aria-describedby="🎨lsdev-tooltip">
                                             <span>two underfed cats and a pittski</span>
                                         </span>.
-                                    </p>
-                                    <p class="🎨lsdev-u-mobile 🎨lsdev-about__text">
-                                        Hi there, I’m Lauren! 👋🏻 A self-taught developer driven by relentless curiosity and a love for designing imaginative corners of the internet. If you’re a CliftonStrengths person, you can <a href="/Shutt-Lauren-SIGNATURE_THEME.pdf" target="_blank"><span>read my report</span></a>. Since 2016, I’ve been building the web for Virginia Tech.
                                     </p>
                                     <div class="🎨lsdev-icebreaker">
                                         <button 

@@ -58,6 +58,35 @@ export const scrollToTop = (() => {
     window.scrollTo(0, 0);
 })();    
 
+// Read a design token off :root. Values the stylesheet already owns — the motion curve, the
+// palette — were previously restated as string literals in here, which meant retuning one in the
+// CSS silently left the JS animating on the old value. Read lazily and cached: the first call
+// happens well after the stylesheet has applied, and the tokens never change at runtime.
+const tokenCache = new Map();
+
+export const cssToken = (name, fallback = "") => {
+
+    if (!tokenCache.has(name)) {
+        const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        tokenCache.set(name, value || fallback);
+    }
+
+    return tokenCache.get(name);
+};
+
+// Is the mobile layout in force? Answered by the stylesheet, which flips --💾lsdev-layout inside
+// its breakpoint, so the width itself is written in exactly one place. Four files used to compare
+// innerWidth to their own copy of the number; when the breakpoint moved, the CSS said desktop while
+// the JS still said mobile, and the nav was pulled out of the sidebar into a hero that no longer
+// existed at that width.
+//
+// Deliberately not going through cssToken: that caches on the grounds that tokens never change at
+// runtime, which is true of the palette and the easings and is exactly wrong for this one.
+export const isMobileLayout = () =>
+    getComputedStyle(document.documentElement)
+        .getPropertyValue("--💾lsdev-layout")
+        .trim() === "mobile";
+
 export const delay = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -81,16 +110,22 @@ export const buttonPress = () => {
     
     document.querySelectorAll('.🎨lsdev-button').forEach(button => {
 
-                const removePress = () => {
-            button.classList.remove('is-pressed');
-        };
-        
-        button.addEventListener('pointerdown', () => {
-            button.classList.add('is-pressed');
+        let pressTimer;
 
-            setTimeout(function(){
-                removePress();
-            },200)
+        const removePress = () => {
+            clearTimeout(pressTimer);
+            button.removeAttribute('data-pressed');
+        };
+
+        // Held for 200ms minimum, so a fast click still reads as a press rather than a flicker.
+        // Each press replaces the previous timer: without that, the first click's timer fires
+        // partway through a second click and cuts its press short.
+        button.addEventListener('pointerdown', () => {
+            button.dataset.pressed = "";
+
+            clearTimeout(pressTimer);
+
+            pressTimer = setTimeout(removePress, 200);
         });
 
 

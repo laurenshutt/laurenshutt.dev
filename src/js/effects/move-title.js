@@ -1,3 +1,7 @@
+import {
+    cssToken
+} from "../utils.js";
+
 // The page title starts life centred and position:fixed, outside the stage, so it can be the only
 // thing on screen during the intro. This retires it into the sidebar's flow, first above the intro
 // text, so that from then on it shares the column's padding with everything else — no viewport
@@ -38,7 +42,7 @@ export const moveTitleIntoSidebar = (title, { duration = 700 } = {}) => {
 
     title.before(marker);
     column.prepend(title);
-    title.classList.add("is-moved");
+    title.dataset.moved = "";
 
     const last = title.getBoundingClientRect();
     const lastFont = getComputedStyle(title).fontSize;
@@ -49,7 +53,7 @@ export const moveTitleIntoSidebar = (title, { duration = 700 } = {}) => {
     const displacement = (followers[0]?.getBoundingClientRect().top ?? 0) - restingTop;
 
     // back to where it was; no paint has happened, so none of this is visible
-    title.classList.remove("is-moved");
+    title.removeAttribute("data-moved");
     marker.replaceWith(title);
 
     // --- 2. animate, still fixed --------------------------------------------------------------
@@ -64,7 +68,7 @@ export const moveTitleIntoSidebar = (title, { duration = 700 } = {}) => {
 
     void title.offsetWidth;
 
-    const ease = "cubic-bezier(.22, 1, .36, 1)";
+    const ease = cssToken("--💾lsdev-ease-flip");
 
     title.style.transition =
         `top ${duration}ms ${ease}, left ${duration}ms ${ease}, ` +
@@ -91,7 +95,7 @@ export const moveTitleIntoSidebar = (title, { duration = 700 } = {}) => {
     setTimeout(() => {
 
         column.prepend(title);
-        title.classList.add("is-moved");
+        title.dataset.moved = "";
 
         // The flow now provides the offset the translate was faking, so dropping both at the same
         // moment leaves everything exactly where it already appears to be.

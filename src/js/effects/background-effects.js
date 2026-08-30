@@ -1,3 +1,8 @@
+import {
+    cssToken,
+    isMobileLayout
+} from "../utils.js";
+
 const grid = document.getElementById("🫆lsdev-bg-grid");
 
 const hexToRgba = (hex, alpha) => {
@@ -11,7 +16,7 @@ const hexToRgba = (hex, alpha) => {
 export const createGrid = () => {
             
     if (!grid) return;
-    if (window.innerWidth <= 1035) return;
+    if (isMobileLayout()) return;
 
     const cols = Math.floor(window.innerWidth / 32);
     const rows = Math.floor(window.innerHeight / 32);
@@ -42,7 +47,14 @@ export const createGrid = () => {
 
 export const handleGridHover = ({ target }) => {
             
-    const glowColors = ["#a7ba9e", "#d1bcd3", "#85a4c7"];
+    // One step each from the sage, mauve and blue ramps. These are read from the stylesheet rather
+    // than restated here, but they have to stay hex tokens for hexToRgba below — a derived value
+    // would arrive as an oklch() expression and parseInt would make nonsense of it.
+    const glowColors = [
+        cssToken("--💾lsdev-sage-600"),
+        cssToken("--💾lsdev-mauve-400"),
+        cssToken("--💾lsdev-blue-400")
+    ];
 
     if (!target.matches(".🎨lsdev-bg-grid__cell")) return;
 
@@ -57,7 +69,7 @@ export const handleGridHover = ({ target }) => {
     grid.appendChild(trail);
 
     setTimeout(() => {
-        target.style.backgroundColor = "#f8c9cd";
+        target.style.backgroundColor = cssToken("--💾lsdev-pink-700");
         trail.remove();
     }, 800);
 };
@@ -103,7 +115,15 @@ export const floatingSquares = () => {
 
     const mouse = { x: null, y: null };
 
-    const squareColors = ["#c7d3c2", "#c9b0cc", "#cad7e6"];
+    // The other step of each of the same three ramps. Note the mauve does not follow the pattern:
+    // the squares take the lighter sage and blue but the DARKER mauve, where the grid glow above
+    // takes the darker sage and blue with the lighter mauve. That inconsistency is in the original
+    // palette, not a slip here — preserved deliberately.
+    const squareColors = [
+        cssToken("--💾lsdev-sage-300"),
+        cssToken("--💾lsdev-mauve-500"),
+        cssToken("--💾lsdev-blue-300")
+    ];
     const NUM_SQUARES = 5;
 
     let squares = [];

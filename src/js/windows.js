@@ -1,5 +1,6 @@
-import { 
+import {
     slideToggle,
+    cssToken,
 } from "./utils.js";
 
 const originalRects = new Map();
@@ -89,7 +90,7 @@ const flipWindow = (windowEl, toMaximized) => {
     windowEl.style.transform =
         `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy}) ${BASE_TRANSFORM}`;
     void windowEl.offsetWidth;
-    windowEl.style.transition = `transform ${animationDuration}ms cubic-bezier(.22, 1, .36, 1)`;
+    windowEl.style.transition = `transform ${animationDuration}ms ${cssToken("--💾lsdev-ease-flip")}`;
     windowEl.style.transform = BASE_TRANSFORM;
     setTimeout(() => {
         windowEl.style.transition = "";

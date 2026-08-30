@@ -6,9 +6,13 @@ import {
     staggerCardsIn
 } from "../windows.js";
 
+import {
+    isMobileLayout
+} from "../utils.js";
+
 export const scrollProjects = () => {
 
-    if (window.innerWidth <= 1035) return;
+    if (isMobileLayout()) return;
 
     const scrollContainer = document.getElementById("🫆lsdev-projects__grid-container");
     const tracker = createMouseTracker();

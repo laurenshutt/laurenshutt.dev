@@ -1,5 +1,6 @@
 import { 
     delay,
+    isMobileLayout,
     slideToggle
 } from './utils.js';
 
@@ -36,6 +37,10 @@ import {
 import {
     moveTitleIntoSidebar
 } from "./effects/move-title.js";
+
+import {
+    collapseNavIntoHero
+} from "./nav/mobile-nav.js";
 
 import {
     tooltips
@@ -120,7 +125,12 @@ export const animateSequence = async () => {
     // point, so revealing it early shows nothing.
     stage.style.display = "block";
 
-    if (window.innerWidth >= 1035) moveTitleIntoSidebar(glitchOuter[0]);
+    // Two halves of the same decision. Above the breakpoint the title retires into the sidebar
+    // beside the nav; below it there is no sidebar to retire into, and the nav comes the other way
+    // instead — into the hero, collapsed behind one control — so the title, intro and nav can be
+    // centred together in the first viewport.
+    if (!isMobileLayout()) moveTitleIntoSidebar(glitchOuter[0]);
+    else collapseNavIntoHero();
 
     await delay(500);
 
@@ -212,7 +222,7 @@ export const animateSequence = async () => {
         watchFooter();
     };
 
-    if (window.innerWidth >= 1035) glitch();
+    if (!isMobileLayout()) glitch();
 
     loadingPhrases();
     

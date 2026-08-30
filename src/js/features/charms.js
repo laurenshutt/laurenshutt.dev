@@ -119,13 +119,15 @@ const renderPanel = () => {
         const isFound = Boolean(earned[charm.id]);
         const tile = document.createElement("li");
 
-        tile.className = "🎨lsdev-charm" + (isFound ? " is-found" : "");
+        tile.className = "🎨lsdev-charm";
+
+        if (isFound) tile.dataset.found = "";
 
         // Locked charms give nothing away — no name, no hint. Finding one is what explains it.
         tile.innerHTML = isFound
             ? `<span class="🎨lsdev-charm__glyph">${charm.glyph}</span>
                <span class="🎨lsdev-charm__name">${charm.name}</span>
-               <span class="🎨lsdev-charm__earned">${formatDate(earned[charm.id])}</span>`
+               <span class="🎨lsdev-charm__earned-date">${formatDate(earned[charm.id])}</span>`
             : `<span class="🎨lsdev-charm__glyph">?</span>`;
 
         if (isFound) tile.title = charm.earnedFor;
@@ -138,8 +140,8 @@ const setOpen = (open) => {
 
     if (!elements) return;
 
-    elements.panel.classList.toggle("is-open", open);
-    elements.backdrop.classList.toggle("is-open", open);
+    elements.panel.toggleAttribute("data-open", open);
+    elements.backdrop.toggleAttribute("data-open", open);
     // Inline, for the reason noted where the backdrop is created.
     elements.backdrop.setBlur?.(open ? "5px" : "0px");
     elements.toggle.setAttribute("aria-expanded", String(open));
@@ -162,23 +164,23 @@ const buildUi = () => {
     // its coordinates against the HUD rather than the viewport and land far off-screen.
     const panel = document.createElement("div");
 
-    panel.className = "🎨lsdev-charms-panel";
-    panel.id = "🫆lsdev-charms-panel";
+    panel.className = "🎨lsdev-charms__panel";
+    panel.id = "🫆lsdev-charms__panel";
     panel.tabIndex = -1;
     panel.setAttribute("role", "group");
     panel.setAttribute("aria-label", "Charms");
     panel.innerHTML = `
-        <div class="🎨lsdev-charms-panel__bar">
+        <div class="🎨lsdev-charms__panel-bar">
             <span>Charms Collected</span>
-            <span class="🎨lsdev-charms-panel__count"></span>
+            <span class="🎨lsdev-charms__panel-count"></span>
         </div>
-        <ul class="🎨lsdev-charms-panel__grid"></ul>
+        <ul class="🎨lsdev-charms__panel-grid"></ul>
     `;
 
     // Backdrop before the panel so it paints beneath it; both are z-indexed regardless.
     const backdrop = document.createElement("div");
 
-    backdrop.className = "🎨lsdev-charms-backdrop";
+    backdrop.className = "🎨lsdev-charms__backdrop";
 
     // The blur is set here rather than in the stylesheet. It kept going missing from the CSS the
     // browser actually received, and inline styles can't be dropped by anything in between. Note
@@ -198,25 +200,25 @@ const buildUi = () => {
         panel,
         backdrop,
         toggle: document.querySelector(".🎨lsdev-hud__charms-toggle"),
-        count: panel.querySelector(".🎨lsdev-charms-panel__count"),
-        grid: panel.querySelector(".🎨lsdev-charms-panel__grid")
+        count: panel.querySelector(".🎨lsdev-charms__panel-count"),
+        grid: panel.querySelector(".🎨lsdev-charms__panel-grid")
     };
 
     elements.toggle.addEventListener("click", (element) => {
         console.log(element);
-        setOpen(!elements.panel.classList.contains("is-open"));
+        setOpen(!elements.panel.hasAttribute("data-open"));
     });
 
     // A disclosure, not a dialog: escape and click-away close it, focus returns to the toggle.
     document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && elements.panel.classList.contains("is-open")) {
+        if (event.key === "Escape" && elements.panel.hasAttribute("data-open")) {
             setOpen(false);
             elements.toggle.focus();
         }
     });
 
     document.addEventListener("pointerdown", (event) => {
-        if (!elements.panel.classList.contains("is-open")) return;
+        if (!elements.panel.hasAttribute("data-open")) return;
         if (!panel.contains(event.target)) setOpen(false);
     });
 
@@ -240,10 +242,10 @@ const toast = (charm) => {
 
     const note = document.createElement("div");
 
-    note.className = "🎨lsdev-charm-toast";
+    note.className = "🎨lsdev-charm__toast";
     note.setAttribute("role", "status");
     note.innerHTML = `
-        <span class="🎨lsdev-charm-toast__glyph">${charm.glyph}</span>
+        <span class="🎨lsdev-charm__toast-glyph">${charm.glyph}</span>
         <span>
             <b>${charm.name}</b>
             <i>charm found</i>
@@ -254,10 +256,10 @@ const toast = (charm) => {
     placeInGap(note);
 
     // Slides up into the same gap the panel occupies, so the two read as one place.
-    requestAnimationFrame(() => note.classList.add("is-in"));
+    requestAnimationFrame(() => note.dataset.shown = "");
 
     setTimeout(() => {
-        note.classList.remove("is-in");
+        note.removeAttribute("data-shown");
         setTimeout(() => note.remove(), 500);
     }, 4000);
 };

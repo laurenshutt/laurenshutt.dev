@@ -1,499 +1,560 @@
 @layer responsive {
-@media screen and (min-width:1601px){
-    .🐱lsdev {
+    
+    @media screen and (min-width:1600px){
         .🎨lsdev-intro-text {
             width: 33ch;
         }
     }
-}
 
-@media screen and (max-width:1600px){
+    @media screen and (max-width:1600px){
 
-    .🐱lsdev {
-        font-size:16px;
-    }
-
-    .🐱lsdev {
-        .has-glitch.is-moved {
-            font-size:5.25vw;
+        .🐱lsdev {
+            font-size: 16px;
         }
-        .🎨lsdev-intro-text {
-            width: 33ch;
+
+        .🎨lsdev-page-title[data-moved] {
+            font-size: 5.25vw;
         }
+
         .🎨lsdev-nav {
-            top:calc(125px + 16vw);
+            top: calc(125px + 16vw);
         }
     }
-}
 
-/* The missions row runs out of width before the rest of the form does, so it wraps here.
-   This used to be written as `#🫆lsdev-contact > form > div:nth-child(2) > fieldset:nth-child(1)
-   > div` — an id plus four structural steps — and needed !important to beat the specificity that
-   created. Every one of those elements has a name now, and being in the responsive layer it wins on
-   layer order alone. The third rule set a margin on the labels that simply restated the pill's own,
-   from when the label was a wrapper rather than the pill itself; it is gone. */
-@media screen and (max-width:1550px){
-    .🐱lsdev {
+    @media screen and (max-width:1550px){
+        
         .🎨lsdev-contact__col:nth-child(2) {
             flex-shrink: unset;
         }
+
         .🎨lsdev-contact__missions {
             display: block;
-            
         }
     }
-}
 
-/* Unmaximized laptop windows only. The cutoff sits one pixel under a maximized MacBook Air
-   viewport (1440), so maximized falls through to the 1600 block above and keeps the original,
-   roomier design. max-width is inclusive, which is why this is 1439 and not 1440.
-   Tightens the hero column: less space to its left, a smaller gap before the windows, and
-   everything sitting higher up the page.
-   The intro text and nav tops keep their laddered vw terms — only the fixed part drops by 30px,
-   so they stay in step with the name as its vw font grows. The same 30px comes off the matching
-   entries in the narrower blocks below, or they would put it back. */
-@media screen and (max-width:1439px){
-    .🐱lsdev {
-        /* Flat 16.8px for the whole band, down from ~17.2px. The base curve only spans 16.5-17.2px
-           between 1035 and 1440, so fluid type earns nothing here and a single readable value is
-           easier to verify than an intercept + vw. Everything sized in rem or em follows from
-           this, including the pixel-font headings. */
-        font-size: 16px;
-
-        /* Size only. The title sits in the sidebar's flow once it settles, so it picks up the
-           column's padding automatically and there is no position to override at any breakpoint —
-           the bearing correction on its margin is in em and scales with this font-size on its own. */
-        .🎨lsdev-page-title.is-moved {
-            font-size:5.25vw;
+    @media screen and (max-width:1439px){
+        
+        .🐱lsdev {
+            font-size: 16px;
         }
-        /* Scoped to the contact block on purpose: the bare h2 rule this overrides also feeds the
-           window title bars, which set their own size and shouldn't move. */
-        .🎨lsdev-contact h2 {
+
+        .🎨lsdev-nav {
+            top: calc(95px + 15.1vw);
+            left: 90px;
+        }
+
+        .🎨lsdev-contact__heading {
             font-size:2.25em;
         }
-        /* Email moves into the left column from this width down.
-           The markup puts it in the second column — buttons in the first, then missions, email and
-           submit in the second — and CSS cannot reparent, so both column wrappers are dropped out of
-           the box tree with display: contents. Their fieldsets become direct children of the form,
-           which turns into a grid and places all four explicitly. The wrappers still match
-           selectors, so the 1035 block below keeps working; it just puts them back to blocks. 
+
+        /* 
         .🎨lsdev-contact__form {
             display: grid;
             grid-template-columns: 1fr 1fr;
             align-items: start;
         }
+
         .🎨lsdev-contact__col {
             display: contents;
         }
+
         .🎨lsdev-contact__col:first-child .🎨lsdev-contact__fieldset {
             grid-area: 1 / 1;
         }
+
         .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(1) {
             grid-area: 1 / 2;
         }
+
         .🎨lsdev-contact__col:nth-child(2) .🎨lsdev-contact__fieldset:nth-of-type(2) {
             grid-area: 2 / 1;
         }
+
         .🎨lsdev-contact__submit-container {
             grid-area: 2 / 2;
-        }*/
-        .🎨lsdev-nav {
-            top:calc(95px + 15.1vw);
-            left:90px;
         }
-        main > div:nth-child(2) {
-            margin:45px 5vw 0 8vw;
+        */
+
+        .🎨lsdev-page__content {
+            margin: 45px 5vw 0 8vw;
         }
-        /* Taller projects window, sized to leave the about window's title bar just peeking below
-           it. Derived from what sits above and below the grid in this band:
-             45px column margin + 52px title bar + 60px filter menu + 23px bottom padding
-             + 7.5vh window margin-bottom + ~55px peek
-           so the grid gets the rest: 100vh - 7.5vh - 235px. Raise the 235px to show more of the
-           about window, lower it for a taller grid.
-           The peek is deliberately smaller than half the about bar: its reveal observer needs 50%
-           visibility (less a 5vh bottom margin) to fire, so it still waits for a scroll rather than
-           opening on load. */
-        .🎨lsdev-projects__grid-container {
-            height:calc(92.5vh - 235px);
-        }
-        /* The pink frame around each window: side padding, plus the bottom once it's open.
-           Trimmed by roughly the same proportion as the title bar above it. */
+
         .🎨lsdev-window {
-            padding:0 25px;
+            
+            padding: 0 25px;
 
             &[data-open] {
-                padding-bottom:25px;
+                padding-bottom: 25px;
             }
         }
-        /* The bar's height is this padding plus its tallest child, which is the buttons below. */
-        .🎨lsdev-window .🎨lsdev-window__title-bar {
-            padding:15px 0;
-        }
-        /* Matches the nesting depth style.css declares these at, so it wins on source order rather
-           than needing !important. The 1035 block below sets its own smaller size for mobile. */
-        .🎨lsdev-window .🎨lsdev-window__title-bar .🎨lsdev-window__controls .🎨lsdev-window__control {
-            padding:4px;
+
+        .🎨lsdev-window__control {
+            
+            padding: 4px;
 
             &::after {
-                width:15px;
-                height:15px;
+                width: 15px;
+                height: 15px;
             }
         }
-    }
-}
 
-@media screen and (max-width:1420px){
-    
-    .🎨lsdev-intro-text {
-        width:18vw;
-
-    }
-    .🎨lsdev-nav {
-        top:calc(95px + 17.35vw);
-    }
-}
-
-@media screen and (max-width: 1370px){
-    .🐱lsdev {
-        h1.is-moved {
-            font-size:5.25vw;
+        .🎨lsdev-window__title-bar {
+            padding: 15px 0;
         }
+
+        .🎨lsdev-projects__grid-container {
+            height: calc(92.5vh - 235px);
+        }
+    }
+
+    @media screen and (max-width:1420px){
+
         .🎨lsdev-nav {
-            top:calc(95px + 15.6vw);
+            top: calc(95px + 17.35vw);
+        }
+        
+        .🎨lsdev-intro-text {
+            width: 18vw;
         }
     }
-}
 
-@media screen and (max-width:1275px){
-    .🐱lsdev {
-        .🐱lsdev .has-glitch.is-moved {
-            width:5.5vw;
+    @media screen and (max-width: 1370px){
+        
+        .🎨lsdev-page-title[data-moved] {
+            font-size: 5.25vw;
         }
+
         .🎨lsdev-nav {
-            left:90px;
-            top:calc(95px + 18.1vw);
-            
+            top: calc(95px + 15.6vw);
         }
+    }
+
+    @media screen and (max-width:1275px){
+        
+        .🎨lsdev-page-title[data-moved] {
+            width: 5.5vw;
+        }
+
+        .🎨lsdev-nav {
+            top: calc(95px + 18.1vw);
+            left: 90px;
+        }
+
         .🎨lsdev-intro-text {
             width:21vw;
         }
     }
-}
 
-@media screen and (max-width:1200px){
-    .🐱lsdev {
-        /* Scaled by the same ratio as the 1440 reduction (5.25 -> 4.8vw), so the name still grows
-           proportionally on narrower screens instead of jumping back up 28% at this breakpoint. */
-        .has-glitch.is-moved {
-            font-size:4.9vw;
+    @media screen and (max-width:1200px){
+
+        .🎨lsdev-page-title[data-moved] {
+            font-size: 4.9vw;
         }
+
         .🎨lsdev-nav {
             top: calc(95px + 19.3vw);
         }
     }
-}
 
-@media screen and (max-width:1150px){
-    .🐱lsdev {
+    @media screen and (max-width:1150px){
         .🎨lsdev-nav {
             top: calc(95px + 20.3vw);
         }
     }
-}
 
-/* Three project cards stay across until the window genuinely can't hold them. This used to drop to
-   two at 1370, which caught laptop widths (and any desktop window narrowed by docked devtools).
-   The card artwork below scales with the column, so the narrower columns still read properly.
-   This is the one number to move if three-up starts feeling cramped. */
-@media screen and (max-width:1100px){
-    .🐱lsdev {
+    @media screen and (max-width:1100px){
         .🎨lsdev-projects__grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
-}
 
-@media screen and (max-width:1040px){
-    .🐱lsdev {
-        main {
-            grid-template-columns: minmax(0, .55fr) minmax(0, 1fr);
+    @media screen and (max-width:1040px){
+
+        .🎨lsdev-page-title[data-moved] {
+            font-size: 6.5vw;
         }
-        h1.is-moved {
-            font-size:6.5vw;
-        }
-        .🎨lsdev-projects__grid {
-            grid-template-columns: minmax(0, 1fr);
-        }
+
         .🎨lsdev-nav {
             top: calc(95px + 20.8vw);
         }
+
+        .🎨lsdev-page {
+            grid-template-columns: 
+                minmax(0, .55fr) 
+                minmax(0, 1fr);
+        }
+
+        .🎨lsdev-projects__grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
     }
-}
 
-@media screen and (max-width:1035px){
-    .🐱lsdev {
+    @media screen and (max-width:768px){
 
-        body {
-            overflow-x:hidden;
-        }
+            /* The mobile breakpoint, defined once. Everything that used to test innerWidth against
+               a hardcoded number now asks isMobileLayout(), which reads this — so moving the width
+               above moves the JS with it. */
+            :root {
+                --💾lsdev-layout: mobile;
+            }
 
-        #🫆lsdev-stage {
-            overflow-y:scroll;
-        }
+            /* Which copy of the paired content is in play. This has to switch on the same width as
+               the layout around it, so it lives here rather than in a breakpoint of its own. */
+            [data-show-on="desktop"] {
+                display: none;
+            }
 
+            [data-show-on="mobile"] {
+                display: block;
+            }
 
-        .🎨lsdev-bg-grid {
-            top:0;
-            min-width:100vw;
-            min-height:100vh;
-        }
-        .🎨lsdev-bg-grid__gradient-overlay {
-            min-width:100vw;
-            min-height:100vh;
-        }
-        div:has(> .has-glitch){
-            margin-bottom:33vh;
-            top:50vh;
-            transform:translateY(-50%);
-            position:relative;
-        }
-        .has-glitch {
-            width:auto;
-            font-size:clamp(3rem, 17.5vw, 12rem);
-            text-align:center;
-            position:relative;
-            top:unset;
-            left:unset;
-            transform:unset;
-        }
-        .🎨lsdev-intro-text {
-            width:calc(100vw - 80px);
-            padding:0 40px;
-            position:relative;
-            left: unset;
-            text-align: center;
-            font-size: clamp(1.125rem, 6vw, 4rem);
-            top:unset;
-            padding-top:20px;
-        }
-        main {
-            display:block;
+            body {
+                padding-left: var(--💾lsdev-rail-lane);
+                overflow-x: hidden;
+            }
 
-            > div:first-child {
+            .🎨lsdev-bg {
+                left: 0;
+            }
+
+            .🎨lsdev-bg-grid {
+                
+                top: 0;
+                
+                min-width: 100vw;
+                min-height: 100vh;
+            }
+
+            .🎨lsdev-bg-grid__gradient-overlay {
+                min-width: 100vw;
+                min-height: 100vh;
+            }
+
+            .🎨lsdev-stage {
+                overflow-y: scroll;
+            }
+
+            .🎨lsdev-mobile-hero {
+                
+                display: flex;
+                position: relative;
+
+                flex-direction: column;
+                justify-content: center;
+
+                box-sizing: border-box;
+                width: 100vw;
+                min-height: 100svh;
+                margin-left: calc(-1 * var(--💾lsdev-rail-lane));
+            }
+
+            .🎨lsdev-page-title {
+                
+                position:relative;
+                top: unset;
+                left: unset;
+                transform: unset;
+
+                box-sizing: border-box;
+                width: 100%;
+                padding-inline: 40px;
+                margin-top: 0;
+
+                font-size:70px;
+                text-align:center;
+            }
+
+            .🎨lsdev-intro-text {
+
+                position: relative;
+                top: unset;
+                left: unset;
+
+                box-sizing: border-box;
+                width: 100%;
+                margin-top: 0;
+                margin-inline: auto;
+                padding-top: 20px;
+                padding-bottom: 20px;
+
+                font-size: 20px;
+                text-align: center;
+            }
+
+            .🎨lsdev-page {
+                
+                display:block;
+
+                min-width: 100%;
+            }
+
+            .🎨lsdev-page__sidebar {
+                    
+                position: static;
+
+                width: auto;
+                height: auto;
+                padding: 0;
+            }
+
+            .🎨lsdev-hud {
+                display: none;
+            }
+
+            .🎨lsdev-page__sidebar-bottom {
+                display: none;
+            }
+
+            .🎨lsdev-on-page-nav {
+
+                position: relative;
+
+                width: fit-content;
+                height: var(--lsdev-nav-toggle-height, auto);
+                margin: 24px auto 0 auto;
+                padding: 0;
+
+                &[data-settling] {
+                    
+                    height: 0;
+                    margin: 0 auto;
+                    overflow: hidden;
+                    
+                    opacity: 0;
+                }
+
+                &[data-drop-up] {
+                    --lsdev-nav-menu-inset-block: auto 100%;
+                    --lsdev-nav-menu-gap: 0 10px;
+                }
+
+                &[data-open] {
+                    --lsdev-nav-menu-extent: min(
+                        var(--lsdev-nav-menu-height, 60vh),
+                        var(--lsdev-nav-menu-limit, 60vh));
+                    --lsdev-nav-menu-opacity: 1;
+                    --lsdev-nav-menu-transition:
+                        max-height .28s var(--💾lsdev-ease-caret),
+                        opacity 0s linear;
+                    --lsdev-nav-toggle-glyph: "\25b4";
+                }
+            }
+
+            .🎨lsdev-on-page-nav__caret {
                 display:none;
             }
+
+            .🎨lsdev-on-page-nav__toggle {
+
+                display: block;
+
+                margin: 0 auto;
+
+                &::after {
+
+                    content: var(--lsdev-nav-toggle-glyph, "\25be");
+
+                    display: inline-block;
+                    
+                    width: 1em;
+                    margin-left: .5em;
+
+                    text-align: center;
+                }
+            }
+
+            .🎨lsdev-on-page-nav__list {
+
+                position: absolute;
+
+                left: 50%;
+                translate: -50% 0;
+                z-index: 2;
+
+                box-sizing: border-box;
+                inset-block: var(
+                    --lsdev-nav-menu-inset-block, 
+                    100% auto);
+                width: max-content;
+                min-width: 100%;
+                max-height: var(--lsdev-nav-menu-extent, 0);
+                margin-inline: 0;
+                margin-block: var(--lsdev-nav-menu-gap, 10px 0);
+                padding: 6px 14px;
+                border: var(--💾lsdev-chrome-border);
+                border-radius: 7px;
+                overflow-x: hidden;
+                overflow-y: auto;
+
+                background-image: var(--💾lsdev-panel-surface);
+                box-shadow: var(--💾lsdev-shadow-raised);
+
+                opacity: var(--lsdev-nav-menu-opacity, 0);
+
+                transition: var(--lsdev-nav-menu-transition,
+                    max-height .24s ease-in,
+                    opacity 0s linear .24s);
                 
-            > div:nth-child(2) {
-                padding:250px 0 0 0;
-                margin:0;
+                scrollbar-width: none;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+
+            .🎨lsdev-on-page-nav__item {
+                
+                padding: 0;
+                
+                text-align: center;
+            }
+
+            .🎨lsdev-on-page-nav__link {
+                
+                display: block;
+                
+                padding: 10px 0;
+            }
+
+            .🎨lsdev-page__content {
+                padding: 0;
+                margin: 0;
+            }
+
+            .🎨lsdev-window {
+                
+                --lsdev-window-l-r-padding: 20px;
+                --lsdev-window-content-height: calc(100vh - 270px);
+
+                width: calc(100% - 40px);
+                margin: 0 auto max(40px, 8vh) auto;
+                padding: 0 20px;
+                border-radius: 8px;
+                
+                &[data-open] {
+                    height:calc(100vh - 100px);
+                    padding-bottom:20px;
+                }
+
+                &[data-variant="reviews"][data-open] {
+                    
+                    --lsdev-window-content-height: auto;
+
+                    height: auto;
+                }
+            }
+
+            .🎨lsdev-window__control::after {
+                width: 14px;
+                height: 14px;
+            }
+
+            .🎨lsdev-window__title-bar {
+                
+                padding: 8px 0;
+                
+                font-size:0.9444rem;
+            }
+
+            .🎨lsdev-window__content {
+                padding: 28px 30px 0px 30px;
+                overflow-y: scroll;
+            }
+
+            .🎨lsdev-window__menu-title {
+               
+                padding: 8px 12px;
+                
+                font-size: 0.8889rem;
+            }
+
+            .🎨lsdev-projects__grid-container {
+                height: calc(100vh - 100px - 160px);
+            }
+
+            .🎨lsdev-projects__grid {
+                padding: 12px 15px 30px 10px;
+            }
+
+            .🎨lsdev-projects__project {
+                padding: 15px;
+            }
+
+            .🎨lsdev-project__client-info {
+                margin-bottom: 5px;
+            }
+
+            .🎨lsdev-project__project-name {
+                padding-bottom: 25px;
+            }
+
+            .🎨lsdev-icebreaker {
+
+                flex-direction: column;
+                
+                margin-top: 20px;
             }
 
             .🎨lsdev-contact {
                 padding: 25px;
+            }
 
-                h2 {
-                    line-height: 1;
-                    font-size: 2em;
-                }
+            .🎨lsdev-contact__heading {
+                font-size: 2em;
+                line-height: 1;
+            }
 
-                form {
-                    display: block !important;
+            .🎨lsdev-contact__form,
+            .🎨lsdev-contact__col,
+            .🎨lsdev-contact__fieldset {
+                display: block;
+            }
 
-                    /* Back to real boxes. The 1439 block above takes these out of the box tree to
-                       reshuffle the columns, which is meaningless once the form is single-column —
-                       and the rules just below still expect the wrappers to be laying their
-                       children out. */
-                    > .🎨lsdev-contact__col {
-                        display: block;
-                    }
+            .🎨lsdev-contact__pill[data-variant="mission"] {
+                display: inline-block;
+            }
 
-                    > div:first-child button {
-                        display:none;
-
-                        &:first-of-type, &:nth-of-type(2), &:nth-of-type(3) {
-                            display:block;
-                        }
-                    }
-                    > div:nth-child(2) fieldset {
-                        display:block !important;
-
-                        .🎨lsdev-contact__pill[data-variant="mission"] {
-                            display:inline-block;
-                        }
-                    }
-                }
-
+            .🎨lsdev-footer {
                 
-            }
-        }
-        .🎨lsdev-sidebar-nav {
-            /*animation:none !important; /* change later to stretch across */
-            opacity:1;
-            height:40px !important;
-            /* 100% not 100vw: this nav is position:fixed, so 100% resolves against the viewport
-               minus the scrollbar, whereas 100vw includes the scrollbar gutter and pushed the bar
-               (and its full-width ul) past the visible area — the dead space down the right. */
-            width:100%;
-            display:block;
-            background-image: 
-                linear-gradient(
-                    to right, 
-                    #f8c9d9,
-                    #f3a6c1 110%
-                );
-
-            ul {
-                flex-direction:row;
-                writing-mode: unset;
-                padding:0;
-                justify-content:space-around;
-                width:100%;
-                margin-top:-1px;
-                line-height:1;
-
-                &:first-of-type {
-                    display:none;
-                }
-
-                &:nth-of-type(2){
-                    display:flex;
-                    justify-content: flex-start;
-                    gap:25px;
-                    padding-left:24px;
-                }
-
-                li {
-                    margin:unset;
-                    padding:0;
-
-                    a,button {
-                        font-size:0.8889rem;
-                    }
-
-                    &:first-child {
-                        margin-top:unset;
-                    }
-
-                    [class*="🎨lsdev-sidebar-nav__icon"]::before {
-                        height:20px;
-                        width:20px;
-                    }
-
-                    .🎨lsdev-sidebar-nav__icon--twitch::before  {
-                        height:25px;
-                        width:25px;
-                        vertical-align:middle;
-                        position:relative;
-                        top:4px;
-                    }
-                }
-            }
-        }
-        .🎨lsdev-nav {
-            display:none;
-        }
-        .🎨lsdev-projects__grid-container {
-            height:calc(100vh - 100px - 160px);
-        }
-        .🎨lsdev-window {
-            --lsdev-window-l-r-padding: 20px;
-            width: calc(100vw - 40px);
-            padding:0 20px;
-            border-radius:8px;
-            margin-left:auto;
-            margin-right:auto;
-            margin-bottom:max(40px, 8vh);
-
-            &[data-open] {
-                padding-bottom:20px;
-                height:calc(100vh - 100px);
-            }
-
-            .🎨lsdev-window__title-bar {
-                padding: 8px 0;
-                font-size:0.9444rem;
-
-                .🎨lsdev-window__controls {
-                    .🎨lsdev-window__control {
-                        &::after {
-                            width: 14px;
-                            height: 14px;
-                        }
-                    }
-                }
-            }
-
-            .🎨lsdev-window__menu-bar {
-                button, a {
-                    padding:8px 12px;
-                    font-size:0.8889rem;
-                }
-            }
-            .🎨lsdev-window__content {
-                padding: 28px 30px 0px 30px;
-                height:calc(100vh - 270px);
-                overflow-y:scroll;
-            }
-            /*.🎨lsdev-window__content:not(.🎨lsdev-projects__grid) {
-                height: calc(100vh - 52px - 60px - 60px - 60px - 20px - 120px);
-                overflow-y:scroll;
-            }*/
-        }
-        .🎨lsdev-projects__grid {
-            padding:12px 15px 30px 10px !important;
-
-
-
-            .🎨lsdev-projects__project {
-                padding:15px;
-
-                .🎨lsdev-project__client-info {
-                    margin-bottom:5px;
-                }
-
-                p {
-                    padding-bottom:25px;
-                }
-            }
-        }
-        #🫆lsdev-window--about > div.🎨lsdev-window__body > div > div {
-            margin-top:20px;
-            flex-direction:column;
-        }
-        /* Open windows above are pinned to calc(100vh - 100px), which projects and about fill but
-           a single review doesn't — leaving dead space below the carousel. Let this one size to
-           its content instead. Higher specificity than the [data-open] rule, so no !important. */
-        .🎨lsdev-window[data-variant="reviews"][data-open] {
-            height:auto;
-        }
-        .🎨lsdev-window[data-variant="reviews"][data-open] .🎨lsdev-window__content {
-            height:unset !important;
-        }
-        .🎨lsdev-hud {
-            display:none;
-        }
-        .🎨lsdev-contact form .🎨lsdev-contact__col div:has([type=submit]) {
-            display:block;
-        }
-        .🎨lsdev-contact form .🎨lsdev-contact__col [type=submit] {
-            width:100%;
-        }
-        .🎨lsdev-contact form .🎨lsdev-contact__col div:has([type=submit]) p {
-            text-align:center;
-        }
-        footer {
-            display:block;
-            padding:20px;
-            text-align:center;
-            min-height:unset;
-
-            .🎨lsdev-loading-phrases {
-                display:none;
-            }
-            .🎨lsdev-copyright {
+                display:block;
+                
+                min-height:unset;
+                padding:20px;
+                
                 text-align:center;
+            }
+
+            .🎨lsdev-footer_loading-phrases {
+                display: none;
+            }
+
+            .🎨lsdev-footer_copyright {
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .🎨lsdev-contact form .🎨lsdev-contact__col [type=submit] {
+                width:100%;
+            }
+
+            .🎨lsdev-contact form .🎨lsdev-contact__col div:has([type=submit]) p {
+                text-align: center;
+            }
+
+
+        
+    }
+
+    @media screen and (max-width:560px){
+        .🐱lsdev {
+            .🎨lsdev-reviews-carousel__review-attribution {
+                flex-direction: column;
+
+                align-items: flex-start;
+                gap: 12px;
+
+                min-height: 0;
             }
         }
     }
-}
 }

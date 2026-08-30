@@ -14,10 +14,10 @@ export const slideCaret = ({ nav, caret, items, li, highlight = true, offset = 0
 
     items.forEach(item => {
 
-        item.classList.remove("is-highlighted");
+        item.removeAttribute("data-highlighted");
         item.querySelector("a")?.removeAttribute("aria-current");
     });
 
-    li.classList.add("is-highlighted");
+    li.dataset.highlighted = "";
     li.querySelector("a")?.setAttribute("aria-current", "location");
 };
