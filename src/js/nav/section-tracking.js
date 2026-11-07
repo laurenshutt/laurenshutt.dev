@@ -131,6 +131,15 @@ export const sectionTrackingInit = () => {
 
     const openWindow = (window, skipIsOpen) => {
         const windowBody = window.querySelector(".🎨lsdev-window__body");
+
+        // slideToggle is a toggle, so calling this on a window that is already open slides it
+        // shut again. Opening has to be idempotent: a second call reaching the same window shows
+        // up as it snapping open, closing, and reopening — the first slide is cancelled mid-flight
+        // by the second call, which is why the snap looks instant rather than animated.
+        // Guard on the body's computed display, because that is the exact thing slideToggle
+        // branches on; the maximize button already takes the same precaution before calling it.
+        if (getComputedStyle(windowBody).display !== "none") return;
+
         !skipIsOpen && window.toggleAttribute("data-open", true);
         slideToggle(windowBody);
     }
@@ -242,9 +251,42 @@ export const sectionTrackingInit = () => {
     // so they can all be on screen at once — observing them before the visitor moves would fire
     // them immediately, and invisibly, since the reviews window is still at opacity 0 until the
     // About step restores it.
-    window.addEventListener("scroll", () => {
-        observer.observe(revealTargets[0]);
-    }, { passive: true, once: true });
+    //
+    // Not until the intro has handed over, though. sectionTrackingInit() is called about a second
+    // before the intro's own timeout opens the first window and unlocks scrolling, so a scroll
+    // arriving inside that gap — a page opened on a #hash, a restored scroll position — would run
+    // this sequence on top of the intro, with both sides opening windows the other is midway
+    // through. body[data-loading] is already the signal for "the intro still owns the page".
+    const armRevealSequence = () => {
+
+        // Already scrolled by the time the intro handed over — a page opened on a #hash, a
+        // position the browser restored. The move this is waiting for has effectively been made
+        // already, and no further scroll event is owed, so start rather than wait for one.
+        if (window.scrollY > 0) {
+            observer.observe(revealTargets[0]);
+            return;
+        }
+
+        window.addEventListener("scroll", () => {
+            observer.observe(revealTargets[0]);
+        }, { passive: true, once: true });
+    };
+
+    if (document.body.hasAttribute("data-loading")) {
+
+        const whenHandedOver = new MutationObserver(() => {
+
+            if (document.body.hasAttribute("data-loading")) return;
+
+            whenHandedOver.disconnect();
+            armRevealSequence();
+        });
+
+        whenHandedOver.observe(document.body, { attributes: true, attributeFilter: ["data-loading"] });
+
+    } else {
+        armRevealSequence();
+    }
 
     // Pin the caret at the page extremes. sectionObserver highlights the bottom-most section that
     // is at least a quarter visible, so at the foot of the page a tall About still in view can
