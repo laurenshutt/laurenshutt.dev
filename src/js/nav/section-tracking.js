@@ -163,7 +163,7 @@ export const sectionTrackingInit = () => {
     if (footer) footer.dataset.deferred = "";
 
     const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
-    const SCROLL_SETTLE = 120; // ms of stillness that counts as "the visitor has stopped"
+    const SCROLL_SETTLE = 60; // ms of stillness that counts as "the visitor has stopped"
 
     // Run once the page has been still for SCROLL_SETTLE. Fires immediately when it already is,
     // so a section that comes due on a stationary page opens without any added delay.
@@ -186,7 +186,11 @@ export const sectionTrackingInit = () => {
         timer = setTimeout(settled, SCROLL_SETTLE);
     };
 
-    const revealSection = (el) => {
+    // `whenOpen` is called once the section has actually revealed, so the gap to the next one is
+    // measured from the moment this one opened rather than the moment it came due. That keeps the
+    // stagger honest while the opening itself is waiting on the scroll, and keeps the sequence
+    // serialised: nothing further is observed until this window is on screen.
+    const revealSection = (el, whenOpen) => {
 
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
@@ -203,20 +207,30 @@ export const sectionTrackingInit = () => {
                 reviewsBody.style.removeProperty("display");
                 reviewsBody.style.removeProperty("visibility");
 
+                // The beat runs from the moment the section comes due, so on a flick it elapses
+                // while the page is still coasting and only the wait for stillness is left by the
+                // time the visitor stops. Waiting for both in series was the delay: a quarter of a
+                // second of pacing that used to overlap the scroll had moved to after it.
                 setTimeout(function(){
                     document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";
-                    openWindow(el);
-                    moveCaret(li, true);
-                    sectionObserver.observe(el);
+                    whenScrollSettles(function(){
+                        openWindow(el);
+                        moveCaret(li, true);
+                        sectionObserver.observe(el);
+                        whenOpen();
+                    });
                 }, 250);
                 break;
 
             case "🫆lsdev-window--reviews":
 
                 setTimeout(function(){
-                    openWindow(el);
-                    moveCaret(li, true);
-                    sectionObserver.observe(el);
+                    whenScrollSettles(function(){
+                        openWindow(el);
+                        moveCaret(li, true);
+                        sectionObserver.observe(el);
+                        whenOpen();
+                    });
                 }, 250);
                 break;
 
@@ -231,6 +245,7 @@ export const sectionTrackingInit = () => {
                 },2000);
                 contactForm();
                 setSize(document.querySelector("form"));
+                whenOpen();
                 break;
         }
     };
@@ -253,21 +268,18 @@ export const sectionTrackingInit = () => {
 
         obs.unobserve(entry.target);
 
-        // ...but not while the page is still moving. slideToggle animates height, which is a
-        // layout property: every frame of the 500ms slide relayouts and repaints the window.
-        // A wheel or trackpad scroll runs on the compositor thread, so it keeps moving at full
-        // speed whether or not the main thread keeps up — and during a fast flick it does not.
-        // The scrolled background and the freshly laid-out window then land on screen out of
-        // step with each other, which is the flicker: the window appears to open, drop out, and
-        // open again. Driving the scroll from script never showed it, because a scripted scroll
-        // runs on the main thread and so cannot get ahead of the layout it is competing with.
+        // The section is due now; the window it opens waits for the page to stop moving, which
+        // revealSection handles. slideToggle animates height, a layout property, so every frame
+        // of the 500ms slide relayouts and repaints the window. A wheel or trackpad scroll runs
+        // on the compositor thread and keeps moving at full speed whether or not the main thread
+        // keeps up — during a fast flick it does not. The scrolled background and the freshly
+        // laid-out window then reach the screen out of step with each other, and the window reads
+        // as opening, dropping out, and opening again. A scripted scroll never showed it, running
+        // on the main thread and so unable to get ahead of the layout it competes with.
         //
-        // Letting the page come to rest first is also just better to watch: the window opens in
-        // front of the visitor rather than while they are flying past it. This is a stagger, not
-        // a response to the scroll, so waiting a beat costs nothing.
-        whenScrollSettles(() => {
-
-            revealSection(entry.target);
+        // Everything that does not touch layout still runs the moment the section comes due, so
+        // the pacing elapses during the coast and stopping is followed by the window opening.
+        revealSection(entry.target, () => {
 
             setTimeout(() => {
 
