@@ -163,6 +163,28 @@ export const sectionTrackingInit = () => {
     if (footer) footer.dataset.deferred = "";
 
     const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
+    const SCROLL_SETTLE = 120; // ms of stillness that counts as "the visitor has stopped"
+
+    // Run once the page has been still for SCROLL_SETTLE. Fires immediately when it already is,
+    // so a section that comes due on a stationary page opens without any added delay.
+    const whenScrollSettles = (run) => {
+
+        let timer = null;
+
+        const settled = () => {
+            window.removeEventListener("scroll", restart);
+            run();
+        };
+
+        const restart = () => {
+            clearTimeout(timer);
+            timer = setTimeout(settled, SCROLL_SETTLE);
+        };
+
+        window.addEventListener("scroll", restart, { passive: true });
+
+        timer = setTimeout(settled, SCROLL_SETTLE);
+    };
 
     const revealSection = (el) => {
 
@@ -230,18 +252,34 @@ export const sectionTrackingInit = () => {
         if (!entry) return;
 
         obs.unobserve(entry.target);
-        revealSection(entry.target);
 
-        setTimeout(() => {
+        // ...but not while the page is still moving. slideToggle animates height, which is a
+        // layout property: every frame of the 500ms slide relayouts and repaints the window.
+        // A wheel or trackpad scroll runs on the compositor thread, so it keeps moving at full
+        // speed whether or not the main thread keeps up — and during a fast flick it does not.
+        // The scrolled background and the freshly laid-out window then land on screen out of
+        // step with each other, which is the flicker: the window appears to open, drop out, and
+        // open again. Driving the scroll from script never showed it, because a scripted scroll
+        // runs on the main thread and so cannot get ahead of the layout it is competing with.
+        //
+        // Letting the page come to rest first is also just better to watch: the window opens in
+        // front of the visitor rather than while they are flying past it. This is a stagger, not
+        // a response to the scroll, so waiting a beat costs nothing.
+        whenScrollSettles(() => {
 
-            currentIndex++;
+            revealSection(entry.target);
 
-            if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
-            else {
-                obs.disconnect();
-                footer?.removeAttribute("data-deferred");
-            }
-        }, REVEAL_GAP);
+            setTimeout(() => {
+
+                currentIndex++;
+
+                if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
+                else {
+                    obs.disconnect();
+                    footer?.removeAttribute("data-deferred");
+                }
+            }, REVEAL_GAP);
+        });
     }, {
         threshold: .5,
         rootMargin: `0px 0px -${offset}px 0px`
