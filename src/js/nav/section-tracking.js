@@ -162,7 +162,11 @@ export const sectionTrackingInit = () => {
 
     if (footer) footer.dataset.deferred = "";
 
-    const REVEAL_GAP = 1250; // ms between reveals, so sections stagger instead of firing together
+    // ms between reveals, so sections stagger instead of firing together. This was tuned while
+    // reveals still fired mid-scroll, where the visitor was moving and the gap passed unnoticed.
+    // Now that a reveal waits for the page to stop, they are sitting still watching it, and the
+    // same gap reads as a wait. The stagger is still clearly a stagger at this length.
+    const REVEAL_GAP = 600;
     const SCROLL_SETTLE = 60; // ms of stillness that counts as "the visitor has stopped"
 
     // Run once the page has been still for SCROLL_SETTLE. Fires immediately when it already is,
