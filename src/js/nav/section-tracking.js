@@ -145,7 +145,6 @@ export const sectionTrackingInit = () => {
     }
     const reviews = document.getElementById("🫆lsdev-window--reviews")
     const reviewsBody = reviews.querySelector(".🎨lsdev-window__body")
-    const offset = window.innerHeight * 0.05;
 
     sectionObserver.observe(document.querySelector("#🫆lsdev-window--projects"));
 
@@ -162,39 +161,146 @@ export const sectionTrackingInit = () => {
 
     if (footer) footer.dataset.deferred = "";
 
-    // ms between reveals, so sections stagger instead of firing together. This was tuned while
-    // reveals still fired mid-scroll, where the visitor was moving and the gap passed unnoticed.
-    // Now that a reveal waits for the page to stop, they are sitting still watching it, and the
-    // same gap reads as a wait. The stagger is still clearly a stagger at this length.
-    const REVEAL_GAP = 600;
-    const SCROLL_SETTLE = 60; // ms of stillness that counts as "the visitor has stopped"
+    const REVEAL_GAP = 600;   // ms of cooldown before the next section starts watching
+    const SNAP_MS = 320;      // bringing the window to the middle of the viewport
+    const SLIDE_MS = 500;     // slideToggle's own default, so how long the window is opening
 
-    // Run once the page has been still for SCROLL_SETTLE. Fires immediately when it already is,
-    // so a section that comes due on a stationary page opens without any added delay.
-    const whenScrollSettles = (run) => {
+    // What `win` will measure once it is open. Its body is display:none until slideToggle runs,
+    // so it is given layout for the length of one synchronous block — long enough to read, too
+    // short for the browser to paint. The About step already uses this trick to initialise the
+    // reviews carousel. data-open goes on for the measurement too, since the open state carries
+    // its own padding and the number has to include it.
+    const openHeightOf = (win) => {
 
-        let timer = null;
+        const body = win.querySelector(".🎨lsdev-window__body");
 
-        const settled = () => {
-            window.removeEventListener("scroll", restart);
-            run();
-        };
+        if (!body || getComputedStyle(body).display !== "none") {
+            return win.getBoundingClientRect().height;
+        }
 
-        const restart = () => {
-            clearTimeout(timer);
-            timer = setTimeout(settled, SCROLL_SETTLE);
-        };
+        const wasOpen = win.hasAttribute("data-open");
 
-        window.addEventListener("scroll", restart, { passive: true });
+        body.style.display = "block";
+        body.style.visibility = "hidden";
+        win.toggleAttribute("data-open", true);
 
-        timer = setTimeout(settled, SCROLL_SETTLE);
+        const height = win.getBoundingClientRect().height;
+
+        if (!wasOpen) win.removeAttribute("data-open");
+
+        body.style.removeProperty("display");
+        body.style.removeProperty("visibility");
+
+        return height;
     };
 
-    // `whenOpen` is called once the section has actually revealed, so the gap to the next one is
-    // measured from the moment this one opened rather than the moment it came due. That keeps the
-    // stagger honest while the opening itself is waiting on the scroll, and keeps the sequence
-    // serialised: nothing further is observed until this window is on screen.
-    const revealSection = (el, whenOpen) => {
+    // Centre `win` as it will sit once open, hold the page there while it opens, then hand
+    // scrolling back.
+    //
+    // Measured open rather than collapsed because the open shape is what the visitor ends up
+    // looking at: centring the title bar would leave the finished window hanging off the bottom
+    // of the screen. The window grows downward from a fixed top, so the target does not move
+    // while the slide runs.
+    //
+    // The hold refuses the gestures rather than setting overflow:hidden on the body, which would
+    // take the scrollbar out of the layout and shift the page sideways anywhere without overlay
+    // scrollbars. Anything that still gets through — a keypress, a scroll chained out of one of
+    // the inner scrollers — is put back by the scroll listener.
+    const holdCentred = (win, openHeight, open, done) => {
+
+        const from = window.scrollY;
+
+        // How much taller the document is about to get. Without this the target would be clamped
+        // against a page that does not exist yet: the last window is near the bottom, the scroll
+        // limit is short, and the window then opens underneath the clamp, leaving it parked a
+        // hundred pixels high. The per-frame clamp below converges on the real figure as the
+        // slide actually adds the height.
+        const growth = Math.max(0, openHeight - win.getBoundingClientRect().height);
+        const limit = () => document.documentElement.scrollHeight - window.innerHeight;
+
+        const to = Math.max(0, Math.min(limit() + growth, Math.round(
+            from + win.getBoundingClientRect().top - (window.innerHeight - openHeight) / 2
+        )));
+
+        let pinned = from;
+
+        const refuse = (e) => e.preventDefault();
+        const restore = () => {
+            if (Math.round(window.scrollY) !== pinned) window.scrollTo(0, pinned);
+        };
+
+        // The keys that scroll, unless the visitor is typing — the contact form is a long way
+        // down, but a lock that ate a space bar would be worse than one that let a keypress
+        // through, and `restore` catches it either way.
+        const SCROLLS = [" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"];
+
+        const refuseKey = (e) => {
+            if (!SCROLLS.includes(e.key)) return;
+            if (e.target?.closest?.("input, textarea, select, [contenteditable]")) return;
+            e.preventDefault();
+        };
+
+        window.addEventListener("wheel", refuse, { passive: false });
+        window.addEventListener("touchmove", refuse, { passive: false });
+        window.addEventListener("keydown", refuseKey, { passive: false });
+        window.addEventListener("scroll", restore, { passive: true });
+
+        const release = () => {
+            window.removeEventListener("wheel", refuse);
+            window.removeEventListener("touchmove", refuse);
+            window.removeEventListener("keydown", refuseKey);
+            window.removeEventListener("scroll", restore);
+        };
+
+        const atOnce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const began = performance.now();
+
+        let opened = false;
+
+        const frame = () => {
+
+            const elapsed = performance.now() - began;
+
+            if (!opened) {
+
+                const p = atOnce ? 1 : Math.min(1, elapsed / SNAP_MS);
+
+                pinned = Math.min(limit(), Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))));
+                window.scrollTo(0, pinned);
+
+                if (p < 1) {
+                    requestAnimationFrame(frame);
+                    return;
+                }
+
+                opened = true;
+                open();
+                requestAnimationFrame(frame);
+                return;
+            }
+
+            // Hold on the target while the window opens, re-clamping as the slide makes the page
+            // taller — the last few pixels of travel only become reachable once it has grown.
+            pinned = Math.min(limit(), to);
+            window.scrollTo(0, pinned);
+
+            if (elapsed < SNAP_MS + SLIDE_MS) {
+                requestAnimationFrame(frame);
+                return;
+            }
+
+            release();
+            done();
+        };
+
+        requestAnimationFrame(frame);
+    };
+
+    // `whenOpen` is called once the section has finished revealing, so the cooldown before the
+    // next one is measured from the moment this window was actually on screen and scrolling had
+    // been handed back — and the sequence stays serialised: nothing else is watched for until
+    // then, so two windows can never be grabbing the page at the same time.
+    const revealSection = (el, whenOpen, openHeight) => {
 
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
@@ -211,31 +317,22 @@ export const sectionTrackingInit = () => {
                 reviewsBody.style.removeProperty("display");
                 reviewsBody.style.removeProperty("visibility");
 
-                // The beat runs from the moment the section comes due, so on a flick it elapses
-                // while the page is still coasting and only the wait for stillness is left by the
-                // time the visitor stops. Waiting for both in series was the delay: a quarter of a
-                // second of pacing that used to overlap the scroll had moved to after it.
-                setTimeout(function(){
-                    document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";
-                    whenScrollSettles(function(){
-                        openWindow(el);
-                        moveCaret(li, true);
-                        sectionObserver.observe(el);
-                        whenOpen();
-                    });
-                }, 250);
+                document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";
+
+                holdCentred(el, openHeight, function(){
+                    openWindow(el);
+                    moveCaret(li, true);
+                    sectionObserver.observe(el);
+                }, whenOpen);
                 break;
 
             case "🫆lsdev-window--reviews":
 
-                setTimeout(function(){
-                    whenScrollSettles(function(){
-                        openWindow(el);
-                        moveCaret(li, true);
-                        sectionObserver.observe(el);
-                        whenOpen();
-                    });
-                }, 250);
+                holdCentred(el, openHeight, function(){
+                    openWindow(el);
+                    moveCaret(li, true);
+                    sectionObserver.observe(el);
+                }, whenOpen);
                 break;
 
             case "🫆lsdev-contact":
@@ -254,52 +351,71 @@ export const sectionTrackingInit = () => {
         }
     };
 
-    // Sections reveal one at a time, in order, REVEAL_GAP apart. Each is only observed once its
-    // turn comes, which matters twice over: an IntersectionObserver reports the element's current
-    // state as soon as it is observed, so a section already scrolled past opens straight away
-    // instead of waiting to cross the threshold again — and nothing can fire ahead of its turn.
+    // Sections reveal one at a time, in order. A section's turn comes when the middle of the
+    // window it is about to open would sit in the middle of the viewport — measured on the open
+    // shape, so the trigger matches where the window is going to be rather than the sliver of
+    // title bar that is there now. At that point the page is taken over, brought exactly to
+    // centre and held while the window opens, and scrolling is handed back once it is on screen.
+    //
+    // Watching one section at a time is what keeps that safe: nothing fires ahead of its turn,
+    // and two windows can never be holding the page at once. The check also runs once at arming
+    // rather than only on the next scroll, so a section the visitor has already gone past still
+    // opens instead of stalling everything behind it.
     let currentIndex = 0;
 
-    const observer = new IntersectionObserver((entries, obs) => {
+    const advance = () => {
+        setTimeout(() => {
 
-        // A section is due when it scrolls into view — or when the visitor has already gone clean
-        // past it. On a fast scroll it can be above the viewport by the time its turn arrives, and
-        // it would then never intersect again, stalling the sequence and everything behind it.
-        const entry = entries.find(e => e.isIntersecting)
-            || entries.find(e => e.boundingClientRect.bottom <= 0);
+            currentIndex++;
 
-        if (!entry) return;
+            if (currentIndex < revealTargets.length) armTarget(revealTargets[currentIndex]);
+            else footer?.removeAttribute("data-deferred");
 
-        obs.unobserve(entry.target);
+        }, REVEAL_GAP);
+    };
 
-        // The section is due now; the window it opens waits for the page to stop moving, which
-        // revealSection handles. slideToggle animates height, a layout property, so every frame
-        // of the 500ms slide relayouts and repaints the window. A wheel or trackpad scroll runs
-        // on the compositor thread and keeps moving at full speed whether or not the main thread
-        // keeps up — during a fast flick it does not. The scrolled background and the freshly
-        // laid-out window then reach the screen out of step with each other, and the window reads
-        // as opening, dropping out, and opening again. A scripted scroll never showed it, running
-        // on the main thread and so unable to get ahead of the layout it competes with.
-        //
-        // Everything that does not touch layout still runs the moment the section comes due, so
-        // the pacing elapses during the coast and stopping is followed by the window opening.
-        revealSection(entry.target, () => {
+    const armTarget = (el) => {
 
-            setTimeout(() => {
+        // Contact is a section rather than a window: there is nothing to open, so nothing to
+        // centre and no reason to take the scroll away. It reveals once it is properly in view,
+        // the way every section used to.
+        if (el.id === "🫆lsdev-contact") {
 
-                currentIndex++;
+            const inView = () => {
+                if (el.getBoundingClientRect().top > window.innerHeight * 0.75) return;
+                window.removeEventListener("scroll", inView);
+                revealSection(el, advance);
+            };
 
-                if (currentIndex < revealTargets.length) obs.observe(revealTargets[currentIndex]);
-                else {
-                    obs.disconnect();
-                    footer?.removeAttribute("data-deferred");
-                }
-            }, REVEAL_GAP);
-        });
-    }, {
-        threshold: .5,
-        rootMargin: `0px 0px -${offset}px 0px`
-    });
+            window.addEventListener("scroll", inView, { passive: true });
+            inView();
+            return;
+        }
+
+        const openHeight = openHeightOf(el);
+
+        const check = () => {
+
+            const top = el.getBoundingClientRect().top;
+
+            // The page may not have the room to centre this one — the last window, with the
+            // footer still held out of the flow, can be the bottom of the document. Opening it
+            // where it is beats never opening it at all.
+            const bottomedOut =
+                window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
+
+            const due = top + openHeight / 2 <= window.innerHeight / 2
+                || (bottomedOut && top < window.innerHeight);
+
+            if (!due) return;
+
+            window.removeEventListener("scroll", check);
+            revealSection(el, advance, openHeight);
+        };
+
+        window.addEventListener("scroll", check, { passive: true });
+        check();
+    };
 
     // Start the sequence on the first scroll. Every window is collapsed to its title bar on load,
     // so they can all be on screen at once — observing them before the visitor moves would fire
@@ -317,12 +433,12 @@ export const sectionTrackingInit = () => {
         // position the browser restored. The move this is waiting for has effectively been made
         // already, and no further scroll event is owed, so start rather than wait for one.
         if (window.scrollY > 0) {
-            observer.observe(revealTargets[0]);
+            armTarget(revealTargets[0]);
             return;
         }
 
         window.addEventListener("scroll", () => {
-            observer.observe(revealTargets[0]);
+            armTarget(revealTargets[0]);
         }, { passive: true, once: true });
     };
 
