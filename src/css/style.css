@@ -1529,6 +1529,14 @@
         font-size: clamp(2.5rem, 7.5vw, 10rem);
         
         transition: all .4s ease;
+
+        /* One box per word. The split is made by moveTitleIntoSidebar rather than written into
+           the markup, so the intro's shuffle reveal still runs over the whole name as a single
+           text node; by the time these exist it has finished. Inline-block keeps them on one
+           line here, on the same pixels the text node occupied. */
+        & .✨lsdev-fx-glitch--word {
+            display: inline-block;
+        }
         
         &[data-moved] {
             position: relative;
@@ -1538,6 +1546,13 @@
             transform: none;
             font-size: 5.25vw; 
             left:-9px;
+
+            /* The break the title used to get from reflow. As a change of display it is discrete,
+               which is fine: the layout lands on frame one and the words are animated into it
+               with transforms, so nothing reflows while the move is running. */
+            & .✨lsdev-fx-glitch--word {
+                display: block;
+            }
         }
     }
 
