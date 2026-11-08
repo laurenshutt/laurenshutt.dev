@@ -236,103 +236,62 @@ export const sectionTrackingInit = () => {
         return height;
     };
 
-    // Hold the page exactly where it is, and hand back a way to let it go.
+    // Freeze the page where it is, and hand back a way to let it go.
     //
-    // Nothing is scrolled: a window's turn comes at the position that already centres it, so the
-    // page is in the right place the moment the lock goes on and only has to be kept there. That
-    // is the whole reason this can be a lock rather than a lock and a glide, and why there is
-    // nothing here for an in-flight fling to pull against.
+    // Making it genuinely unscrollable, rather than refusing the gestures. preventDefault on
+    // wheel only binds a gesture that begins after the listener exists — a fling already in
+    // flight has been handed to the compositor, which goes on scrolling whatever the main thread
+    // decides. The listener could not stop it, so the scroll handler kept snapping the page back
+    // to the pin, once per event, for as long as the fling lasted. That repeated snap is the
+    // yank. With the page not scrollable there is nothing to snap back from.
     //
-    // Refusing the gestures rather than setting overflow:hidden on the body: that would take the
-    // scrollbar out of the layout and shift the page sideways anywhere without overlay
-    // scrollbars. Anything that still gets through is put back by the scroll listener.
-    const holdScroll = (targetY) => {
+    // Nothing needs to move while it is held: the turn comes at the position that centres the
+    // window, and the page has already been made long enough to reach it. Which is just as well,
+    // because scrollTo does not work on a page that cannot scroll — only the position it is
+    // frozen at is kept.
+    //
+    // Overlay scrollbars take up no layout space, so on this machine the freeze shifts nothing.
+    // Where a scrollbar does take space, its width is handed back as padding so the page cannot
+    // jump sideways as it disappears.
+    const holdScroll = () => {
 
-        const limit = () => document.documentElement.scrollHeight - window.innerHeight;
+        const gutter = window.innerWidth - document.documentElement.clientWidth;
+        const wasOverflow = document.body.style.overflow;
+        const wasPadding = document.body.style.paddingRight;
 
-        // Where the page is being held. Usually that is simply where it already is, because a
-        // window's turn comes at the position that centres it — but the last window sits close
-        // enough to the bottom that the page is not yet long enough to reach that position, and
-        // the room only appears as the window itself opens. So the pin follows the space as it
-        // arrives rather than being fixed: a short, downward drift of a few dozen pixels in the
-        // one case that needs it, and no movement at all in every other.
-        // Never behind where the visitor already is.
-        //
-        // A turn comes on a scroll event, and a scroll event from a fling can carry several
-        // hundred pixels at once — so by the time the condition is tested the page is often well
-        // past the position that centres the window. Pinning to that position then hauls the page
-        // backwards in a single frame, which is the lurch: the window that was on screen leaves,
-        // and the new one arrives into a view that just jumped. Measured here at 65px on a
-        // scripted jump, and around 405px in a recording of a real flick.
-        //
-        // Moving forward is still allowed, because that is how the last window reaches its
-        // position as the page grows. Backwards never is: a visitor who has scrolled past a
-        // window gets it where they stopped, slightly above centre, and nothing moves under them.
-        const floor = Math.round(window.scrollY);
+        document.body.style.overflow = "hidden";
 
-        let pinned = Math.max(floor, Math.round(Math.min(targetY, limit())));
-        let held = true;
+        if (gutter > 0) document.body.style.paddingRight = `${gutter}px`;
 
-        const keep = () => {
+        // Touch does not always honour the overflow on its own, and costs nothing to refuse.
+        const refuseTouch = (e) => e.preventDefault();
 
-            if (!held) return;
-
-            const want = Math.max(floor, Math.round(Math.min(targetY, limit())));
-
-            if (want !== pinned || Math.round(window.scrollY) !== pinned) {
-                pinned = want;
-                window.scrollTo(0, pinned);
-            }
-
-            requestAnimationFrame(keep);
-        };
-
-        requestAnimationFrame(keep);
-
-        const refuse = (e) => e.preventDefault();
-
-        const restore = () => {
-            if (Math.round(window.scrollY) !== pinned) window.scrollTo(0, pinned);
-        };
-
-        // The keys that scroll, unless the visitor is typing: a lock that ate a space bar would
-        // be worse than one that let a keypress through, and `restore` catches it either way.
-        const SCROLLS = [" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"];
-
-        const refuseKey = (e) => {
-            if (!SCROLLS.includes(e.key)) return;
-            if (e.target?.closest?.("input, textarea, select, [contenteditable]")) return;
-            e.preventDefault();
-        };
-
-        window.addEventListener("wheel", refuse, { passive: false });
-        window.addEventListener("touchmove", refuse, { passive: false });
-        window.addEventListener("keydown", refuseKey, { passive: false });
-        window.addEventListener("scroll", restore, { passive: true });
+        window.addEventListener("touchmove", refuseTouch, { passive: false });
 
         return () => {
-            held = false;
-            window.removeEventListener("wheel", refuse);
-            window.removeEventListener("touchmove", refuse);
-            window.removeEventListener("keydown", refuseKey);
-            window.removeEventListener("scroll", restore);
+
+            window.removeEventListener("touchmove", refuseTouch);
+
+            document.body.style.overflow = wasOverflow;
+
+            if (gutter > 0) document.body.style.paddingRight = wasPadding;
         };
     };
 
-    // Bring the window itself on screen, then open it.
+    // Bring the window on screen, then open it, with the page held still throughout.
     //
     // Only the first window arrives with the intro. The rest sit at the stylesheet's opacity: 0
-    // — in the layout, so the page scrolls its full length and each one has a real position to
-    // be triggered on, but not yet on screen. This is the arrival: the same fade the intro uses,
+    // — in the layout, so the page scrolls its full length and each has a real position to be
+    // triggered on, but not yet on screen. This is the arrival: the same fade the intro uses,
     // with the stagger zeroed because this window is coming on its own rather than as one of a
     // queue, and then the slide.
     //
     // Switching to [data-animation="none"] afterwards is not just tidiness. It holds the
     // finished state in plain declarations and takes the animation off the element; the fade
     // fills forwards, and filled animations left attached are paid for on every frame after.
-    const arriveThenOpen = (win, li, whenOpen, targetY) => {
+    const arriveThenOpen = (win, li, whenOpen) => {
 
-        const release = holdScroll(targetY);
+        const release = holdScroll();
 
         win.style.setProperty("--i", 0);
         win.dataset.animation = "in";
@@ -345,9 +304,9 @@ export const sectionTrackingInit = () => {
             moveCaret(li, true);
             sectionObserver.observe(win);
 
-            // Scrolling comes back once the window is actually open, not when it starts, and
-            // the reserved room goes with it — the window has just claimed more than that itself,
-            // so the page is still longer than it was.
+            // Scrolling comes back once the window is actually open, not when it starts, and the
+            // reserved room goes with it — the window has just claimed more than that itself, so
+            // the page is still longer than it was.
             setTimeout(() => {
                 release();
                 headroom.style.height = "0px";
@@ -361,7 +320,7 @@ export const sectionTrackingInit = () => {
     // next one is measured from the moment this window was actually on screen and scrolling had
     // been handed back — and the sequence stays serialised: nothing else is watched for until
     // then, so two windows can never be grabbing the page at the same time.
-    const revealSection = (el, whenOpen, targetY) => {
+    const revealSection = (el, whenOpen) => {
 
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
@@ -378,12 +337,12 @@ export const sectionTrackingInit = () => {
                 reviewsBody.style.removeProperty("display");
                 reviewsBody.style.removeProperty("visibility");
 
-                arriveThenOpen(el, li, whenOpen, targetY);
+                arriveThenOpen(el, li, whenOpen);
                 break;
 
             case "🫆lsdev-window--reviews":
 
-                arriveThenOpen(el, li, whenOpen, targetY);
+                arriveThenOpen(el, li, whenOpen);
                 break;
 
             case "🫆lsdev-contact":
@@ -474,13 +433,8 @@ export const sectionTrackingInit = () => {
 
             if (!centred && !(bottomedOut && top < window.innerHeight)) return;
 
-            // The scroll position that puts the middle of the open window in the middle of the
-            // viewport. Handed to the hold, which will reach it if the page has the room and
-            // follow the page down to it as the window's own height creates the room if not.
-            const targetY = Math.round(window.scrollY + top + openHeight / 2 - window.innerHeight / 2);
-
             window.removeEventListener("scroll", check);
-            revealSection(el, advance, targetY);
+            revealSection(el, advance);
         };
 
         window.addEventListener("scroll", check, { passive: true });
