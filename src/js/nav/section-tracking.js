@@ -165,6 +165,37 @@ export const sectionTrackingInit = () => {
     const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
     const SLIDE_MS = 500;    // slideToggle's own default, so how long the window takes to open
 
+    // Room at the foot of the page, reserved only while it is needed.
+    //
+    // A window's turn comes at the scroll position that centres it, and until it opens the page
+    // is short by the height it is about to gain — the footer is display:none while deferred, so
+    // it is not making up the difference either. For the last window that put the position out
+    // of reach entirely: 1490 needed against a maximum of 1416. Reserving the shortfall means
+    // the visitor can actually scroll to where the turn is supposed to happen, and the window
+    // opens into the space rather than the page having to grow underneath it.
+    const headroom = document.createElement("div");
+
+    headroom.dataset.revealHeadroom = "";
+    headroom.style.height = "0px";
+    headroom.setAttribute("aria-hidden", "true");
+
+    revealTargets[0]?.parentElement?.append(headroom);
+
+    // Stand in for the height `win` is about to gain, so the page is already as long as it will
+    // be once the window has opened.
+    //
+    // Reserving exactly the growth rather than a measured shortfall: the shortfall is worked out
+    // when the window is armed and the layout can still settle by a few pixels before its turn
+    // actually comes, which left the position short by eight. The growth is a fact about the
+    // window, not about where anything happens to be, and the position that centres a window is
+    // always reachable on a page the length it will be once that window is open.
+    //
+    // It also means the page does not change length across the open at all: the window claims
+    // the space as this gives it back.
+    const reserveRoomFor = (grows) => {
+        headroom.style.height = `${Math.max(0, Math.ceil(grows))}px`;
+    };
+
     // What `win` will measure once it is open, worked out while it is still shut.
     //
     // The body is given layout, but collapsed and clipped, never at its full size: a window left
@@ -300,9 +331,12 @@ export const sectionTrackingInit = () => {
             moveCaret(li, true);
             sectionObserver.observe(win);
 
-            // Scrolling comes back once the window is actually open, not when it starts.
+            // Scrolling comes back once the window is actually open, not when it starts, and
+            // the reserved room goes with it — the window has just claimed more than that itself,
+            // so the page is still longer than it was.
             setTimeout(() => {
                 release();
+                headroom.style.height = "0px";
                 whenOpen();
             }, SLIDE_MS);
 
@@ -369,8 +403,13 @@ export const sectionTrackingInit = () => {
 
             currentIndex++;
 
-            if (currentIndex < revealTargets.length) armTarget(revealTargets[currentIndex]);
-            else footer?.removeAttribute("data-deferred");
+            if (currentIndex < revealTargets.length) {
+                armTarget(revealTargets[currentIndex]);
+                return;
+            }
+
+            headroom.style.height = "0px";
+            footer?.removeAttribute("data-deferred");
 
         }, REVEAL_GAP);
     };
@@ -398,7 +437,14 @@ export const sectionTrackingInit = () => {
         // bar that is there now, so the window ends up centred once it has finished opening —
         // it grows downward from a top that does not move, so the centre it is heading for is
         // the one worked out here.
+        // Taken before the measurement, not after: openHeightOf toggles data-open to pick up the
+        // padding the open state adds, and reading the collapsed height on the other side of
+        // that caught it 25px tall mid-settle — which is exactly how much the page then gained
+        // across the open instead of staying put.
+        const closedHeight = el.getBoundingClientRect().height;
         const openHeight = openHeightOf(el);
+
+        reserveRoomFor(openHeight - closedHeight);
 
         const check = () => {
 
