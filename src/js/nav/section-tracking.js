@@ -163,6 +163,116 @@ export const sectionTrackingInit = () => {
 
     const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
     const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
+    const SLIDE_MS = 500;    // slideToggle's own default, so how long the window takes to open
+
+    // What `win` will measure once it is open, worked out while it is still shut.
+    //
+    // The body is given layout, but collapsed and clipped, never at its full size: a window left
+    // momentarily full-height and in flow is the one thing here that could look like it opened,
+    // shut and opened again. The height comes in two parts instead — the window's own chrome
+    // with the body at zero, plus what the body's content would need — which costs nothing and
+    // removes the risk. Transitions are off for the measurement because the open state adds
+    // padding-bottom over .25s, and reading the box the instant data-open goes on would miss it.
+    const openHeightOf = (win) => {
+
+        const body = win.querySelector(".🎨lsdev-window__body");
+
+        if (!body || getComputedStyle(body).display !== "none") {
+            return win.getBoundingClientRect().height;
+        }
+
+        const wasOpen = win.hasAttribute("data-open");
+
+        win.style.transition = "none";
+
+        body.style.display = "block";
+        body.style.visibility = "hidden";
+        body.style.overflow = "hidden";
+        body.style.height = "0px";
+
+        win.toggleAttribute("data-open", true);
+
+        const height = win.getBoundingClientRect().height + body.scrollHeight;
+
+        if (!wasOpen) win.removeAttribute("data-open");
+
+        body.style.removeProperty("display");
+        body.style.removeProperty("visibility");
+        body.style.removeProperty("overflow");
+        body.style.removeProperty("height");
+        win.style.removeProperty("transition");
+
+        return height;
+    };
+
+    // Hold the page exactly where it is, and hand back a way to let it go.
+    //
+    // Nothing is scrolled: a window's turn comes at the position that already centres it, so the
+    // page is in the right place the moment the lock goes on and only has to be kept there. That
+    // is the whole reason this can be a lock rather than a lock and a glide, and why there is
+    // nothing here for an in-flight fling to pull against.
+    //
+    // Refusing the gestures rather than setting overflow:hidden on the body: that would take the
+    // scrollbar out of the layout and shift the page sideways anywhere without overlay
+    // scrollbars. Anything that still gets through is put back by the scroll listener.
+    const holdScroll = (targetY) => {
+
+        const limit = () => document.documentElement.scrollHeight - window.innerHeight;
+
+        // Where the page is being held. Usually that is simply where it already is, because a
+        // window's turn comes at the position that centres it — but the last window sits close
+        // enough to the bottom that the page is not yet long enough to reach that position, and
+        // the room only appears as the window itself opens. So the pin follows the space as it
+        // arrives rather than being fixed: a short, downward drift of a few dozen pixels in the
+        // one case that needs it, and no movement at all in every other.
+        let pinned = Math.round(Math.min(targetY, limit()));
+        let held = true;
+
+        const keep = () => {
+
+            if (!held) return;
+
+            const want = Math.round(Math.min(targetY, limit()));
+
+            if (want !== pinned || Math.round(window.scrollY) !== pinned) {
+                pinned = want;
+                window.scrollTo(0, pinned);
+            }
+
+            requestAnimationFrame(keep);
+        };
+
+        requestAnimationFrame(keep);
+
+        const refuse = (e) => e.preventDefault();
+
+        const restore = () => {
+            if (Math.round(window.scrollY) !== pinned) window.scrollTo(0, pinned);
+        };
+
+        // The keys that scroll, unless the visitor is typing: a lock that ate a space bar would
+        // be worse than one that let a keypress through, and `restore` catches it either way.
+        const SCROLLS = [" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"];
+
+        const refuseKey = (e) => {
+            if (!SCROLLS.includes(e.key)) return;
+            if (e.target?.closest?.("input, textarea, select, [contenteditable]")) return;
+            e.preventDefault();
+        };
+
+        window.addEventListener("wheel", refuse, { passive: false });
+        window.addEventListener("touchmove", refuse, { passive: false });
+        window.addEventListener("keydown", refuseKey, { passive: false });
+        window.addEventListener("scroll", restore, { passive: true });
+
+        return () => {
+            held = false;
+            window.removeEventListener("wheel", refuse);
+            window.removeEventListener("touchmove", refuse);
+            window.removeEventListener("keydown", refuseKey);
+            window.removeEventListener("scroll", restore);
+        };
+    };
 
     // Bring the window itself on screen, then open it.
     //
@@ -175,7 +285,9 @@ export const sectionTrackingInit = () => {
     // Switching to [data-animation="none"] afterwards is not just tidiness. It holds the
     // finished state in plain declarations and takes the animation off the element; the fade
     // fills forwards, and filled animations left attached are paid for on every frame after.
-    const arriveThenOpen = (win, li, whenOpen) => {
+    const arriveThenOpen = (win, li, whenOpen, targetY) => {
+
+        const release = holdScroll(targetY);
 
         win.style.setProperty("--i", 0);
         win.dataset.animation = "in";
@@ -188,7 +300,12 @@ export const sectionTrackingInit = () => {
             moveCaret(li, true);
             sectionObserver.observe(win);
 
-            whenOpen();
+            // Scrolling comes back once the window is actually open, not when it starts.
+            setTimeout(() => {
+                release();
+                whenOpen();
+            }, SLIDE_MS);
+
         }, FADE_MS);
     };
 
@@ -196,7 +313,7 @@ export const sectionTrackingInit = () => {
     // next one is measured from the moment this window was actually on screen and scrolling had
     // been handed back — and the sequence stays serialised: nothing else is watched for until
     // then, so two windows can never be grabbing the page at the same time.
-    const revealSection = (el, whenOpen) => {
+    const revealSection = (el, whenOpen, targetY) => {
 
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
@@ -213,12 +330,12 @@ export const sectionTrackingInit = () => {
                 reviewsBody.style.removeProperty("display");
                 reviewsBody.style.removeProperty("visibility");
 
-                arriveThenOpen(el, li, whenOpen);
+                arriveThenOpen(el, li, whenOpen, targetY);
                 break;
 
             case "🫆lsdev-window--reviews":
 
-                arriveThenOpen(el, li, whenOpen);
+                arriveThenOpen(el, li, whenOpen, targetY);
                 break;
 
             case "🫆lsdev-contact":
@@ -276,15 +393,34 @@ export const sectionTrackingInit = () => {
             return;
         }
 
-        // A window's turn comes when the bottom of its title bar reaches the bottom of the
-        // viewport — the moment it would have come into view, had it been visible. It is in the
-        // layout already, so there is a real edge to measure even while it is still at opacity 0.
+        // A window's turn comes at the scroll position that would put the middle of the *open*
+        // window in the middle of the viewport. Measured on the open shape rather than the title
+        // bar that is there now, so the window ends up centred once it has finished opening —
+        // it grows downward from a top that does not move, so the centre it is heading for is
+        // the one worked out here.
+        const openHeight = openHeightOf(el);
+
         const check = () => {
 
-            if (el.getBoundingClientRect().bottom > window.innerHeight) return;
+            const top = el.getBoundingClientRect().top;
+
+            const centred = top + openHeight / 2 <= window.innerHeight / 2;
+
+            // The page may not have the room to reach that position — the last window, with the
+            // footer still held out of the flow, can be close to the bottom of the document.
+            // Opening it where it is beats never opening it at all.
+            const bottomedOut =
+                window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
+
+            if (!centred && !(bottomedOut && top < window.innerHeight)) return;
+
+            // The scroll position that puts the middle of the open window in the middle of the
+            // viewport. Handed to the hold, which will reach it if the page has the room and
+            // follow the page down to it as the window's own height creates the room if not.
+            const targetY = Math.round(window.scrollY + top + openHeight / 2 - window.innerHeight / 2);
 
             window.removeEventListener("scroll", check);
-            revealSection(el, advance);
+            revealSection(el, advance, targetY);
         };
 
         window.addEventListener("scroll", check, { passive: true });
