@@ -164,6 +164,34 @@ export const sectionTrackingInit = () => {
     const REVEAL_GAP = 600;   // ms of cooldown before the next section starts watching
     const SNAP_MS = 320;      // bringing the window to the middle of the viewport
     const SLIDE_MS = 500;     // slideToggle's own default, so how long the window is opening
+    const SETTLE_MS = 60;     // ms of stillness that counts as the flick being over
+
+    // Run once the page has been still for SETTLE_MS; immediately if it already is.
+    //
+    // The grab has to wait for the gesture to finish rather than interrupt it. Refusing wheel
+    // events only works on gestures that begin after the listener exists: a flick already in
+    // flight has been handed to the compositor, which keeps scrolling regardless of what the
+    // main thread later decides, so the glide and the fling end up moving the page against each
+    // other for a few frames. That fight is the jitter. Waiting for the flick to end costs a
+    // frame or two and leaves nothing to fight.
+    const whenScrollSettles = (run) => {
+
+        let timer = null;
+
+        const settled = () => {
+            window.removeEventListener("scroll", restart);
+            run();
+        };
+
+        const restart = () => {
+            clearTimeout(timer);
+            timer = setTimeout(settled, SETTLE_MS);
+        };
+
+        window.addEventListener("scroll", restart, { passive: true });
+
+        timer = setTimeout(settled, SETTLE_MS);
+    };
 
     // What `win` will measure once it is open. Its body is display:none until slideToggle runs,
     // so it is given layout for the length of one synchronous block — long enough to read, too
@@ -416,7 +444,7 @@ export const sectionTrackingInit = () => {
             if (!due) return;
 
             window.removeEventListener("scroll", check);
-            revealSection(el, advance, openHeight);
+            whenScrollSettles(() => revealSection(el, advance, openHeight));
         };
 
         window.addEventListener("scroll", check, { passive: true });
