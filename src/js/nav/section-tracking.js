@@ -252,9 +252,17 @@ export const sectionTrackingInit = () => {
         const growth = Math.max(0, openHeight - win.getBoundingClientRect().height);
         const limit = () => document.documentElement.scrollHeight - window.innerHeight;
 
-        const to = Math.max(0, Math.min(limit() + growth, Math.round(
+        const centred = Math.max(0, Math.min(limit() + growth, Math.round(
             from + win.getBoundingClientRect().top - (window.innerHeight - openHeight) / 2
         )));
+
+        // Forward only. A window's turn can come after the visitor has already scrolled past it
+        // — they flick on while the previous one is still opening — and dragging them back up to
+        // centre it is what reads as the window showing, hiding and showing again: the page
+        // returns, the window slides off the bottom on the way, then comes back. Moving forward
+        // to meet a window is a nudge; hauling backwards to one is an argument. A window already
+        // behind the visitor opens where it is, and the page stays where they left it.
+        const to = Math.max(from, centred);
 
         let pinned = from;
 
