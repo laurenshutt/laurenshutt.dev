@@ -150,24 +150,32 @@ export const animateSequence = async () => {
     
     requestAnimationFrame(() => {
         
-        Array.from(windows).forEach(window => {
-            window.dataset.animation = "in";                        
-        });
+        // Only the first window arrives with the intro. The rest keep the stylesheet's
+        // opacity: 0 — they are in the layout, so the page is its full length and each has a
+        // real position to be triggered on, but they are not on screen yet. Each one fades in
+        // on its own as the visitor scrolls down to it; see arriveThenOpen in section-tracking.
+        firstWindow.dataset.animation = "in";
 
         setTimeout(function(){
             
             slideToggle(firstWindowBody);
             
             firstWindow.dataset.open = "";
-
-            Array.from(windows).forEach(window => {
-                window.dataset.animation = "none";                        
-            });
+            firstWindow.dataset.animation = "none";
 
             scrollProjects();
             filterProjects();
-            document.body.removeAttribute("data-loading");
-        }, 250 * windows.length + 100);
+
+            // Hand over once the first window has finished opening, not when it starts. Until
+            // that slide ends, every window below is still most of a screen too high — and the
+            // next one's turn comes when its title bar reaches the bottom of the viewport, a
+            // position it would otherwise be sitting past before the visitor had moved at all.
+            Promise.allSettled(firstWindowBody.getAnimations().map(a => a.finished))
+                .then(() => document.body.removeAttribute("data-loading"));
+
+        // The one window's fade with nothing staggered ahead of it, and a beat. This used to
+        // wait out the whole queue; with only one arriving there is nothing to wait for.
+        }, 250 + 100);
 
         sectionTrackingInit();
         startTheClock();

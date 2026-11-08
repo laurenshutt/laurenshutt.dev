@@ -161,199 +161,42 @@ export const sectionTrackingInit = () => {
 
     if (footer) footer.dataset.deferred = "";
 
-    const REVEAL_GAP = 600;   // ms of cooldown before the next section starts watching
-    const SNAP_MS = 320;      // bringing the window to the middle of the viewport
-    const SLIDE_MS = 500;     // slideToggle's own default, so how long the window is opening
-    const SETTLE_MS = 60;     // ms of stillness that counts as the flick being over
+    const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
+    const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
 
-    // Run once the page has been still for SETTLE_MS; immediately if it already is.
+    // Bring the window itself on screen, then open it.
     //
-    // The grab has to wait for the gesture to finish rather than interrupt it. Refusing wheel
-    // events only works on gestures that begin after the listener exists: a flick already in
-    // flight has been handed to the compositor, which keeps scrolling regardless of what the
-    // main thread later decides, so the glide and the fling end up moving the page against each
-    // other for a few frames. That fight is the jitter. Waiting for the flick to end costs a
-    // frame or two and leaves nothing to fight.
-    const whenScrollSettles = (run) => {
-
-        let timer = null;
-
-        const settled = () => {
-            window.removeEventListener("scroll", restart);
-            run();
-        };
-
-        const restart = () => {
-            clearTimeout(timer);
-            timer = setTimeout(settled, SETTLE_MS);
-        };
-
-        window.addEventListener("scroll", restart, { passive: true });
-
-        timer = setTimeout(settled, SETTLE_MS);
-    };
-
-    // What `win` will measure once it is open. Its body is display:none until slideToggle runs,
-    // so it is given layout for the length of one synchronous block — long enough to read, too
-    // short for the browser to paint. The About step already uses this trick to initialise the
-    // reviews carousel. data-open goes on for the measurement too, since the open state carries
-    // its own padding and the number has to include it.
-    const openHeightOf = (win) => {
-
-        const body = win.querySelector(".🎨lsdev-window__body");
-
-        if (!body || getComputedStyle(body).display !== "none") {
-            return win.getBoundingClientRect().height;
-        }
-
-        const wasOpen = win.hasAttribute("data-open");
-
-        // Transitions off for the measurement. The open state adds padding-bottom, and the rule
-        // transitions it over .25s — so reading the box the instant data-open goes on returns the
-        // height without that padding, and the window ends up centred half of it too high.
-        win.style.transition = "none";
-
-        // The body is given layout, but collapsed and clipped, never at its full size. All of
-        // this is one synchronous block so the browser has no opportunity to paint it — but a
-        // measurement that leaves a window momentarily full-height and in flow is the one thing
-        // here that could ever look like it opened, shut and opened again, and the measurement
-        // does not need it. Taking the height in two parts costs nothing and removes the risk.
-        body.style.display = "block";
-        body.style.visibility = "hidden";
-        body.style.overflow = "hidden";
-        body.style.height = "0px";
-
-        win.toggleAttribute("data-open", true);
-
-        // The window's own chrome with the body collapsed, plus what the body would need.
-        const height = win.getBoundingClientRect().height + body.scrollHeight;
-
-        if (!wasOpen) win.removeAttribute("data-open");
-
-        body.style.removeProperty("display");
-        body.style.removeProperty("visibility");
-        body.style.removeProperty("overflow");
-        body.style.removeProperty("height");
-        win.style.removeProperty("transition");
-
-        return height;
-    };
-
-    // Centre `win` as it will sit once open, hold the page there while it opens, then hand
-    // scrolling back.
+    // Only the first window arrives with the intro. The rest sit at the stylesheet's opacity: 0
+    // — in the layout, so the page scrolls its full length and each one has a real position to
+    // be triggered on, but not yet on screen. This is the arrival: the same fade the intro uses,
+    // with the stagger zeroed because this window is coming on its own rather than as one of a
+    // queue, and then the slide.
     //
-    // Measured open rather than collapsed because the open shape is what the visitor ends up
-    // looking at: centring the title bar would leave the finished window hanging off the bottom
-    // of the screen. The window grows downward from a fixed top, so the target does not move
-    // while the slide runs.
-    //
-    // The hold refuses the gestures rather than setting overflow:hidden on the body, which would
-    // take the scrollbar out of the layout and shift the page sideways anywhere without overlay
-    // scrollbars. Anything that still gets through — a keypress, a scroll chained out of one of
-    // the inner scrollers — is put back by the scroll listener.
-    const holdCentred = (win, openHeight, open, done) => {
+    // Switching to [data-animation="none"] afterwards is not just tidiness. It holds the
+    // finished state in plain declarations and takes the animation off the element; the fade
+    // fills forwards, and filled animations left attached are paid for on every frame after.
+    const arriveThenOpen = (win, li, whenOpen) => {
 
-        const from = window.scrollY;
+        win.style.setProperty("--i", 0);
+        win.dataset.animation = "in";
 
-        // How much taller the document is about to get. Without this the target would be clamped
-        // against a page that does not exist yet: the last window is near the bottom, the scroll
-        // limit is short, and the window then opens underneath the clamp, leaving it parked a
-        // hundred pixels high. The per-frame clamp below converges on the real figure as the
-        // slide actually adds the height.
-        const growth = Math.max(0, openHeight - win.getBoundingClientRect().height);
-        const limit = () => document.documentElement.scrollHeight - window.innerHeight;
+        setTimeout(() => {
 
-        const centred = Math.max(0, Math.min(limit() + growth, Math.round(
-            from + win.getBoundingClientRect().top - (window.innerHeight - openHeight) / 2
-        )));
+            win.dataset.animation = "none";
 
-        // Forward only. A window's turn can come after the visitor has already scrolled past it
-        // — they flick on while the previous one is still opening — and dragging them back up to
-        // centre it is what reads as the window showing, hiding and showing again: the page
-        // returns, the window slides off the bottom on the way, then comes back. Moving forward
-        // to meet a window is a nudge; hauling backwards to one is an argument. A window already
-        // behind the visitor opens where it is, and the page stays where they left it.
-        const to = Math.max(from, centred);
+            openWindow(win);
+            moveCaret(li, true);
+            sectionObserver.observe(win);
 
-        let pinned = from;
-
-        const refuse = (e) => e.preventDefault();
-        const restore = () => {
-            if (Math.round(window.scrollY) !== pinned) window.scrollTo(0, pinned);
-        };
-
-        // The keys that scroll, unless the visitor is typing — the contact form is a long way
-        // down, but a lock that ate a space bar would be worse than one that let a keypress
-        // through, and `restore` catches it either way.
-        const SCROLLS = [" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"];
-
-        const refuseKey = (e) => {
-            if (!SCROLLS.includes(e.key)) return;
-            if (e.target?.closest?.("input, textarea, select, [contenteditable]")) return;
-            e.preventDefault();
-        };
-
-        window.addEventListener("wheel", refuse, { passive: false });
-        window.addEventListener("touchmove", refuse, { passive: false });
-        window.addEventListener("keydown", refuseKey, { passive: false });
-        window.addEventListener("scroll", restore, { passive: true });
-
-        const release = () => {
-            window.removeEventListener("wheel", refuse);
-            window.removeEventListener("touchmove", refuse);
-            window.removeEventListener("keydown", refuseKey);
-            window.removeEventListener("scroll", restore);
-        };
-
-        const atOnce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const began = performance.now();
-
-        let opened = false;
-
-        const frame = () => {
-
-            const elapsed = performance.now() - began;
-
-            if (!opened) {
-
-                const p = atOnce ? 1 : Math.min(1, elapsed / SNAP_MS);
-
-                pinned = Math.min(limit(), Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))));
-                window.scrollTo(0, pinned);
-
-                if (p < 1) {
-                    requestAnimationFrame(frame);
-                    return;
-                }
-
-                opened = true;
-                open();
-                requestAnimationFrame(frame);
-                return;
-            }
-
-            // Hold on the target while the window opens, re-clamping as the slide makes the page
-            // taller — the last few pixels of travel only become reachable once it has grown.
-            pinned = Math.min(limit(), to);
-            window.scrollTo(0, pinned);
-
-            if (elapsed < SNAP_MS + SLIDE_MS) {
-                requestAnimationFrame(frame);
-                return;
-            }
-
-            release();
-            done();
-        };
-
-        requestAnimationFrame(frame);
+            whenOpen();
+        }, FADE_MS);
     };
 
     // `whenOpen` is called once the section has finished revealing, so the cooldown before the
     // next one is measured from the moment this window was actually on screen and scrolling had
     // been handed back — and the sequence stays serialised: nothing else is watched for until
     // then, so two windows can never be grabbing the page at the same time.
-    const revealSection = (el, whenOpen, openHeight) => {
+    const revealSection = (el, whenOpen) => {
 
         const li = mainNav.querySelector(`li:has(a[href="#${el.id}"])`);
 
@@ -370,22 +213,12 @@ export const sectionTrackingInit = () => {
                 reviewsBody.style.removeProperty("display");
                 reviewsBody.style.removeProperty("visibility");
 
-                document.getElementById("🫆lsdev-window--reviews").style.opacity = "1";
-
-                holdCentred(el, openHeight, function(){
-                    openWindow(el);
-                    moveCaret(li, true);
-                    sectionObserver.observe(el);
-                }, whenOpen);
+                arriveThenOpen(el, li, whenOpen);
                 break;
 
             case "🫆lsdev-window--reviews":
 
-                holdCentred(el, openHeight, function(){
-                    openWindow(el);
-                    moveCaret(li, true);
-                    sectionObserver.observe(el);
-                }, whenOpen);
+                arriveThenOpen(el, li, whenOpen);
                 break;
 
             case "🫆lsdev-contact":
@@ -404,16 +237,14 @@ export const sectionTrackingInit = () => {
         }
     };
 
-    // Sections reveal one at a time, in order. A section's turn comes when the middle of the
-    // window it is about to open would sit in the middle of the viewport — measured on the open
-    // shape, so the trigger matches where the window is going to be rather than the sliver of
-    // title bar that is there now. At that point the page is taken over, brought exactly to
-    // centre and held while the window opens, and scrolling is handed back once it is on screen.
+    // Sections reveal one at a time, in order. A section's turn comes when the bottom of its
+    // collapsed title bar reaches the bottom of the viewport: the window fades in where it sits
+    // and then slides open, so the visitor meets each one as they arrive at it rather than
+    // finding the whole page already laid out in front of them.
     //
-    // Watching one section at a time is what keeps that safe: nothing fires ahead of its turn,
-    // and two windows can never be holding the page at once. The check also runs once at arming
-    // rather than only on the next scroll, so a section the visitor has already gone past still
-    // opens instead of stalling everything behind it.
+    // Watching one at a time is what keeps the order: nothing fires ahead of its turn. The check
+    // also runs once at arming rather than only on the next scroll, so a section the visitor has
+    // already gone past still opens instead of stalling everything behind it.
     let currentIndex = 0;
 
     const advance = () => {
@@ -445,25 +276,15 @@ export const sectionTrackingInit = () => {
             return;
         }
 
-        const openHeight = openHeightOf(el);
-
+        // A window's turn comes when the bottom of its title bar reaches the bottom of the
+        // viewport — the moment it would have come into view, had it been visible. It is in the
+        // layout already, so there is a real edge to measure even while it is still at opacity 0.
         const check = () => {
 
-            const top = el.getBoundingClientRect().top;
-
-            // The page may not have the room to centre this one — the last window, with the
-            // footer still held out of the flow, can be the bottom of the document. Opening it
-            // where it is beats never opening it at all.
-            const bottomedOut =
-                window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
-
-            const due = top + openHeight / 2 <= window.innerHeight / 2
-                || (bottomedOut && top < window.innerHeight);
-
-            if (!due) return;
+            if (el.getBoundingClientRect().bottom > window.innerHeight) return;
 
             window.removeEventListener("scroll", check);
-            whenScrollSettles(() => revealSection(el, advance, openHeight));
+            revealSection(el, advance);
         };
 
         window.addEventListener("scroll", check, { passive: true });
