@@ -1,4 +1,12 @@
 
+/* Inner-page heading identity. style.css used to give every h1/h2 the pixel font and these
+   colours as element defaults; the August component rewrite narrowed that block to a reset,
+   because every heading on the homepage now carries its own class. The inner pages write bare
+   <h1>/<h2> inside <article>, so they lost it. Restored here, scoped to these pages, rather
+   than reinstating global element defaults that would reach back into the homepage.
+   --purple-400 is #c25394 and --gold-500 is #dea285 — the exact values the old
+   --lighter-purple and --gold tokens held. */
+
 .🐱lsdev {
     /* Declared directly here because .🐱lsdev IS the <html> element. Nesting `html, body { … }`
        inside it would compile to a descendant selector, which can never match <html>, and
@@ -74,8 +82,10 @@
             }
 
             h2 {
+                font-family: var(--💾lsdev-pixel-font);
                 font-size:1.1111rem;
                 font-weight:400;
+                color: var(--💾lsdev-purple-400);
             }
             ul {
                 list-style: none;
@@ -131,17 +141,21 @@
             }
 
             h1 {
+                font-family: var(--💾lsdev-pixel-font);
                 font-size:3.5556rem;
                 padding-bottom:8px;
                 letter-spacing:-2px;
                 margin-left:-6px;
                 margin-top:-10px;
+                color: var(--💾lsdev-gold-500);
             }
 
             h2 {
+                font-family: var(--💾lsdev-pixel-font);
                 font-size:1.4444rem;
                 padding-bottom:15px;
                 margin-left:-3px;
+                color: var(--💾lsdev-purple-400);
 
                 &:not(:first-of-type) {
                     padding-top:20px;
@@ -149,6 +163,10 @@
             }
 
             p {
+                /* The global reset sets 200, which is too thin for long-form reading and
+                   doesn't match the 300 the article's lists use. */
+                font-weight: 300;
+
                 &:not(p:has(+ ul)) {
                     padding-bottom:15px;
                 }
