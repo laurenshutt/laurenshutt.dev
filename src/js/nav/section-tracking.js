@@ -213,16 +213,27 @@ export const sectionTrackingInit = () => {
         // height without that padding, and the window ends up centred half of it too high.
         win.style.transition = "none";
 
+        // The body is given layout, but collapsed and clipped, never at its full size. All of
+        // this is one synchronous block so the browser has no opportunity to paint it — but a
+        // measurement that leaves a window momentarily full-height and in flow is the one thing
+        // here that could ever look like it opened, shut and opened again, and the measurement
+        // does not need it. Taking the height in two parts costs nothing and removes the risk.
         body.style.display = "block";
         body.style.visibility = "hidden";
+        body.style.overflow = "hidden";
+        body.style.height = "0px";
+
         win.toggleAttribute("data-open", true);
 
-        const height = win.getBoundingClientRect().height;
+        // The window's own chrome with the body collapsed, plus what the body would need.
+        const height = win.getBoundingClientRect().height + body.scrollHeight;
 
         if (!wasOpen) win.removeAttribute("data-open");
 
         body.style.removeProperty("display");
         body.style.removeProperty("visibility");
+        body.style.removeProperty("overflow");
+        body.style.removeProperty("height");
         win.style.removeProperty("transition");
 
         return height;
