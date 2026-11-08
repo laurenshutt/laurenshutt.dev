@@ -153,10 +153,6 @@
             calc(c - 0.029)
             calc(h + 2.5));
 
-        /* The window controls. Deliberately NOT merged into 400: it sits at the same lightness but
-           half again the chroma, and its hue (9.6) falls between this ramp and rose rather than
-           inside either. Nearest neighbours are 0.54 and 0.67 of a JND away — three times the gaps
-           that justified the other merges — so it keeps its own value and just gains a name. */
         --💾lsdev-pink-450: oklch(
             from var(--💾lsdev-pink-700)
             calc(l + 0.038)
@@ -1526,7 +1522,7 @@
         justify-content: space-between;
 
         box-sizing: border-box;
-        padding: 5vw 0 0 7vw;
+        padding: 7vw 0 0 7vw;
         height: 100vh;
     }
 
