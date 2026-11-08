@@ -929,6 +929,23 @@
         pointer-events: auto;
     }
 
+    /* Once they have all arrived, hand the fill's values over to plain declarations and let the
+       animations go.
+
+       `forwards` keeps every cell's animation attached for the life of the page, and the browser
+       re-evaluates all of them on every frame. With a grid this size that is around 1,700 live
+       animations, and it halves the frame rate of anything else that animates: a window opening
+       managed 27 frames per 500ms with them attached and 60 without, which is the stutter as the
+       windows open. Detaching them is worth as much as deleting the grid outright.
+
+       The base rule sets opacity: 0 — the fill is the only thing holding the cells visible — so
+       the values it was holding have to be restated here or the whole grid would disappear. */
+    .🎨lsdev-bg-grid[data-settled] .🎨lsdev-bg-grid__cell {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+
     .🎨lsdev-bg-grid__gradient-overlay {
         
         position: fixed;

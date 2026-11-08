@@ -5,6 +5,10 @@ import {
 
 const grid = document.getElementById("🫆lsdev-bg-grid");
 
+// Which build of the grid is current. A resize rebuilds it, and the old build's cells must not
+// be allowed to mark the new ones as settled before they have animated in.
+let build = 0;
+
 const hexToRgba = (hex, alpha) => {
     const bigint = parseInt(hex.slice(1), 16);
     const r = (bigint >> 16) & 255;
@@ -21,6 +25,9 @@ export const createGrid = () => {
     const cols = Math.floor(window.innerWidth / 32);
     const rows = Math.floor(window.innerHeight / 32);
 
+    const thisBuild = ++build;
+
+    grid.removeAttribute("data-settled");
     grid.innerHTML = "";
     Object.assign(grid.style, {
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -41,6 +48,14 @@ export const createGrid = () => {
     }
 
     grid.appendChild(fragment);
+
+    // The cells arrive on a stagger that runs for a couple of seconds, and their fill keeps them
+    // attached long after that. Wait for the last one, then let the stylesheet hold the finished
+    // state instead — see the [data-settled] rule for why it is worth the trouble.
+    Promise.allSettled(grid.getAnimations({ subtree: true }).map(a => a.finished))
+        .then(() => {
+            if (thisBuild === build) grid.dataset.settled = "";
+        });
 
     grid.onpointerover = handleGridHover;
 };
