@@ -1746,7 +1746,14 @@
         white-space: normal;
     }
 
-    .✨lsdev-fx-glitch::before {
+    /* The two offset copies hang off the title as a whole rather than off each word.
+    
+       Their clip-path bands are percentages of the box they sit in, so a copy per word gave each
+       word its own band at the same height within itself — two little glitches running in step
+       rather than one running across the name. On the title the band sweeps the whole block, and
+       the copies re-wrap "Lauren Shutt" exactly as the words do because they are laid out at the
+       same width, in the same font, at the same size. */
+    .has-glitch::before {
 
         content: attr(data-text);
 
@@ -1771,7 +1778,7 @@
         animation: var(--lsdev-glitch-animation-state-before, none);  
     }
 
-    .✨lsdev-fx-glitch::after {
+    .has-glitch::after {
 
         content: attr(data-text);
 

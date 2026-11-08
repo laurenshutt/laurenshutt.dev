@@ -211,7 +211,7 @@ export const animateSequence = async () => {
             }
             
             // Run the animation on all elements with the "glitch" class.
-            const elements = document.querySelectorAll(".✨lsdev-fx-glitch");
+            const elements = document.querySelectorAll(".has-glitch");
             
             elements.forEach(el => {
                 el.style.setProperty("--lsdev-glitch-animation-state-before", "none"); // Reset animation
