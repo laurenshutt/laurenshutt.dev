@@ -10,16 +10,30 @@
             linear-gradient(to right bottom, rgb(255, 255, 255) 0px, rgb(255, 255, 255) 25vw, rgb(255, 253, 253) 33vw, rgba(253, 236, 237, 0.5) 82.5%);
         margin:0;
     }
-    ul, ul li {
+    /* Article lists. :not() keeps the external nav out of it — the rail sets its own pixel font
+       and spaces its items with margins. */
+    ul:not(.🎨lsdev-external-nav__list),
+    ul:not(.🎨lsdev-external-nav__list) li {
         font-family:"Lato", sans-serif;
         font-weight:300;
         line-height: 1.5;
     }
-    ul li {
+    ul:not(.🎨lsdev-external-nav__list) li {
         padding-bottom:10px;
     }
-    .🎨lsdev-sidebar-nav {
+    /* The rail fades in from 0 as part of the homepage's intro animation; the inner pages run
+       no intro, so it has to start visible. */
+    .🎨lsdev-external-nav {
         opacity:1;
+    }
+
+    /* Nothing fills the inner pages' loading phrases, so the footer's space-between would shove
+       the copyright against one edge. */
+    .🎨lsdev-footer {
+        justify-content: center;
+    }
+    .🎨lsdev-footer_copyright {
+        text-align: center;
     }
     main {
         min-width:unset;

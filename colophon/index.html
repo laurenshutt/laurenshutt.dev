@@ -97,67 +97,57 @@
     </head>
     <body>
         <nav 
-            class="🎨lsdev-sidebar-nav" 
-            id="🫆lsdev-sidebar-nav"
+            class="🎨lsdev-external-nav" 
+            id="🫆lsdev-external-nav"
             aria-label="External navigation">
-            <ul>
-                <li>
+            <ul class="🎨lsdev-external-nav__list">
+                <li class="🎨lsdev-external-nav__item">
                     <a 
+                        class="🎨lsdev-external-nav__link"
                         aria-label="Profile page at Virginia Tech"
                         href="https://partnerships.vt.edu/about/creative-studio#lauren-shutt"
                         target="_blank">
                         VT
                     </a>
                 </li>
-                <li>
-                    <a href="/now">
+                <li class="🎨lsdev-external-nav__item">
+                    <a 
+                        class="🎨lsdev-external-nav__link"
+                        href="/now">
                         Now
                     </a>
                 </li>
-                <li>
-                    <a href="/colophon">
+                <li class="🎨lsdev-external-nav__item">
+                    <a 
+                        class="🎨lsdev-external-nav__link"
+                        href="/colophon">
                         Colophon
                     </a>
                 </li>
-                <li>
+                <li class="🎨lsdev-external-nav__item">
                     <a
-                        rel="me"
+                        class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
                         aria-label="Github profile" 
-                        class="🎨lsdev-sidebar-nav__icon--github is-coming-soon"
+                        data-icon="github"
                         href="https://github.com/laurenshutt/"
-                        target="_blank"></a>
-                </li>
-                <li>
-                    <a
                         rel="me"
-                        aria-label="LinkedIn profile" 
-                        class="🎨lsdev-sidebar-nav__icon--linkedin" 
-                        href="https://www.linkedin.com/in/laurenshutt/"
                         target="_blank"></a>
                 </li>
-                <li>
+                <li class="🎨lsdev-external-nav__item">
+                    <a
+                        class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
+                        aria-label="LinkedIn profile" 
+                        data-icon="linkedin" 
+                        href="https://www.linkedin.com/in/laurenshutt/"
+                        rel="me"
+                        target="_blank"></a>
+                </li>
+                <li class="🎨lsdev-external-nav__item">
                     <button 
+                        class="🎨lsdev-external-nav__link 🎨lsdev-external-nav__icon"
                         aria-label="Turn music on" 
                         aria-pressed="false" 
-                        class="🎨lsdev-sidebar-nav__icon--music">
-                    </button>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <a>Colophon</a>
-                </li>
-                <li>
-                    <a>Now</a>
-                </li>
-                <li>
-                    <a>LinkedIn</a>
-                </li>
-                <li>
-                    <a>Github</a>
-                </li>
-                <li>
-                    <a>VT</a>
+                        data-icon="music"></button>
                 </li>
             </ul>
         </nav>
@@ -583,16 +573,14 @@
                 </article>
             </div>
         </main>
-        <footer>
-            <div style="display:flex;justify-content: center;">
-                <div 
-                class="🎨lsdev-copyright"
+        <footer class="🎨lsdev-footer">
+            <div 
+                class="🎨lsdev-footer_copyright"
                 id="🫆lsdev-copyright">
-                    Made with 
-                    <span class="🎨lsdev-u-emoji--heart"></span> by Lauren Shutt.
-                    <br/>
-                    &copy; 2021&ndash;2026. All rights reserved.
-                </div>
+                Made with 
+                <span class="🎨lsdev-u-emoji--heart"></span> by Lauren Shutt.
+                <br/>
+                &copy; 2021&ndash;2026. All rights reserved.
             </div>
         </footer>
     </body>
