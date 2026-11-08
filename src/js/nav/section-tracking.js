@@ -180,6 +180,11 @@ export const sectionTrackingInit = () => {
 
         const wasOpen = win.hasAttribute("data-open");
 
+        // Transitions off for the measurement. The open state adds padding-bottom, and the rule
+        // transitions it over .25s — so reading the box the instant data-open goes on returns the
+        // height without that padding, and the window ends up centred half of it too high.
+        win.style.transition = "none";
+
         body.style.display = "block";
         body.style.visibility = "hidden";
         win.toggleAttribute("data-open", true);
@@ -190,6 +195,7 @@ export const sectionTrackingInit = () => {
 
         body.style.removeProperty("display");
         body.style.removeProperty("visibility");
+        win.style.removeProperty("transition");
 
         return height;
     };
