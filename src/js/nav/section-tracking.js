@@ -256,14 +256,28 @@ export const sectionTrackingInit = () => {
         // the room only appears as the window itself opens. So the pin follows the space as it
         // arrives rather than being fixed: a short, downward drift of a few dozen pixels in the
         // one case that needs it, and no movement at all in every other.
-        let pinned = Math.round(Math.min(targetY, limit()));
+        // Never behind where the visitor already is.
+        //
+        // A turn comes on a scroll event, and a scroll event from a fling can carry several
+        // hundred pixels at once — so by the time the condition is tested the page is often well
+        // past the position that centres the window. Pinning to that position then hauls the page
+        // backwards in a single frame, which is the lurch: the window that was on screen leaves,
+        // and the new one arrives into a view that just jumped. Measured here at 65px on a
+        // scripted jump, and around 405px in a recording of a real flick.
+        //
+        // Moving forward is still allowed, because that is how the last window reaches its
+        // position as the page grows. Backwards never is: a visitor who has scrolled past a
+        // window gets it where they stopped, slightly above centre, and nothing moves under them.
+        const floor = Math.round(window.scrollY);
+
+        let pinned = Math.max(floor, Math.round(Math.min(targetY, limit())));
         let held = true;
 
         const keep = () => {
 
             if (!held) return;
 
-            const want = Math.round(Math.min(targetY, limit()));
+            const want = Math.max(floor, Math.round(Math.min(targetY, limit())));
 
             if (want !== pinned || Math.round(window.scrollY) !== pinned) {
                 pinned = want;
