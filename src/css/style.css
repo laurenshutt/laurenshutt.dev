@@ -1660,9 +1660,11 @@
 
     .🎨lsdev-hud {
         
-        margin-bottom: max(
-            40px, 
-            4vw);
+        /* The sidebar is fixed at 100vh and this is its last child, so this margin is simply
+           the HUD's distance from the bottom of the viewport. Flat 120px, not the old
+           max(40px, 4vw), so it does not drift with the window width. Below 768px the HUD is
+           display:none, so this is desktop-only by construction. */
+        margin-bottom: 120px;
         padding-left:9px;
         
         color: var(--💾lsdev-purple-700);

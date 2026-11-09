@@ -11,7 +11,11 @@ export const watchFooter = () => {
                 coolStuff.style.marginBottom = "130px";
             } 
             else {
-                coolStuff.style.marginBottom = "max(40px, 4vw)";
+                // Hand the resting position back to the stylesheet rather than restating it
+                // here. This branch runs on the observer's very first callback, before any
+                // scrolling, so a literal here overrides the CSS and the HUD visibly slides
+                // from its real position down to whatever the literal says.
+                coolStuff.style.removeProperty("margin-bottom");
             }
         });
 
