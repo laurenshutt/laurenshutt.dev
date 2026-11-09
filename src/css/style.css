@@ -2424,7 +2424,7 @@
         padding-bottom:60px;
         height: var(
             --lsdev-window-grid-container-height, 
-            calc(97vh - 52px - 60px - 60px - 60px - 20px - 120px));
+            calc(100vh - 45px - 55px - 50px - 25px));
         overflow:scroll;
 
         background-image:var(--💾lsdev-content-surface);
