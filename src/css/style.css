@@ -1027,6 +1027,10 @@
 
         justify-content: center;
 
+        /* border-box so the 2px border is inside the 100vh rather than added to it — otherwise
+           the rail stands 4px taller than the window and its bottom border falls below the fold,
+           leaving it looking open-ended. */
+        box-sizing: border-box;
         width: var(--💾lsdev-rail-width);
         height: 100vh;
         border: 2px solid #c16895;
@@ -1047,6 +1051,8 @@
         align-items: center;
         justify-content: flex-start;
 
+        /* border-box so the 40px sits inside the rail's height instead of hanging 40px past it. */
+        box-sizing: border-box;
         height: 100%;
         margin: 0;
         padding-bottom: 40px;
@@ -2158,16 +2164,14 @@
         
         display:flex;
         position:relative;
-        /* Spans the body exactly. The content area below carries its own border and starts
-           where this bar ends, so there is nothing here to cover or offset against. */
         left:0;
         z-index:1;
 
         box-sizing: border-box;
         width:100%;
         border: var(--💾lsdev-chrome-border);
-        border-top-right-radius: 7px;
-        border-top-left-radius: 7px;
+        border-top-right-radius: 6px;
+        border-top-left-radius: 6px;
         overflow-x:scroll;
         scrollbar-width: none; /* Hides scrollbar in Firefox */
 
