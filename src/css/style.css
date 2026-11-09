@@ -2036,17 +2036,6 @@
             
             pointer-events: none;
         }
-
-        /* How tall this window stands once open. Recorded as a token, NOT applied here as
-           `height` — the frame has to stay auto-height. Opening is driven by slideToggle
-           animating __body from 0 to its scrollHeight, and the frame grows only because its
-           content does. Give the frame a height of its own and it is already full size while the
-           body is still display:none, so the empty panel arrives first and the content wipes in
-           afterwards. The scroller subtracts the fixed chrome from this token instead, which
-           lands the same total — see .🎨lsdev-projects__grid-container. */
-        &[data-variant="projects"] {
-            --lsdev-projects-open-height: calc(100vh - 90px);
-        }
     }
 
     .🎨lsdev-window__title-bar {
@@ -2409,15 +2398,15 @@
     .🎨lsdev-projects__grid-container {
         
         padding-bottom:60px;
-        /* This scroller is the only declared height in the open window; everything around it is
-           auto, which is what keeps the frame and the content sliding down as one. So this is
-           where the window's open height gets set: the target height from
-           --lsdev-projects-open-height, minus the chrome that sits above and below the scroll
-           area — 60px title bar, 50px menu bar, this element's own 60px padding-bottom, and the
-           window's 25px padding-bottom while open. 195px in total. */
         height: var(
             --lsdev-window-grid-container-height,
-            calc(var(--lsdev-projects-open-height, 100vh) - 60px - 50px - 60px - 25px));
+            calc(100vh - 90px   /* the window's open height */
+                - 90px   /* top and bottom margin */
+                - 4px    /* the window's 2px top + bottom border */
+                - 60px   /* title bar */
+                - 50px   /* menu bar */
+                - 60px   /* this element's own padding-bottom */
+                - 25px   /* the window's padding-bottom while open */));
         overflow:scroll;
 
         background-image:var(--💾lsdev-content-surface);
