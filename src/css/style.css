@@ -1667,7 +1667,7 @@
         
         color: var(--💾lsdev-purple-700);
         font-family: var(--💾lsdev-pixel-font);
-        font-size: 0.8333rem;
+        font-size: 16px;
         letter-spacing: -1px;
 
         transition: margin .3s ease;
@@ -1948,8 +1948,8 @@
             40px,
             8vh);
         padding: 0 25px;
-        border-radius: 6px;
         border:2px solid #b64c81;
+        border-radius: 6px;
 
         background-image: linear-gradient(
                 to right,
@@ -2035,6 +2035,14 @@
             animation: ✨lsdev-fx-poof 300ms linear forwards;
             
             pointer-events: none;
+        }
+
+        /* Sits 45px below whatever precedes it, at every width above the mobile breakpoint.
+           Paired with its open height of 100vh - 90px that leaves 45px above and 45px below.
+           At <=768px the responsive layer's `margin: 0 auto ...` shorthand zeroes this again —
+           layer order settles it, so there is nothing to override here. */
+        &[data-variant="projects"] {
+            margin-top: 45px;
         }
     }
 
