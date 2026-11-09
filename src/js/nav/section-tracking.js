@@ -171,6 +171,7 @@ export const sectionTrackingInit = () => {
     const REVEAL_AT = 0.65;
 
     const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
+    const OPEN_WAIT = 2000;  // ms the open will wait for the window to be somewhere it can be seen
     const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
     const SLIDE_MS = 500;    // slideToggle's own default, so how long the window takes to open
 
@@ -244,6 +245,20 @@ export const sectionTrackingInit = () => {
         body.style.removeProperty("visibility");
         body.style.removeProperty("overflow");
         body.style.removeProperty("height");
+
+        // Put the collapsed state back on the record while transitions are still off.
+        //
+        // transition:none above only covers the way in. The measurement needs a layout, and that
+        // flush leaves padding-bottom: 25px — what [data-open] adds — as the element's last
+        // computed style. Dropping the override on the next line then restores a .25s transition
+        // on padding-bottom, and the browser has a 25px change to animate: the window visibly
+        // shrinks for a quarter of a second after being measured, having never opened.
+        //
+        // It used to pass for nothing much, because arming happened long before the window's turn
+        // came and the pulse was over by then. With the turn now coming as the window arrives —
+        // and, on a fling, in the same tick as the arming — it lands on top of the fade instead.
+        void win.offsetHeight;
+
         win.style.removeProperty("transition");
 
         return height;
@@ -261,6 +276,50 @@ export const sectionTrackingInit = () => {
     // Switching to [data-animation="none"] afterwards is not just tidiness. It holds the
     // finished state in plain declarations and takes the animation off the element; the fade
     // fills forwards, and filled animations left attached are paid for on every frame after.
+    // Hold the open back until the window is somewhere it can actually be watched.
+    //
+    // The turn is taken at the threshold, but the fade spends 250ms before the slide starts and a
+    // fling spends it travelling: measured at over 1,100px, which left the window half a screen
+    // above the viewport by the time it opened. Opening where nobody can see it defeats the point
+    // of triggering on arrival at all — and the visitor is then scrolling back up to find a
+    // window that has already finished.
+    //
+    // The wait is deliberately easy to escape, because the sections behind this one do not arm
+    // until it is done and must never be stranded. A visitor a full screen past has moved on; one
+    // at the bottom of the page has nowhere left to go; one who has simply stopped scrolling is
+    // not coming back on their own. In all three it opens where it is, which is no worse than what
+    // it did before.
+    const openWhenVisible = (win, go) => {
+
+        const topOf = () => win.getBoundingClientRect().top;
+
+        // Its top edge on screen: the window grows downward from there, so this is the state in
+        // which the whole slide can be seen.
+        const visible = () => topOf() >= 0 && topOf() <= window.innerHeight;
+
+        const movedOn = () =>
+            topOf() < -window.innerHeight ||
+            window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
+
+        if (visible() || movedOn()) return go();
+
+        let capTimer = null;
+
+        const settle = () => {
+            window.removeEventListener("scroll", onScroll);
+            clearTimeout(capTimer);
+            go();
+        };
+
+        const onScroll = () => {
+            if (visible() || movedOn()) settle();
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+
+        capTimer = setTimeout(settle, OPEN_WAIT);
+    };
+
     const arriveThenOpen = (win, li, whenOpen) => {
 
         win.style.setProperty("--i", 0);
@@ -268,44 +327,49 @@ export const sectionTrackingInit = () => {
 
         setTimeout(() => {
 
+            // The fade is done either way: the window stays on screen, shut, while the open
+            // waits for it to be somewhere the slide can be seen.
             win.dataset.animation = "none";
 
-            // Give the reserved room back at exactly the rate the window takes it up, so the
-            // document stays the length it already is right through the open. It used to be
-            // released in one go at the end, which was invisible only because the page could
-            // not be scrolled; now that it can, a page growing by the window's height and then
-            // dropping back would lurch under the visitor.
-            //
-            // Set to its final height first and animated down to the same value: a running
-            // animation outranks the inline style, so the inline 0 is what is left when it
-            // finishes and there is nothing to snap at the end. Same duration and easing as
-            // slideToggle, which is what the window itself is growing on.
-            const reserved = parseFloat(headroom.style.height) || 0;
+            openWhenVisible(win, () => {
 
-            headroom.style.height = "0px";
+                // Give the reserved room back at exactly the rate the window takes it up, so the
+                // document stays the length it already is right through the open. It used to be
+                // released in one go at the end, which was invisible only because the page could
+                // not be scrolled; now that it can, a page growing by the window's height and then
+                // dropping back would lurch under the visitor.
+                //
+                // Set to its final height first and animated down to the same value: a running
+                // animation outranks the inline style, so the inline 0 is what is left when it
+                // finishes and there is nothing to snap at the end. Same duration and easing as
+                // slideToggle, which is what the window itself is growing on.
+                const reserved = parseFloat(headroom.style.height) || 0;
 
-            if (reserved > 0) {
-                headroom.getAnimations().forEach(a => a.cancel());
-                headroom.animate(
-                    [{ height: `${reserved}px` }, { height: "0px" }],
-                    { duration: SLIDE_MS, easing: "ease" }
-                );
-            }
+                headroom.style.height = "0px";
 
-            openWindow(win);
-            moveCaret(li, true);
-            sectionObserver.observe(win);
+                if (reserved > 0) {
+                    headroom.getAnimations().forEach(a => a.cancel());
+                    headroom.animate(
+                        [{ height: `${reserved}px` }, { height: "0px" }],
+                        { duration: SLIDE_MS, easing: "ease" }
+                    );
+                }
 
-            // The page is never taken away from the visitor while this happens: the window
-            // grows downward from a top that does not move, and they can scroll with it.
-            //
-            // If a hold is ever wanted again, make the page genuinely unscrollable rather than
-            // snapping it back to a pin from a scroll handler. preventDefault on wheel only
-            // binds a gesture that begins after the listener exists — a fling already in flight
-            // has been handed to the compositor, which goes on scrolling whatever the main
-            // thread decides, and the handler then snapped the page back once per event for as
-            // long as the fling lasted. That repeated snap was a visible yank.
-            setTimeout(whenOpen, SLIDE_MS);
+                openWindow(win);
+                moveCaret(li, true);
+                sectionObserver.observe(win);
+
+                // The page is never taken away from the visitor while this happens: the window
+                // grows downward from a top that does not move, and they can scroll with it.
+                //
+                // If a hold is ever wanted again, make the page genuinely unscrollable rather than
+                // snapping it back to a pin from a scroll handler. preventDefault on wheel only
+                // binds a gesture that begins after the listener exists — a fling already in flight
+                // has been handed to the compositor, which goes on scrolling whatever the main
+                // thread decides, and the handler then snapped the page back once per event for as
+                // long as the fling lasted. That repeated snap was a visible yank.
+                setTimeout(whenOpen, SLIDE_MS);
+            });
 
         }, FADE_MS);
     };
