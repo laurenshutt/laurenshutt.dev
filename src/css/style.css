@@ -1522,7 +1522,7 @@
         justify-content: space-between;
 
         box-sizing: border-box;
-        padding: 125px 0 0 7vw;
+        padding: 120px 0 0 7vw;
         height: 100vh;
     }
 
@@ -1664,7 +1664,7 @@
         
         margin-bottom: max(
             40px, 
-            4vw);
+            120px);
         padding-left:9px;
         
         color: var(--💾lsdev-purple-700);
@@ -2032,7 +2032,7 @@
 
             --lsdev-window-body-height: calc(100% - 60px);
             --lsdev-window-content-height: calc(100% - 100px);
-            --lsdev-window-grid-container-height: calc(100% - 110px);
+            --lsdev-window-grid-container-height: calc(100% - 140px);
             --lsdev-window-grid-height: 100%;
 
             position: fixed;
