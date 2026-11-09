@@ -1029,7 +1029,7 @@
 
         width: var(--💾lsdev-rail-width);
         height: 100vh;
-        border-right: 2px solid #c16895;
+        border: 2px solid #c16895;
         
         background-image: linear-gradient(
             to bottom right, 
@@ -1671,7 +1671,7 @@
         
         color: var(--💾lsdev-purple-700);
         font-family: var(--💾lsdev-pixel-font);
-        font-size: 14px;
+        font-size: 14.5px;
         letter-spacing: -1px;
 
         transition: margin .3s ease;
