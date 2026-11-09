@@ -27,7 +27,20 @@ export const createGrid = () => {
 
     const thisBuild = ++build;
 
-    grid.removeAttribute("data-settled");
+    // Only the first build plays the cells in. A rebuild — this runs again on every resize —
+    // hands the grid back already settled: replaying the stagger would put ~1,800 forwards-filled
+    // animations back on the page for the three seconds it takes to run, which is exactly the
+    // stutter the [data-settled] rule exists to keep off a window that is opening. The entrance
+    // is an intro flourish anyway, not something to sit through again every time the window
+    // changes size.
+    //
+    // Set before the cells go in, so they are born matching the settled rule and no animation is
+    // ever created for them — rather than created and then cancelled.
+    const firstBuild = thisBuild === 1;
+
+    if (firstBuild) grid.removeAttribute("data-settled");
+    else grid.dataset.settled = "";
+
     grid.innerHTML = "";
     Object.assign(grid.style, {
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -40,9 +53,11 @@ export const createGrid = () => {
         const cell = document.createElement("div");
         cell.className = "🎨lsdev-bg-grid__cell";
 
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        cell.style.animationDelay = `${row * 50 + col * 25}ms`;
+        if (firstBuild) {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+            cell.style.animationDelay = `${row * 50 + col * 25}ms`;
+        }
 
         fragment.appendChild(cell);
     }
@@ -51,11 +66,14 @@ export const createGrid = () => {
 
     // The cells arrive on a stagger that runs for a couple of seconds, and their fill keeps them
     // attached long after that. Wait for the last one, then let the stylesheet hold the finished
-    // state instead — see the [data-settled] rule for why it is worth the trouble.
-    Promise.allSettled(grid.getAnimations({ subtree: true }).map(a => a.finished))
-        .then(() => {
-            if (thisBuild === build) grid.dataset.settled = "";
-        });
+    // state instead — see the [data-settled] rule for why it is worth the trouble. A rebuild is
+    // already settled above and has no animations to wait for.
+    if (firstBuild) {
+        Promise.allSettled(grid.getAnimations({ subtree: true }).map(a => a.finished))
+            .then(() => {
+                if (thisBuild === build) grid.dataset.settled = "";
+            });
+    }
 
     grid.onpointerover = handleGridHover;
 };

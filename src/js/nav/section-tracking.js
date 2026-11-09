@@ -249,49 +249,8 @@ export const sectionTrackingInit = () => {
         return height;
     };
 
-    // Freeze the page where it is, and hand back a way to let it go.
-    //
-    // Making it genuinely unscrollable, rather than refusing the gestures. preventDefault on
-    // wheel only binds a gesture that begins after the listener exists — a fling already in
-    // flight has been handed to the compositor, which goes on scrolling whatever the main thread
-    // decides. The listener could not stop it, so the scroll handler kept snapping the page back
-    // to the pin, once per event, for as long as the fling lasted. That repeated snap is the
-    // yank. With the page not scrollable there is nothing to snap back from.
-    //
-    // Nothing needs to move while it is held: the turn comes at the position that centres the
-    // window, and the page has already been made long enough to reach it. Which is just as well,
-    // because scrollTo does not work on a page that cannot scroll — only the position it is
-    // frozen at is kept.
-    //
-    // Overlay scrollbars take up no layout space, so on this machine the freeze shifts nothing.
-    // Where a scrollbar does take space, its width is handed back as padding so the page cannot
-    // jump sideways as it disappears.
-    const holdScroll = () => {
 
-        const gutter = window.innerWidth - document.documentElement.clientWidth;
-        const wasOverflow = document.body.style.overflow;
-        const wasPadding = document.body.style.paddingRight;
-
-        document.body.style.overflow = "hidden";
-
-        if (gutter > 0) document.body.style.paddingRight = `${gutter}px`;
-
-        // Touch does not always honour the overflow on its own, and costs nothing to refuse.
-        const refuseTouch = (e) => e.preventDefault();
-
-        window.addEventListener("touchmove", refuseTouch, { passive: false });
-
-        return () => {
-
-            window.removeEventListener("touchmove", refuseTouch);
-
-            document.body.style.overflow = wasOverflow;
-
-            if (gutter > 0) document.body.style.paddingRight = wasPadding;
-        };
-    };
-
-    // Bring the window on screen, then open it, with the page held still throughout.
+    // Bring the window on screen, then open it, with the visitor free to scroll throughout.
     //
     // Only the first window arrives with the intro. The rest sit at the stylesheet's opacity: 0
     // — in the layout, so the page scrolls its full length and each has a real position to be
@@ -304,8 +263,6 @@ export const sectionTrackingInit = () => {
     // fills forwards, and filled animations left attached are paid for on every frame after.
     const arriveThenOpen = (win, li, whenOpen) => {
 
-        const release = holdScroll();
-
         win.style.setProperty("--i", 0);
         win.dataset.animation = "in";
 
@@ -313,18 +270,42 @@ export const sectionTrackingInit = () => {
 
             win.dataset.animation = "none";
 
+            // Give the reserved room back at exactly the rate the window takes it up, so the
+            // document stays the length it already is right through the open. It used to be
+            // released in one go at the end, which was invisible only because the page could
+            // not be scrolled; now that it can, a page growing by the window's height and then
+            // dropping back would lurch under the visitor.
+            //
+            // Set to its final height first and animated down to the same value: a running
+            // animation outranks the inline style, so the inline 0 is what is left when it
+            // finishes and there is nothing to snap at the end. Same duration and easing as
+            // slideToggle, which is what the window itself is growing on.
+            const reserved = parseFloat(headroom.style.height) || 0;
+
+            headroom.style.height = "0px";
+
+            if (reserved > 0) {
+                headroom.getAnimations().forEach(a => a.cancel());
+                headroom.animate(
+                    [{ height: `${reserved}px` }, { height: "0px" }],
+                    { duration: SLIDE_MS, easing: "ease" }
+                );
+            }
+
             openWindow(win);
             moveCaret(li, true);
             sectionObserver.observe(win);
 
-            // Scrolling comes back once the window is actually open, not when it starts, and the
-            // reserved room goes with it — the window has just claimed more than that itself, so
-            // the page is still longer than it was.
-            setTimeout(() => {
-                release();
-                headroom.style.height = "0px";
-                whenOpen();
-            }, SLIDE_MS);
+            // The page is never taken away from the visitor while this happens: the window
+            // grows downward from a top that does not move, and they can scroll with it.
+            //
+            // If a hold is ever wanted again, make the page genuinely unscrollable rather than
+            // snapping it back to a pin from a scroll handler. preventDefault on wheel only
+            // binds a gesture that begins after the listener exists — a fling already in flight
+            // has been handed to the compositor, which goes on scrolling whatever the main
+            // thread decides, and the handler then snapped the page back once per event for as
+            // long as the fling lasted. That repeated snap was a visible yank.
+            setTimeout(whenOpen, SLIDE_MS);
 
         }, FADE_MS);
     };
