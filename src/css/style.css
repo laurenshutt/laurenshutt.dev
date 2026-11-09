@@ -1489,7 +1489,7 @@
         
         position: relative;
         
-        margin: 75px 4vw 0 10vw;
+        margin: 45px 4vw 0 10vw;
     }
 
     /* #endregion */
@@ -2035,14 +2035,6 @@
             animation: ✨lsdev-fx-poof 300ms linear forwards;
             
             pointer-events: none;
-        }
-
-        /* Sits 45px below whatever precedes it, at every width above the mobile breakpoint.
-           Paired with its open height of 100vh - 90px that leaves 45px above and 45px below.
-           At <=768px the responsive layer's `margin: 0 auto ...` shorthand zeroes this again —
-           layer order settles it, so there is nothing to override here. */
-        &[data-variant="projects"] {
-            margin-top: 45px;
         }
     }
 
