@@ -161,18 +161,30 @@ export const sectionTrackingInit = () => {
 
     if (footer) footer.dataset.deferred = "";
 
+    // How far a section has to come into the viewport before it reveals, as a fraction of the
+    // viewport height measured from the top. 0.8 means "once its top has risen past the 80% line"
+    // — just after it appears from the bottom. This is the usual scroll-reveal threshold (GSAP
+    // ScrollTrigger's "top 80%", AOS's 120px offset, a -10% rootMargin on an observer). The
+    // windows used to wait to be centred instead, which on windows this close to viewport-height
+    // meant most of a screen longer before anything happened.
+    const REVEAL_AT = 0.8;
+
     const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
     const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
     const SLIDE_MS = 500;    // slideToggle's own default, so how long the window takes to open
 
     // Room at the foot of the page, reserved only while it is needed.
     //
-    // A window's turn comes at the scroll position that centres it, and until it opens the page
-    // is short by the height it is about to gain — the footer is display:none while deferred, so
-    // it is not making up the difference either. For the last window that put the position out
-    // of reach entirely: 1490 needed against a maximum of 1416. Reserving the shortfall means
-    // the visitor can actually scroll to where the turn is supposed to happen, and the window
-    // opens into the space rather than the page having to grow underneath it.
+    // Until a window opens, the page is short by the height it is about to gain — and the
+    // footer is display:none while deferred, so it is not making up the difference either. The
+    // last window can then sit so close to the bottom of the document that it cannot be brought
+    // far enough up the viewport to take its turn at all. Reserving the growth means the visitor
+    // can scroll to where the turn happens, and the window opens into the space rather than the
+    // page having to grow underneath it.
+    //
+    // The reserve is still the full growth now that the threshold is REVEAL_AT rather than
+    // centring, even though reachability alone would need less: it is what keeps the page the
+    // same length across the open, so nothing below shifts as the window claims the space.
     const headroom = document.createElement("div");
 
     headroom.dataset.revealHeadroom = "";
@@ -187,8 +199,8 @@ export const sectionTrackingInit = () => {
     // Reserving exactly the growth rather than a measured shortfall: the shortfall is worked out
     // when the window is armed and the layout can still settle by a few pixels before its turn
     // actually comes, which left the position short by eight. The growth is a fact about the
-    // window, not about where anything happens to be, and the position that centres a window is
-    // always reachable on a page the length it will be once that window is open.
+    // window, not about where anything happens to be, and a window's turn is always reachable on
+    // a page the length it will be once that window is open.
     //
     // It also means the page does not change length across the open at all: the window claims
     // the space as this gives it back.
@@ -395,7 +407,7 @@ export const sectionTrackingInit = () => {
         if (el.id === "🫆lsdev-contact") {
 
             const inView = () => {
-                if (el.getBoundingClientRect().top > window.innerHeight * 0.75) return;
+                if (el.getBoundingClientRect().top > window.innerHeight * REVEAL_AT) return;
                 window.removeEventListener("scroll", inView);
                 revealSection(el, advance);
             };
@@ -405,11 +417,8 @@ export const sectionTrackingInit = () => {
             return;
         }
 
-        // A window's turn comes at the scroll position that would put the middle of the *open*
-        // window in the middle of the viewport. Measured on the open shape rather than the title
-        // bar that is there now, so the window ends up centred once it has finished opening —
-        // it grows downward from a top that does not move, so the centre it is heading for is
-        // the one worked out here.
+        // The open height is still wanted even though the turn no longer depends on it: the
+        // headroom below reserves the growth so the page does not change length across the open.
         // Taken before the measurement, not after: openHeightOf toggles data-open to pick up the
         // padding the open state adds, and reading the collapsed height on the other side of
         // that caught it 25px tall mid-settle — which is exactly how much the page then gained
@@ -423,15 +432,18 @@ export const sectionTrackingInit = () => {
 
             const top = el.getBoundingClientRect().top;
 
-            const centred = top + openHeight / 2 <= window.innerHeight / 2;
+            // Its turn comes as it arrives from the bottom, on the same threshold the contact
+            // section uses. The collapsed top is what is tested: the window grows downward from
+            // a top that does not move, so this is where it will still be once it is open.
+            const arrived = top <= window.innerHeight * REVEAL_AT;
 
-            // The page may not have the room to reach that position — the last window, with the
+            // The page may not have the room to reach even that — the last window, with the
             // footer still held out of the flow, can be close to the bottom of the document.
             // Opening it where it is beats never opening it at all.
             const bottomedOut =
                 window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 2;
 
-            if (!centred && !(bottomedOut && top < window.innerHeight)) return;
+            if (!arrived && !(bottomedOut && top < window.innerHeight)) return;
 
             window.removeEventListener("scroll", check);
             revealSection(el, advance);

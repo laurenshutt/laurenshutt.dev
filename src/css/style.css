@@ -1718,6 +1718,7 @@
                          １０   ✧ ｇｌｉｔｃｈ ✧     
     
        Adapted from https://codepen.io/kkappuzino/pen/zYxaKwR 
+
     ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ . ݁₊ ⊹ . ݁ ⟡ ݁ . ⊹ ₊ . ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱ ⸱
     */
 
@@ -2414,11 +2415,6 @@
     .🎨lsdev-projects__grid-container {
         
         padding-bottom:60px;
-        /* The chrome below is measured, not derived, so this rule is only correct above 1600px.
-           The menu bar goes 52px -> 50px at <=1600px, where the root font-size drops 18px ->
-           16px, and the title bar goes 60px -> 55px at <=1439px, where the control icons
-           shrink. mobile.css restates this height in both of those blocks; re-measure all
-           three if you restyle the title bar or the menu buttons. */
         height: var(
             --lsdev-window-grid-container-height,
             calc(100vh - (var(--💾lsdev-window-gutter) * 2)   /* the gutter, above and below */
