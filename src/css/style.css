@@ -100,7 +100,7 @@
          */
 
         --💾lsdev-pixel-font: "Silkscreen", sans-serif;
-        --💾lsdev-sans-font: "Lato", sans-serif;
+        --💾lsdev-sans-font: "Chakra Petch", sans-serif;
 
 
         /* 
@@ -2069,10 +2069,19 @@
         display:none;
         
         height: var(--lsdev-window-body-height, auto);
-        border:3px solid #cd84a8;
-        border-top: none;
         
         scrollbar-width: none;
+    }
+
+    /* The content area's outline. It belongs here rather than on __body, which would run it the
+       body's full height: the nav has rounded top corners, so a full-height border shows in the
+       gaps beside them, and during the slide it gets painted a moment before the nav covers it.
+       Starting it below the nav avoids both. The nav is the first child of __body in every
+       window, so this picks out the content area in all of them — the projects scroller, and
+       __content in about and reviews. */
+    .🎨lsdev-window__menu-bar + * {
+        border: 3px solid #cd84a8;
+        border-top: none;
     }
 
     .🎨lsdev-window__controls {
@@ -2156,10 +2165,13 @@
         
         display:flex;
         position:relative;
-        left:-2px;
+        /* Spans the body exactly. The content area below carries its own border and starts
+           where this bar ends, so there is nothing here to cover or offset against. */
+        left:0;
         z-index:1;
 
-        width:calc(100% - 1px);
+        box-sizing: border-box;
+        width:100%;
         border: var(--💾lsdev-chrome-border);
         border-top-right-radius: 7px;
         border-top-left-radius: 7px;
@@ -2419,7 +2431,7 @@
                 - 4px    /* the window's 2px top + bottom border */
                 - 60px   /* title bar */
                 - 52px   /* menu bar (content-sized by its buttons, plus a 2px border) */
-                - 3px    /* the body's bottom border (border-top is none) */
+                - 3px    /* the content area's bottom border */
                 - 60px   /* this element's own padding-bottom */
                 - 25px   /* the window's padding-bottom while open */));
         overflow:scroll;
