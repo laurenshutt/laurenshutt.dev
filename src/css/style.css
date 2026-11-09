@@ -1956,8 +1956,8 @@
                 var(--💾lsdev-frame-to),
                 var(--💾lsdev-frame-from)
             );
-        box-shadow:
-            var(--💾lsdev-shadow-raised);
+        /*box-shadow:
+            var(--💾lsdev-shadow-raised);*/
         opacity: 0;
 
         transition:

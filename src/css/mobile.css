@@ -101,10 +101,7 @@
         .🎨lsdev-window__title-bar {
             padding: 15px 0;
         }
-
-        &[data-variant="projects"]{
-            height:calc(100vh - 90px);
-        }
+        
     }
 
     @media screen and (max-width:1420px){
