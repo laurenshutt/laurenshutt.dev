@@ -1626,8 +1626,6 @@
         transition: color .3s ease;
     }
 
-    /* The dropdown control only exists below the desktop breakpoint, where mobile.css shows it and
-       collapses the list behind it. Up here the list is always open beside the caret. */
     .🎨lsdev-on-page-nav__toggle {
         display: none;
     }
@@ -1722,18 +1720,6 @@
         --lsdev-glitch-background-color: var(--💾lsdev-pink-700);
     }
 
-    /* ✨ The glitch copies have to be opaque to hide the base 
-     * text underneath, otherwise the clipped bands read as 
-     * doubled text rather than displaced slices. So instead 
-     * of being transparent they repaint what the page is 
-     * already painting: the grid's own colour, then the 
-     * same overlay gradient with background-attachment:fixed. 
-     * Fixed attachment anchors the gradient to the viewport 
-     * — exactly how the page's fixed, full-viewport overlay 
-     * resolves it — so the two line up wherever the pseudo 
-     * happens to sit. 
-     */
-
     .✨lsdev-fx-glitch {
         
         display: block;       
@@ -1742,13 +1728,6 @@
         white-space: normal;
     }
 
-    /* The two offset copies hang off the title as a whole rather than off each word.
-    
-       Their clip-path bands are percentages of the box they sit in, so a copy per word gave each
-       word its own band at the same height within itself — two little glitches running in step
-       rather than one running across the name. On the title the band sweeps the whole block, and
-       the copies re-wrap "Lauren Shutt" exactly as the words do because they are laid out at the
-       same width, in the same font, at the same size. */
     .has-glitch::before {
 
         content: attr(data-text);
@@ -1970,6 +1949,7 @@
             8vh);
         padding: 0 25px;
         border-radius: 10px;
+        border:2px solid var(--💾lsdev-purple-500);
 
         background-image: linear-gradient(
                 to right,
