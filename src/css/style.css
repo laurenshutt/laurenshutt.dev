@@ -1074,6 +1074,26 @@
 
     .🎨lsdev-external-nav__link {
 
+        /* The rail mixes <a> and <button>, and the buttons used to sit 2.5px off its centre line
+           while the anchors sat dead on it — the music and charms icons looking shifted beside
+           the github and linkedin ones.
+           
+           Two causes, both from the UA's idea of a button. Its appearance and 1px side padding
+           made the box wider than its icon; and as an inline-block it was baseline-aligned, so
+           the line box reserved descender space beside it — 5px of it, which the sideways-lr
+           writing mode turns from a gap below into a gap to one side. display:block takes the
+           element out of the inline formatting context altogether, so there is no baseline left
+           to leave room for. */
+        display: block;
+
+        appearance: none;
+        -webkit-appearance: none;
+
+        margin: 0;
+        padding: 0;
+        border: 0;
+
+        background: none;
         color: var(--💾lsdev-pink-200);
         font-family: var(--💾lsdev-pixel-font);
         
