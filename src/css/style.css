@@ -1073,6 +1073,8 @@
         
         transition: color .2s ease;
 
+        cursor: pointer;
+
         &:hover {
             color: white;
         }
