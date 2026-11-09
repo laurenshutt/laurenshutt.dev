@@ -13,21 +13,37 @@ export const slideToggle = (el, duration = 500) => {
 
         el.style.overflow = "hidden";
 
+        // Collapse it in the element's own style, not only in the animation below.
+        //
+        // The animation holds it at 0 from its first sample — and that sample does not happen
+        // until the next frame. Between the display:block above and that sample, the element's
+        // declared height is auto, so if the frame is painted in between, the window appears
+        // fully open for exactly one frame and then snaps shut to slide. On an idle page the
+        // whole thing lands inside one frame and nothing shows; under the main-thread load of a
+        // fast scroll the sample slips and the flash is painted. Measured at 515px on a window
+        // that then restarted its slide from 77px.
+        //
+        // The running animation outranks this inline value, so the slide is unaffected, and the
+        // final keyframe is the height it is removed to reveal — nothing snaps at the end.
+        el.style.height = "0px";
+
         // Animate with the Web Animations API instead of a CSS transition. A transition needs a
         // previous computed style to interpolate from, and this element was display:none until a
         // moment ago — so 0 -> full height collapsed into a single frame, snapping every window
         // below down at once instead of pushing them gradually. (Slide-up doesn't hit this: the
         // element is already rendered, which is why minimizing was smooth.) animate() takes
-        // explicit keyframes, so it always runs. No inline height is left behind either, so the
-        // element settles at its natural height with nothing to snap at the end.
+        // explicit keyframes, so it always runs.
         el.getAnimations().forEach(a => a.cancel()); // guard against rapid re-toggling
 
         el.animate(
             [{ height: "0px" }, { height: `${height}px` }],
             { duration, easing: "ease" }
         ).finished
-            .then(() => el.style.removeProperty("overflow"))
-            .catch(() => {}); // cancelled by a re-toggle
+            .then(() => {
+                el.style.removeProperty("overflow");
+                el.style.removeProperty("height");
+            })
+            .catch(() => {}); // cancelled by a re-toggle, which sets its own height
 
     } else {
         // SLIDE UP
