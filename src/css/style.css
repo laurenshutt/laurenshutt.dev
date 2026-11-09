@@ -2073,14 +2073,8 @@
         scrollbar-width: none;
     }
 
-    /* The content area's outline. It belongs here rather than on __body, which would run it the
-       body's full height: the nav has rounded top corners, so a full-height border shows in the
-       gaps beside them, and during the slide it gets painted a moment before the nav covers it.
-       Starting it below the nav avoids both. The nav is the first child of __body in every
-       window, so this picks out the content area in all of them — the projects scroller, and
-       __content in about and reviews. */
     .🎨lsdev-window__menu-bar + * {
-        border: 3px solid #cd84a8;
+        border: 2px solid #cd84a8;
         border-top: none;
     }
 
