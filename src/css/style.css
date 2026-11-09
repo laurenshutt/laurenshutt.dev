@@ -1602,10 +1602,12 @@
                limit at 7.08vw — about 54px at the 768px breakpoint. The floor below sits just
                under that.
                
-               To scale the whole name up or down, move the 26px; the 2.6vw is the slope, and
-               raising it makes the name track the viewport more again. The floor is a backstop
-               and does not bind above 692px. */
-            font-size: clamp(44px, 2.6vw + 26px, 84px);
+               To scale the whole name up or down, move the 21px; the 3.4vw is the slope, and
+               raising it makes the name track the viewport more again. There is almost nothing
+               left to give at the bottom — 47px at 772 is already within 4px of the ceiling —
+               so a bigger name has to come from the slope, which costs a little flatness. The
+               floor is a backstop and does not bind above 676px. */
+            font-size: clamp(44px, 3.4vw + 21px, 92px);
             left:-9px;
 
             /* The break the title used to get from reflow. As a change of display it is discrete,
