@@ -1948,7 +1948,7 @@
             40px,
             8vh);
         padding: 0 25px;
-        border-radius: 10px;
+        border-radius: 6px;
         border:2px solid var(--💾lsdev-purple-500);
 
         background-image: linear-gradient(
