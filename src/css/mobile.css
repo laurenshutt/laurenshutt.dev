@@ -196,11 +196,10 @@
             top: calc(95px + 20.8vw);
         }
 
-        .🎨lsdev-page {
-            grid-template-columns: 
-                minmax(0, .55fr) 
-                minmax(0, 1fr);
-        }
+        /* The page keeps the .28/.72 split from style.css all the way down to the mobile
+           breakpoint, where it becomes a single column. It used to widen to .55/1 here, which
+           moved the windows right and changed the proportion between the name column and them
+           partway down the range. */
 
         .🎨lsdev-projects__grid {
             grid-template-columns: minmax(0, 1fr);
