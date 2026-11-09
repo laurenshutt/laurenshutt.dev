@@ -1033,7 +1033,7 @@
         box-sizing: border-box;
         width: var(--💾lsdev-rail-width);
         height: 100vh;
-        border: 2px solid #c16895;
+        border-right: 2px solid #c16895;
         
         background-image: linear-gradient(
             to bottom right, 
