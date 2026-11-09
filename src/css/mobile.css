@@ -12,6 +12,15 @@
             font-size: 16px;
         }
 
+        /* The root font-size above takes the projects menu bar from 52px to 50px, so the open
+           window's height has to be restated. Same arithmetic as the base rule in style.css
+           (.🎨lsdev-projects__grid-container) — only the menu bar term moves. */
+        .🎨lsdev-projects__grid-container {
+            height: var(
+                --lsdev-window-grid-container-height,
+                calc(100vh - 90px - 4px - 60px - 50px - 3px - 60px - 25px));
+        }
+
         .🎨lsdev-page-title[data-moved] {
             font-size: 5.25vw;
         }
@@ -100,6 +109,14 @@
 
         .🎨lsdev-window__title-bar {
             padding: 15px 0;
+        }
+
+        /* The smaller control icons above take the title bar from 60px to 55px; the menu bar is
+           already down to 50px from the <=1600px block. Restated once more for those two. */
+        .🎨lsdev-projects__grid-container {
+            height: var(
+                --lsdev-window-grid-container-height,
+                calc(100vh - 90px - 4px - 55px - 50px - 3px - 60px - 25px));
         }
         
     }
