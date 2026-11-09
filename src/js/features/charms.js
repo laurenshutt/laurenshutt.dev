@@ -136,14 +136,33 @@ const renderPanel = () => {
     }));
 };
 
+// The page has one scrim, and more than one thing wants to raise it: this panel, and the
+// project lightbox over in windows.js. Tracking who wants it rather than toggling it directly
+// means whichever closes second is the one that lowers it, instead of the first close pulling
+// it out from under the other.
+const scrimWanters = new Set();
+
+export const useScrim = (who, wanted) => {
+
+    buildUi();
+
+    if (!elements) return;
+
+    wanted ? scrimWanters.add(who) : scrimWanters.delete(who);
+
+    const up = scrimWanters.size > 0;
+
+    elements.backdrop.toggleAttribute("data-open", up);
+    // Inline, for the reason noted where the backdrop is created.
+    elements.backdrop.setBlur?.(up ? "5px" : "0px");
+};
+
 const setOpen = (open) => {
 
     if (!elements) return;
 
     elements.panel.toggleAttribute("data-open", open);
-    elements.backdrop.toggleAttribute("data-open", open);
-    // Inline, for the reason noted where the backdrop is created.
-    elements.backdrop.setBlur?.(open ? "5px" : "0px");
+    useScrim("charms", open);
     elements.toggle.setAttribute("aria-expanded", String(open));
 
     if (open) {

@@ -2598,28 +2598,27 @@
             scale .33s ease;
         transition-delay: var(--lsdev-project-img-delay, 0s);
 
-        &[data-expanded] {
-            
-            width:calc((100vw + 104px)/2);
-            padding:0;
-            border-radius:0;
-            border-left:2px solid var(--💾lsdev-purple-300);
-            
-            transition:none;
-            
-            scale: none;
-        }
-
+        /* The lightbox. The card's image frame is moved to <body> and sized by windows.js, which
+           owns the geometry because the height depends on the image's own proportions; what is
+           here is only how it looks once it is up.
+           
+           The frame keeps its padding and surface, so what enlarges is the artwork and the
+           background it sits on, not a bare screenshot. z-index clears the shared scrim, which
+           sits at 1500. */
         &[data-portaled] {
 
             --project-img-radius: 6px;
 
-            z-index: 1;
+            z-index: 1600;
             
-            padding: 0;
+            /* width is set from JS and has to mean the whole box; the card's own box model is
+               content-box, which would put the padding outside whatever is asked for. */
+            box-sizing: border-box;
+            padding: clamp(14px, 2.4vw, 40px);
             overflow: hidden;
-            border-left: 2px solid var(--💾lsdev-purple-300);
-            border-radius: 0;
+            border-radius: 10px;
+
+            cursor: zoom-out;
             
             background-image:
                 linear-gradient(
@@ -2630,7 +2629,7 @@
                     rgba(120, 60, 90, .07) 100%
                 ),
                 var(--💾lsdev-art-surface);
-            box-shadow: var(--💾lsdev-shadow-card);
+            box-shadow: var(--💾lsdev-shadow-raised);
         }
     }
 
@@ -2670,123 +2669,6 @@
 
 
     /* #region */
-
-    .🎨lsdev-project-modal {
-        
-        display:none;
-        position:fixed;
-        top:112px;
-        right:29px;
-        z-index:1;
-
-        box-sizing:border-box;
-        width:calc((100vw - 60px)/2 - 80px);
-        height:calc(100vh - 60px - 52px - 30px);
-        padding:40px;
-        border-left:2px solid var(--💾lsdev-purple-300);
-        overflow-y:scroll;
-
-        background:var(--💾lsdev-content-surface);
-        opacity:var(--faded-in, 0);
-        
-        transition:opacity .5s ease .15s;
-
-        p {
-            padding-bottom:20px;
-        }
-    }
-
-    .🎨lsdev-project-modal__heading {
-        
-        padding-bottom:30px;
-        
-        color:var(--💾lsdev-gold-500);
-        line-height:1;
-    }
-
-    .🎨lsdev-project-modal__subheading {
-
-        padding-bottom:8px;
-
-        color:var(--💾lsdev-purple-600);
-        font-family:var(--💾lsdev-pixel-font);
-        font-weight:normal;
-    }
-
-    .🎨lsdev-project-modal__secondary-image-container {
-        
-        display:flex;
-        position:fixed;
-        bottom:30px;
-        left:29px;
-        z-index:1;
-
-        align-items: center;
-        justify-content: center;
-
-        box-sizing: border-box;
-        width:calc(((50vw - 30px) + 80px)/2);
-        height:calc(100vh - 31.25vw - 60px - 52px - 30px - 30px);
-        border-top:2px solid var(--💾lsdev-purple-300);
-        border-bottom:2px solid var(--💾lsdev-purple-300);
-        
-        background-color:rgb(247,235,236);
-        opacity:var(--faded-in, 0);
-        
-        transition:opacity .5s ease .15s;
-
-        /* opacity:0 still hit-tests. These are position:fixed over the bottom-left of the
-           viewport, so while hidden they silently swallowed every pointer event there --
-           which killed the background grid's hover across that whole corner. Stay inert
-           until actually faded in. */
-        pointer-events: none;
-
-        &[data-faded-in] {
-            pointer-events: auto;
-        }
-
-        /* These two live here, on the container, because that is the element carrying data-variant.
-        Nested under the __secondary-image rule they compiled to `img[data-variant=…]` and matched
-        nothing, so both panels sat at the container's left: 29px on top of each other. */
-        &[data-variant="secondary-image-a"]{
-            border-left:2px solid var(--💾lsdev-purple-300);
-        }
-
-        &[data-variant="secondary-image-b"]{
-            
-            left:calc((((50vw - 30px) + 80px)/2) + 29px);
-            
-            box-sizing: border-box;
-            width:calc(((50vw - 30px) + 80px)/2 + 2px);
-            padding:20px;
-            border-left:2px solid var(--💾lsdev-purple-300);
-        }
-    }
-
-    .🎨lsdev-project-modal__secondary-image {
-        min-width: 100%;
-        max-width: 100%;
-        min-height: 100%;
-        max-height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-
-    .🎨lsdev-project-modal__secondary-info {
-
-        overflow-y:scroll;
-
-        max-height:calc(100% - 40px);
-        padding:20px;
-        border-radius:8px;
-
-        p {
-            
-            padding-bottom:17px;
-
-            font-size:1rem;
-        }
-    }
 
     /* #endregion */
 
@@ -3526,11 +3408,6 @@
         --invalid: #eb0077;
         --invalid-border: 2px solid var(--invalid);
     }
-
-    [data-faded-in] {
-        --faded-in: 1;
-    }
-
 
     /* #endregion */
 }

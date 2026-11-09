@@ -3,15 +3,15 @@ import {
     cssToken,
 } from "./utils.js";
 
-const originalRects = new Map();
+import { useScrim } from "./features/charms.js";
+
 const originalWindowRects = new Map();
 const clones = new WeakMap();
-const projectInfoModal = document.getElementById("🫆lsdev-project-modal");
-// The two fixed panels beside the modal. They hold the secondary image and the role text — the
-// __secondary-image class itself belongs to the <img> that goes inside one of them.
-const projectSecondaryPanels = document.querySelectorAll(".🎨lsdev-project-modal__secondary-image-container");
 const animationDuration = 500;
 const BASE_TRANSFORM = "translateY(0px)"; // window's RESTING transform: the intro fade-in-down ends at translateY(0) with fill-mode:forwards, overriding the -10px CSS base
+const LIGHTBOX_WIDTH = 0.86;   // of the viewport's width, before the height cap below
+const LIGHTBOX_HEIGHT = 0.84;  // of its height — whichever runs out first decides the size
+const LIGHTBOX_MAX_PX = 1100;  // so it stops growing on very wide screens
 const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place after a FLIP
 
 // After a window FLIP, slide each project card (its text AND image tile together) back into place
@@ -109,86 +109,55 @@ const clearRectStyles = (el) => {
         height: ""
     });
 };
+// Put the enlarged image back on its tile and lower the scrim.
 const closeProjectDetail = () => {
 
-    const card = projectDetailOpen;
-    // Its image FLIPs back on its own path, so exempt this card from the slide-in cascade. Drop
-    // the marker per-card just after the reveal has read it (it runs at animationDuration), so
-    // overlapping open/close operations can't strip each other's exemption.
-    card.dataset.flipLanded = "";
-    setTimeout(() => card.removeAttribute("data-flip-landed"), animationDuration + 80);
-    const client = card.querySelector(".🎨lsdev-project__client-info");
-    const projectName = card.querySelector("p");
-
-    // The image is still portaled to <body> from the open. Keep it there so the window's
-    // transform FLIP (in shrinkMaximizedWindow) can't affect it, FLIP it independently back
-    // onto its grid tile, then reparent it home at the end.
-    const projectImg = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
-
-    // Restore visibility on ALL other cards — symmetric with showProject(), which hides every
-    // other card. Restoring a still-filtered (display:none) card is a no-op, but it clears the
-    // stale inline visibility:hidden that would otherwise show as a blank cell after a filter.
-    const otherProjects = [...document.querySelectorAll(".🎨lsdev-projects__project")]
-        .filter(el => el !== card);
-
-    projectName.style.display = "block";
-    client.style.visibility = "";
-    setTimeout(() => {
-        otherProjects.forEach(p => [p, client, projectName].forEach(el => el.style.visibility = ""));
-    });
-
-    // Pin the grid to the saved scroll across the close. The un-maximize keeps nudging the
-    // scroll, so re-apply it each frame; this also keeps the card (which the image reparents
-    // into) exactly where the FLIP lands.
-    const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
-    if (gridContainer) {
-        // Restore the grid scroll just twice instead of every frame for 600ms (that forced a
-        // layout + fired scroll listeners each frame, stealing frames from the close). The FLIP
-        // is transform-only, so layout only shifts twice: when the window un-maximizes (next
-        // frame) and when the image reparents (the cleanup timeout below).
-        gridContainer.scrollTop = savedGridScroll;
-        requestAnimationFrame(() => { gridContainer.scrollTop = savedGridScroll; });
-    }
-
-    if (projectImg && savedImgTile) {
-        // reverse FLIP in the overlay: from full-screen expanded back onto the tile
-        const firstNow = projectImg.getBoundingClientRect();
-        projectImg.style.transition = "none";
-        projectImg.style.transform = "none";
-        projectImg.style.top = `${savedImgTile.top}px`;
-        projectImg.style.left = `${savedImgTile.left}px`;
-        projectImg.style.width = `${savedImgTile.width}px`;
-        projectImg.style.height = `${savedImgTile.height}px`;
-        const lastNow = projectImg.getBoundingClientRect();
-        const sx = (firstNow.width / lastNow.width) || 1;
-        const sy = (firstNow.height / lastNow.height) || 1;
-        projectImg.style.transformOrigin = "top left";
-        projectImg.style.transform = `translate(${firstNow.left - lastNow.left}px, ${firstNow.top - lastNow.top}px) scale(${sx}, ${sy})`;
-        projectImg.style.willChange = "transform";
-        void projectImg.offsetWidth;
-        projectImg.style.transition = "transform 0.5s ease";
-        projectImg.style.transform = "none";
-
-        // reparent home and strip every portal/FLIP inline style once it's back on its tile
-        setTimeout(() => {
-            if (imgHome) imgHome.parent.insertBefore(projectImg, imgHome.next);
-            projectImg.removeAttribute("data-portaled");
-            projectImg.style.cssText = "";
-            // reparenting re-grows the card, nudging the grid scroll — re-pin once
-            if (gridContainer) gridContainer.scrollTop = savedGridScroll;
-        }, animationDuration);
-    }
-
-    [projectInfoModal, ...projectSecondaryPanels].forEach(el => {
-        el && (el.style.display = "none");
-        requestAnimationFrame(() => {
-            el.removeAttribute("data-faded-in");
-        });
-    });
+    const frame = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
 
     projectDetailOpen = null;
+    useScrim("project", false);
     document.body.style.overflow = "";
+    document.removeEventListener("keydown", lightboxKeydown);
+
+    if (!frame || !savedImgTile) return;
+
+    // Reverse FLIP: from where it is now, back onto the tile it came from. The tile rect is the
+    // one measured at open, which is still good because the page could not scroll while it was up.
+    const firstNow = frame.getBoundingClientRect();
+
+    frame.style.transition = "none";
+    frame.style.transform = "none";
+    frame.style.top = `${savedImgTile.top}px`;
+    frame.style.left = `${savedImgTile.left}px`;
+    frame.style.width = `${savedImgTile.width}px`;
+    frame.style.height = `${savedImgTile.height}px`;
+
+    const lastNow = frame.getBoundingClientRect();
+    const sx = (firstNow.width / lastNow.width) || 1;
+    const sy = (firstNow.height / lastNow.height) || 1;
+
+    frame.style.transformOrigin = "top left";
+    frame.style.transform =
+        `translate(${firstNow.left - lastNow.left}px, ${firstNow.top - lastNow.top}px) scale(${sx}, ${sy})`;
+    frame.style.willChange = "transform";
+
+    void frame.offsetWidth;
+
+    frame.style.transition = `transform ${animationDuration}ms ease`;
+    frame.style.transform = "none";
+
+    // Home again, and every inline style the portal and the FLIP left behind goes with it.
+    setTimeout(() => {
+        if (imgHome) imgHome.parent.insertBefore(frame, imgHome.next);
+        frame.removeAttribute("data-portaled");
+        frame.style.cssText = "";
+    }, animationDuration);
 }
+
+const lightboxKeydown = (event) => {
+    if (event.key === "Escape" && projectDetailOpen) closeProjectDetail();
+};
+
 export const closeWindow = (window) => window.removeAttribute("data-open");
 
 const createClone = (window) => {
@@ -208,119 +177,95 @@ const removeClone = (window) => {
     clone?.remove();
     clones.delete(window);
 };
+// Clicking a project lifts its image — frame, background and all — off the grid and shows it
+// large over the page, on the same scrim the charms panel uses. The window itself is left alone:
+// this is a lightbox over the page, not a view inside the window.
 const showProject = (project) => {
 
-    // Remember the grid's scroll so it can be restored after closing (the maximize
-    // resizes the grid-container and drops its scrollTop).
-    const gridContainer = document.getElementById("🫆lsdev-projects__grid-container");
-    savedGridScroll = gridContainer ? gridContainer.scrollTop : 0;
+    const frame = project.querySelector(".🎨lsdev-project__img-bg");
 
-    const content = document.getElementById("🫆lsdev-project-content--" + project.id.split("--")[1]);
-    const client = project.querySelector(".🎨lsdev-project__client-info");
-    const projectName = project.querySelector("p");
-    const projectImg = project.querySelector(".🎨lsdev-project__img-bg");
-    const otherProjects = 
-        [...document.querySelectorAll(".🎨lsdev-projects__project")]
-        .filter(el => el !== project);
-    const clientNameStr = client.innerText;
-    const projectNameStr = projectName.innerText;
-    const originalRect = project.getBoundingClientRect();
-            
-    if (!originalRects.has(project)) {
-        originalRects.set(project, originalRect);
-    }
+    if (!frame || projectDetailOpen) return;
 
-    document.body.style.overflow = "hidden";
+    const first = frame.getBoundingClientRect();
 
+    savedImgTile = first;
+    imgHome = { parent: frame.parentNode, next: frame.nextSibling };
     projectDetailOpen = project;
 
-    // --- FLIP: portal the image to <body>, then scale it from its tile to full-screen ---
-    // showProject runs BEFORE the window's transform FLIP, so the image is measured at its
-    // real tile position (no maximize shift to undo). Moving it out of the window keeps the
-    // window's transform from affecting it.
-    // Measure the inner <img> (the actual screenshot), not the padded .img-bg frame. The
-    // portaled image is full-bleed (padding:0), so targeting the frame's rect would land the
-    // screenshot oversized and make it "pop" smaller when it reparents into the padded card
-    // tile. Targeting the screenshot's own rect keeps it the same size through the reparent.
-    const tileImg = projectImg.querySelector("img");
-    const first = (tileImg || projectImg).getBoundingClientRect();
-    savedImgTile = first; // remember the tile rect so the close can FLIP straight back to it
-    imgHome = { parent: projectImg.parentNode, next: projectImg.nextSibling };
-    document.body.appendChild(projectImg);
-    projectImg.dataset.portaled = "";
+    // Out of the window and onto <body>, so nothing the window does to its own transform or
+    // overflow can reach it.
+    document.body.appendChild(frame);
+    frame.dataset.portaled = "";
 
-    // jump to the final expanded layout (no transition)
-    projectImg.style.transition = "none";
-    projectImg.style.transform = "none";
-    projectImg.style.transformOrigin = "top left";
-    projectImg.style.position = "fixed";
-    projectImg.style.top = "112px";
-    projectImg.style.left = "29px";
-    projectImg.style.width = "calc((100vw + 104px)/2)";
-    projectImg.style.height = "auto";
+    // The page is held still while it is up, which is also what keeps the tile rect above valid
+    // for the close.
+    document.body.style.overflow = "hidden";
 
-    // invert: place it visually back on its tile
-    const last = projectImg.getBoundingClientRect();
+    // Final layout first, with no transition, so it can be measured.
+    frame.style.transition = "none";
+    frame.style.transform = "none";
+    frame.style.transformOrigin = "top left";
+    frame.style.position = "fixed";
+    frame.style.top = "0px";
+    frame.style.left = "0px";
+    frame.style.height = "auto";
+    frame.style.width = `${Math.min(window.innerWidth * LIGHTBOX_WIDTH, LIGHTBOX_MAX_PX)}px`;
+
+    // Height follows the image's own proportions, so it is only known once laid out. When that
+    // overshoots, solve for the width that lands exactly on the cap instead of scaling by the
+    // overshoot: the padding is a fixed band that does not scale with the image, so a plain
+    // ratio lands wide of it.
+    let box = frame.getBoundingClientRect();
+
+    const heightCap = window.innerHeight * LIGHTBOX_HEIGHT;
+
+    if (box.height > heightCap) {
+
+        const band = parseFloat(getComputedStyle(frame).paddingTop) * 2;
+        const picture = frame.querySelector("img")?.getBoundingClientRect();
+        const aspect = picture && picture.height ? picture.width / picture.height : 1.6;
+
+        frame.style.width = `${band + (heightCap - band) * aspect}px`;
+        box = frame.getBoundingClientRect();
+    }
+
+    frame.style.left = `${(window.innerWidth - box.width) / 2}px`;
+    frame.style.top = `${(window.innerHeight - box.height) / 2}px`;
+
+    // Invert: put it back on its tile visually, then animate the transform away.
+    const last = frame.getBoundingClientRect();
     const sx = (first.width / last.width) || 1;
     const sy = (first.height / last.height) || 1;
-    projectImg.style.transform = `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
 
-    [client, projectName, ...otherProjects].forEach(el => {
-        el.style.visibility = "hidden";
+    frame.style.transform =
+        `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
+
+    useScrim("project", true);
+
+    frame.style.willChange = "transform";
+
+    void frame.offsetWidth;
+
+    frame.style.transition = `transform ${animationDuration}ms ease`;
+    frame.style.transform = "none";
+
+    setTimeout(() => { frame.style.willChange = ""; }, animationDuration);
+
+    // Anywhere outside the image closes it, and so does the image itself — there is nothing to
+    // interact with inside, so a second click reads as "put it back".
+    frame.addEventListener("click", closeProjectDetail, { once: true });
+    document.addEventListener("keydown", lightboxKeydown);
+    setTimeout(() => {
+        document.addEventListener("pointerdown", lightboxPointerDown, { once: true });
     });
-
-    // play: animate the transform away → one clean scale + move
-    projectImg.style.willChange = "transform";
-    void projectImg.offsetWidth;
-    projectImg.style.transition = "transform 0.5s ease";
-    projectImg.style.transform = "none";
-    setTimeout(() => { projectImg.style.willChange = ""; }, 500);
-    
-    [...projectSecondaryPanels, projectInfoModal].forEach((el, index) => {
-        
-        if (!el) return;
-
-        el.style.display = el === projectInfoModal ? "block" : "flex";
-
-        let delay = 750;
-
-        requestAnimationFrame(() => {
-            el.style.transitionDelay = `${delay + (index * 250)}ms`;
-            el.dataset.fadedIn = "";
-        });
-    });
-
-    const role = `
-        <div class="🎨lsdev-project-modal__secondary-info">
-            <h3 class="🎨lsdev-project-modal__subheading">
-                Role
-            </h3>
-            <p>
-                Designer & developer
-            </p>
-            <h3 class="🎨lsdev-project-modal__subheading">
-                Awards
-            </h3>
-            <p>
-                Gold ADDY® American Advertising Award: Cross Platform
-            </p>
-            <h3>
-                Technologies
-            </h3>
-            <p>
-                Adobe Experience Manager, HTML, CSS, JavaScript, jQuery, Vanilla JSU Parallax, Parallax.js
-            </p>
-        </div>
-    `;
-    document.querySelectorAll("[id*='🫆lsdev-project-content'").forEach(function(content){
-        content.style.display = "none";
-    });
-    // Projects without an authored write-up (07+) have no content div — guard so the
-    // maximize still runs instead of throwing and leaving the window un-maximized.
-    if (content) content.style.display = "block";
-    projectSecondaryPanels[0].innerHTML = `<img class="🎨lsdev-project-modal__secondary-image" src="img/projects/carbon-colab-mobile.png"/>`;
-    projectSecondaryPanels[1].innerHTML = role;
 }
+
+const lightboxPointerDown = (event) => {
+    if (!projectDetailOpen) return;
+    const frame = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
+    if (frame && !frame.contains(event.target)) closeProjectDetail();
+};
+
 const shrinkMaximizedWindow = (window, minimizeClicked) => {
     
     const normalRect = originalWindowRects.get(window);
@@ -345,7 +290,6 @@ const shrinkMaximizedWindow = (window, minimizeClicked) => {
 const unmaximizeWindow = (window) => window.removeAttribute("data-view");
 
 let projectDetailOpen = null;
-let savedGridScroll = 0;
 let imgHome = null; // where the portaled project image came from, so it can be put back
 let savedImgTile = null; // the project image's grid-tile rect at open, for the close FLIP back
 
@@ -385,7 +329,7 @@ export const maximizeWindows = (() => {
     const maximizeButtons = document.querySelectorAll('.🎨lsdev-window__control[data-control="maximize"]');
     const projects = document.querySelectorAll(".🎨lsdev-projects__project");
 
-    const maximizeButtonClick = (e, project) => {
+    const maximizeButtonClick = (e) => {
         
         const button = e.currentTarget;
         const windowEl = button.closest(".🎨lsdev-window");
@@ -401,11 +345,6 @@ export const maximizeWindows = (() => {
                 originalWindowRects.set(windowEl, originalRect);
             }
 
-            if (project){
-                const projectRect = project.getBoundingClientRect();
-                originalRects.set(project, projectRect);
-            }
-
             if (!isOpen) {
                 slideToggle(windowBody, 100);
                 openWindow(windowEl);
@@ -414,23 +353,13 @@ export const maximizeWindows = (() => {
             createClone(windowEl);
             windowEl.style.display = "block";
 
-            // For a project, showProject portals its image out of the window FIRST, so the
-            // window's transform FLIP below can't affect it. Then both animate independently.
-            if (project) {
-                showProject(project);
-            }
             flipWindow(windowEl, true);
 
             return;
         }
 
         else {
-            if (!project){
-                shrinkMaximizedWindow(windowEl);
-            }
-            else {
-                showProject(project);
-            }
+            shrinkMaximizedWindow(windowEl);
         }
     };
 
@@ -440,8 +369,9 @@ export const maximizeWindows = (() => {
             el.addEventListener("click", e => maximizeButtonClick(e));
         });
 
+        // A project no longer maximizes the window — it raises its own image over the page.
         projects.forEach(el => {
-            el.addEventListener("click", e => maximizeButtonClick(e, el));
+            el.addEventListener("click", () => showProject(el));
         });
     });
 })();
@@ -461,7 +391,6 @@ document.querySelectorAll('.🎨lsdev-window__control[data-control="close"]').fo
 
         if (projectDetailOpen){
             closeProjectDetail();
-            shrinkMaximizedWindow(windowToClose);
             return;
         }
 
