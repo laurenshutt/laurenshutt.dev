@@ -80,10 +80,6 @@
          *  ✨ layout
          */
 
-        /* Which layout is in force. mobile.css flips this to `mobile` inside its breakpoint, and
-           the JS reads it instead of comparing innerWidth to a number of its own — see
-           isMobileLayout() in utils.js. The breakpoint is then written in exactly one place.
-           Four separate copies of it had already drifted apart once. */
         --💾lsdev-layout: desktop;
 
 
@@ -476,10 +472,6 @@
         font-family: var(--💾lsdev-sans-font);
         font-size: 18px;
 
-        /* The breathing room above and below the projects window when it is open. One token
-           drives two things that have to agree: the top margin on .🎨lsdev-page__content, and
-           the open height of the window, which subtracts twice this. mobile.css drops it back
-           to 45px at <=1439px. */
         --💾lsdev-window-gutter: 80px;
     }
 
@@ -1027,9 +1019,6 @@
 
         justify-content: center;
 
-        /* border-box so the 2px border is inside the 100vh rather than added to it — otherwise
-           the rail stands 4px taller than the window and its bottom border falls below the fold,
-           leaving it looking open-ended. */
         box-sizing: border-box;
         width: var(--💾lsdev-rail-width);
         height: 100vh;
@@ -2634,6 +2623,12 @@
     }
 
     .🎨lsdev-project__img {
+
+        /* Block, or the line box reserves descender space beneath it: 5px of background that is
+           not part of the band, making the frame bottom-heavy on every card and the lightbox a
+           slightly different shape from the tile it grew out of. */
+        display: block;
+
         width:100%;
         aspect-ratio: 16/10;
         border-radius: var(--project-img-radius, 3px);

@@ -9,9 +9,13 @@ const originalWindowRects = new Map();
 const clones = new WeakMap();
 const animationDuration = 500;
 const BASE_TRANSFORM = "translateY(0px)"; // window's RESTING transform: the intro fade-in-down ends at translateY(0) with fill-mode:forwards, overriding the -10px CSS base
-const LIGHTBOX_WIDTH = 0.86;   // of the viewport's width, before the height cap below
-const LIGHTBOX_HEIGHT = 0.84;  // of its height — whichever runs out first decides the size
-const LIGHTBOX_MAX_PX = 1100;  // so it stops growing on very wide screens
+// Sized from the artwork outwards, not from the frame inwards: the picture is the point, and
+// the band is trim around it. Keeping the band as a share of the frame rather than a fixed px
+// means it still grows as the image does, just by less than it did on the card.
+const LIGHTBOX_ART = 0.62;     // the artwork's share of the viewport's width at full size
+const LIGHTBOX_ART_MAX = 760;  // and its ceiling, so it stops growing on very wide screens
+const LIGHTBOX_BAND = 0.06;    // the band around it, as a share of the whole frame
+const LIGHTBOX_HEIGHT = 0.84;  // the frame never takes more than this share of the height
 const CARD_REVEAL_STAGGER = 120; // ms between each card sliding into place after a FLIP
 
 // After a window FLIP, slide each project card (its text AND image tile together) back into place
@@ -109,7 +113,8 @@ const clearRectStyles = (el) => {
         height: ""
     });
 };
-// Put the enlarged image back on its tile and lower the scrim.
+// Put the enlarged image back on its tile and lower the scrim — the same tween in reverse, so
+// the padding and corners come back as gradually as they went.
 const closeProjectDetail = () => {
 
     const frame = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
@@ -118,35 +123,16 @@ const closeProjectDetail = () => {
     useScrim("project", false);
     document.body.style.overflow = "";
     document.removeEventListener("keydown", lightboxKeydown);
+    document.removeEventListener("pointerdown", lightboxPointerDown);
 
     if (!frame || !savedImgTile) return;
 
-    // Reverse FLIP: from where it is now, back onto the tile it came from. The tile rect is the
-    // one measured at open, which is still good because the page could not scroll while it was up.
-    const firstNow = frame.getBoundingClientRect();
+    // The tile rect is the one measured at open, which is still good because the page could not
+    // scroll while the lightbox was up.
+    tween(frame, animationDuration);
+    settle(frame, savedImgTile, savedImgLook);
 
-    frame.style.transition = "none";
-    frame.style.transform = "none";
-    frame.style.top = `${savedImgTile.top}px`;
-    frame.style.left = `${savedImgTile.left}px`;
-    frame.style.width = `${savedImgTile.width}px`;
-    frame.style.height = `${savedImgTile.height}px`;
-
-    const lastNow = frame.getBoundingClientRect();
-    const sx = (firstNow.width / lastNow.width) || 1;
-    const sy = (firstNow.height / lastNow.height) || 1;
-
-    frame.style.transformOrigin = "top left";
-    frame.style.transform =
-        `translate(${firstNow.left - lastNow.left}px, ${firstNow.top - lastNow.top}px) scale(${sx}, ${sy})`;
-    frame.style.willChange = "transform";
-
-    void frame.offsetWidth;
-
-    frame.style.transition = `transform ${animationDuration}ms ease`;
-    frame.style.transform = "none";
-
-    // Home again, and every inline style the portal and the FLIP left behind goes with it.
+    // Home again, and every inline style the portal and the tween left behind goes with it.
     setTimeout(() => {
         if (imgHome) imgHome.parent.insertBefore(frame, imgHome.next);
         frame.removeAttribute("data-portaled");
@@ -180,6 +166,41 @@ const removeClone = (window) => {
 // Clicking a project lifts its image — frame, background and all — off the grid and shows it
 // large over the page, on the same scrim the charms panel uses. The window itself is left alone:
 // this is a lightbox over the page, not a view inside the window.
+// What the card looks like, read off it before it leaves the grid. These are the values the
+// open animates away from and the close animates back to — in pixels, so they interpolate.
+const lookOf = (el) => {
+    const cs = getComputedStyle(el);
+    return { padding: cs.padding, radius: cs.borderRadius, shadow: cs.boxShadow };
+};
+
+// Everything that moves between the tile and the lightbox, animated as layout rather than as a
+// transform.
+//
+// A transform FLIP was the obvious choice and it is the wrong one here. It animates the element
+// as a flat picture: the padding and the corner radius jump to their lightbox values on the
+// first frame and are then stretched by the scale, so the band of background around the artwork
+// changes thickness the instant you click and the corners distort on the way. Animating the real
+// properties costs a layout per frame — affordable, because the element is fixed and out of flow,
+// so nothing else on the page is re-laid out with it.
+const TWEENED = ["top", "left", "width", "height", "padding", "border-radius", "box-shadow"];
+
+const tween = (el, ms) => {
+    el.style.transition = TWEENED.map(prop => `${prop} ${ms}ms ease`).join(", ");
+};
+
+const settle = (el, geometry, look) => {
+    el.style.top = `${geometry.top}px`;
+    el.style.left = `${geometry.left}px`;
+    el.style.width = `${geometry.width}px`;
+    el.style.height = `${geometry.height}px`;
+    el.style.padding = look.padding;
+    el.style.borderRadius = look.radius;
+    el.style.boxShadow = look.shadow;
+};
+
+// Clicking a project lifts its image — frame, background and all — off the grid and shows it
+// large over the page, on the same scrim the charms panel uses. The window itself is left alone:
+// this is a lightbox over the page, not a view inside the window.
 const showProject = (project) => {
 
     const frame = project.querySelector(".🎨lsdev-project__img-bg");
@@ -187,8 +208,15 @@ const showProject = (project) => {
     if (!frame || projectDetailOpen) return;
 
     const first = frame.getBoundingClientRect();
+    const tileLook = lookOf(frame);
+
+    // Read here, off the card, because a moment from now the element has no width of its own to
+    // measure the image against.
+    const picture = frame.querySelector("img")?.getBoundingClientRect();
+    const aspect = picture && picture.height ? picture.width / picture.height : 1.6;
 
     savedImgTile = first;
+    savedImgLook = tileLook;
     imgHome = { parent: frame.parentNode, next: frame.nextSibling };
     projectDetailOpen = project;
 
@@ -201,55 +229,49 @@ const showProject = (project) => {
     // for the close.
     document.body.style.overflow = "hidden";
 
-    // Final layout first, with no transition, so it can be measured.
     frame.style.transition = "none";
-    frame.style.transform = "none";
-    frame.style.transformOrigin = "top left";
     frame.style.position = "fixed";
-    frame.style.top = "0px";
-    frame.style.left = "0px";
-    frame.style.height = "auto";
-    frame.style.width = `${Math.min(window.innerWidth * LIGHTBOX_WIDTH, LIGHTBOX_MAX_PX)}px`;
 
-    // Height follows the image's own proportions, so it is only known once laid out. When that
-    // overshoots, solve for the width that lands exactly on the cap instead of scaling by the
-    // overshoot: the padding is a fixed band that does not scale with the image, so a plain
-    // ratio lands wide of it.
-    let box = frame.getBoundingClientRect();
+    // Decide how big the artwork should be, then wrap the band around it. The band is a share of
+    // the finished frame, so frame = art + 2 x band x frame, which rearranges to the line below.
+    let art = Math.min(window.innerWidth * LIGHTBOX_ART, LIGHTBOX_ART_MAX);
+    let width = art / (1 - (2 * LIGHTBOX_BAND));
+    let height = (2 * LIGHTBOX_BAND * width) + (art / aspect);
 
-    const heightCap = window.innerHeight * LIGHTBOX_HEIGHT;
+    // Every part of that is a multiple of the artwork's width, so a tall viewport is handled by
+    // scaling the whole thing down by one factor rather than re-solving it.
+    if (height > window.innerHeight * LIGHTBOX_HEIGHT) {
 
-    if (box.height > heightCap) {
+        const shrink = (window.innerHeight * LIGHTBOX_HEIGHT) / height;
 
-        const band = parseFloat(getComputedStyle(frame).paddingTop) * 2;
-        const picture = frame.querySelector("img")?.getBoundingClientRect();
-        const aspect = picture && picture.height ? picture.width / picture.height : 1.6;
-
-        frame.style.width = `${band + (heightCap - band) * aspect}px`;
-        box = frame.getBoundingClientRect();
+        art *= shrink;
+        width *= shrink;
+        height *= shrink;
     }
 
-    frame.style.left = `${(window.innerWidth - box.width) / 2}px`;
-    frame.style.top = `${(window.innerHeight - box.height) / 2}px`;
+    const target = {
+        width,
+        height,
+        left: (window.innerWidth - width) / 2,
+        top: (window.innerHeight - height) / 2
+    };
 
-    // Invert: put it back on its tile visually, then animate the transform away.
-    const last = frame.getBoundingClientRect();
-    const sx = (first.width / last.width) || 1;
-    const sy = (first.height / last.height) || 1;
+    // Corners and shadow come from the stylesheet; the band is worked out above, so it overrides
+    // whatever padding the lightbox rule happens to carry.
+    const grownLook = lookOf(frame);
 
-    frame.style.transform =
-        `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${sx}, ${sy})`;
+    grownLook.padding = `${LIGHTBOX_BAND * width}px`;
 
-    useScrim("project", true);
-
-    frame.style.willChange = "transform";
+    // Back onto the tile — same place, same padding, same corners as the card it came from. All
+    // of this is inside one task, so none of it is painted.
+    settle(frame, first, tileLook);
 
     void frame.offsetWidth;
 
-    frame.style.transition = `transform ${animationDuration}ms ease`;
-    frame.style.transform = "none";
+    useScrim("project", true);
 
-    setTimeout(() => { frame.style.willChange = ""; }, animationDuration);
+    tween(frame, animationDuration);
+    settle(frame, target, grownLook);
 
     // Anywhere outside the image closes it, and so does the image itself — there is nothing to
     // interact with inside, so a second click reads as "put it back".
@@ -291,7 +313,8 @@ const unmaximizeWindow = (window) => window.removeAttribute("data-view");
 
 let projectDetailOpen = null;
 let imgHome = null; // where the portaled project image came from, so it can be put back
-let savedImgTile = null; // the project image's grid-tile rect at open, for the close FLIP back
+let savedImgTile = null; // the image's grid-tile rect at open, to animate back to
+let savedImgLook = null; // its padding, corners and shadow there, to animate back to
 
 
 export const minimizeWindows = (() => {
