@@ -162,12 +162,13 @@ export const sectionTrackingInit = () => {
     if (footer) footer.dataset.deferred = "";
 
     // How far a section has to come into the viewport before it reveals, as a fraction of the
-    // viewport height measured from the top. 0.8 means "once its top has risen past the 80% line"
-    // — just after it appears from the bottom. This is the usual scroll-reveal threshold (GSAP
-    // ScrollTrigger's "top 80%", AOS's 120px offset, a -10% rootMargin on an observer). The
-    // windows used to wait to be centred instead, which on windows this close to viewport-height
-    // meant most of a screen longer before anything happened.
-    const REVEAL_AT = 0.8;
+    // viewport height measured from the top. 0.65 means "once its top has risen past the 65%
+    // line" — a bit beyond the usual scroll-reveal threshold (GSAP ScrollTrigger's "top 80%",
+    // AOS's 120px offset, a -10% rootMargin on an observer), so it takes a little more scrolling
+    // to earn. Lower it to make a section wait longer, raise it to reveal sooner. The windows
+    // used to wait to be centred instead, which on windows this close to viewport-height meant
+    // most of a screen longer again before anything happened.
+    const REVEAL_AT = 0.65;
 
     const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
     const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
