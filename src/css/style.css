@@ -480,7 +480,7 @@
            drives two things that have to agree: the top margin on .🎨lsdev-page__content, and
            the open height of the window, which subtracts twice this. mobile.css drops it back
            to 45px at <=1439px. */
-        --💾lsdev-window-gutter: 100px;
+        --💾lsdev-window-gutter: 80px;
     }
 
     body {
