@@ -118,6 +118,7 @@ const clearRectStyles = (el) => {
 const closeProjectDetail = () => {
 
     const frame = document.querySelector(".🎨lsdev-project__img-bg[data-portaled]");
+    const card = projectDetailOpen;
 
     projectDetailOpen = null;
     useScrim("project", false);
@@ -129,15 +130,42 @@ const closeProjectDetail = () => {
 
     // The tile rect is the one measured at open, which is still good because the page could not
     // scroll while the lightbox was up.
+    // Lands at rest, not at whatever scale the card happened to be giving it when it was picked
+    // up: the hover is held off on arrival, so tweening back to a hovered 1.06 would leave a step
+    // at the hand-over.
     tween(frame, animationDuration);
-    settle(frame, savedImgTile, savedImgLook);
+    settle(frame, savedImgTile, { ...savedImgLook, scale: "none" });
 
     // Home again, and every inline style the portal and the tween left behind goes with it.
-    setTimeout(() => {
+    //
+    // On the width transition actually ending rather than on a timer of the same length: a timer
+    // can fire a frame before the last paint, handing over while the tween is still two or three
+    // pixels short and stepping the rest. The timeout is only a backstop for a transition that
+    // never reports — interrupted, or nothing to animate.
+    let landed = false;
+
+    const land = () => {
+
+        if (landed) return;
+
+        landed = true;
+
+        frame.removeEventListener("transitionend", onEnd);
+
+        holdHoverUntilPointerMoves(card);
+
         if (imgHome) imgHome.parent.insertBefore(frame, imgHome.next);
+
         frame.removeAttribute("data-portaled");
         frame.style.cssText = "";
-    }, animationDuration);
+    };
+
+    const onEnd = (event) => {
+        if (event.target === frame && event.propertyName === "width") land();
+    };
+
+    frame.addEventListener("transitionend", onEnd);
+    setTimeout(land, animationDuration + 80);
 }
 
 const lightboxKeydown = (event) => {
@@ -170,7 +198,7 @@ const removeClone = (window) => {
 // open animates away from and the close animates back to — in pixels, so they interpolate.
 const lookOf = (el) => {
     const cs = getComputedStyle(el);
-    return { padding: cs.padding, radius: cs.borderRadius, shadow: cs.boxShadow };
+    return { padding: cs.padding, radius: cs.borderRadius, shadow: cs.boxShadow, scale: cs.scale };
 };
 
 // Everything that moves between the tile and the lightbox, animated as layout rather than as a
@@ -182,7 +210,7 @@ const lookOf = (el) => {
 // changes thickness the instant you click and the corners distort on the way. Animating the real
 // properties costs a layout per frame — affordable, because the element is fixed and out of flow,
 // so nothing else on the page is re-laid out with it.
-const TWEENED = ["top", "left", "width", "height", "padding", "border-radius", "box-shadow"];
+const TWEENED = ["top", "left", "width", "height", "padding", "border-radius", "box-shadow", "scale"];
 
 const tween = (el, ms) => {
     el.style.transition = TWEENED.map(prop => `${prop} ${ms}ms ease`).join(", ");
@@ -196,6 +224,28 @@ const settle = (el, geometry, look) => {
     el.style.padding = look.padding;
     el.style.borderRadius = look.radius;
     el.style.boxShadow = look.shadow;
+    el.style.scale = look.scale;
+};
+
+// The card scales its image up 6% on hover. While the image is away on <body> that variable
+// cannot reach it, and the scrim means the card is not hovered either — so the hover only
+// asserts itself at the instant the image lands, springing it larger under a cursor that never
+// moved. That is the jump.
+//
+// Asking whether the card is hovered at close time does not help: the scrim is still over it,
+// so the answer is always no. Instead the card is marked on arrival and the hover is held off
+// until the visitor actually moves the pointer, at which point growing is a response to them
+// rather than something the close did on its own.
+const holdHoverUntilPointerMoves = (card) => {
+
+    if (!card) return;
+
+    card.dataset.justReturned = "";
+
+    const release = () => card.removeAttribute("data-just-returned");
+
+    document.addEventListener("pointermove", release, { once: true });
+    card.addEventListener("pointerleave", release, { once: true });
 };
 
 // Clicking a project lifts its image — frame, background and all — off the grid and shows it

@@ -923,17 +923,6 @@
         pointer-events: auto;
     }
 
-    /* Once they have all arrived, hand the fill's values over to plain declarations and let the
-       animations go.
-
-       `forwards` keeps every cell's animation attached for the life of the page, and the browser
-       re-evaluates all of them on every frame. With a grid this size that is around 1,700 live
-       animations, and it halves the frame rate of anything else that animates: a window opening
-       managed 27 frames per 500ms with them attached and 60 without, which is the stutter as the
-       windows open. Detaching them is worth as much as deleting the grid outright.
-
-       The base rule sets opacity: 0 — the fill is the only thing holding the cells visible — so
-       the values it was holding have to be restated here or the whole grid would disappear. */
     .🎨lsdev-bg-grid[data-settled] .🎨lsdev-bg-grid__cell {
         opacity: 1;
         transform: none;
@@ -1022,7 +1011,6 @@
         box-sizing: border-box;
         width: var(--💾lsdev-rail-width);
         height: 100vh;
-        border-right: 2px solid #c16895;
         
         background-image: linear-gradient(
             to bottom right, 
@@ -1581,27 +1569,9 @@
             width: min-content;
             transform: none;
 
-            /* Nearly flat across the desktop range, instead of tracking the viewport the way a
-               plain vw value does — it used to run 5.25vw, dip to 4.9vw at 1200 and jump back up
-               to 6.5vw at 1040, so the name both shrank hard and changed direction twice.
-               
-               The ceiling at the narrow end is not a taste decision: the sidebar is shrink-to-fit
-               on this text, and its right edge (7vw of padding + the text) has to clear the
-               windows at 38vw. The widest word measures 4.376x the font size, which puts the
-               limit at 7.08vw — about 54px at the 768px breakpoint. The floor below sits just
-               under that.
-               
-               To scale the whole name up or down, move the 21px; the 3.4vw is the slope, and
-               raising it makes the name track the viewport more again. There is almost nothing
-               left to give at the bottom — 47px at 772 is already within 4px of the ceiling —
-               so a bigger name has to come from the slope, which costs a little flatness. The
-               floor is a backstop and does not bind above 676px. */
             font-size: clamp(44px, 3.4vw + 21px, 92px);
             left:-9px;
 
-            /* The break the title used to get from reflow. As a change of display it is discrete,
-               which is fine: the layout lands on frame one and the words are animated into it
-               with transforms, so nothing reflows while the move is running. */
             & .✨lsdev-fx-glitch--word {
                 display: block;
             }
@@ -1986,7 +1956,6 @@
             40px,
             13vh);
         padding: 0 25px;
-        border:2px solid #c16895;
         border-radius: 6px;
 
         background-image: linear-gradient(
@@ -2502,6 +2471,15 @@
                 rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
             --lsdev-project-img-scale: 1.06;
             --lsdev-project-img-delay: .02s;
+        }
+
+        /* Just back from the lightbox, under a pointer that has not moved since. It is hovered
+           by the letter of the rule, but asserting that the moment the image lands makes the
+           close look like it overshot. windows.js lifts this on the next pointer move. */
+        &[data-just-returned]:hover {
+            --lsdev-project-img-shadow: var(--💾lsdev-shadow-card);
+            --lsdev-project-img-scale: none;
+            --lsdev-project-img-delay: 0s;
         }
 
         &[data-filtered] {
