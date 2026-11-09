@@ -172,7 +172,6 @@ export const sectionTrackingInit = () => {
 
     const REVEAL_GAP = 600;  // ms of cooldown before the next section starts watching
     const OPEN_WAIT = 2000;  // ms the open will wait for the window to be somewhere it can be seen
-    const FADE_MS = 250;     // the window fade-in in the stylesheet, [data-animation="in"]
     const SLIDE_MS = 500;    // slideToggle's own default, so how long the window takes to open
 
     // Room at the foot of the page, reserved only while it is needed.
@@ -325,9 +324,24 @@ export const sectionTrackingInit = () => {
         win.style.setProperty("--i", 0);
         win.dataset.animation = "in";
 
-        // The fade hands over to plain declarations once it has run, exactly as before. It is on
-        // its own timer now, though, because nothing waits for it.
-        setTimeout(() => { win.dataset.animation = "none"; }, FADE_MS);
+        // Hand the fade's finished state over to plain declarations the moment it is actually
+        // done. The switch is not tidiness: the fade fills forwards, and a filled animation left
+        // attached is re-evaluated on every frame for the rest of the page's life — the same cost
+        // that had the grid cells halving the frame rate of everything else that animates.
+        //
+        // Driven off the animation itself rather than a timer set to match the stylesheet's
+        // animation-duration. That was a second copy of a number CSS owns, with nothing keeping
+        // the two in step, and it decided when the window opened as well.
+        const fade = win.getAnimations();
+
+        if (fade.length) {
+            Promise.allSettled(fade.map(a => a.finished))
+                .then(() => { win.dataset.animation = "none"; });
+        } else {
+            // Nothing to wait for — reduced motion, or the animation never started. The finished
+            // state is what we want in either case.
+            win.dataset.animation = "none";
+        }
 
         // The slide starts with the fade rather than after it. It used to wait out the whole
         // 250ms first, and on a fast scroll that pause was enough to carry the visitor past the
