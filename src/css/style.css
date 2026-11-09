@@ -1051,16 +1051,6 @@
 
     .🎨lsdev-external-nav__link {
 
-        /* The rail mixes <a> and <button>, and the buttons used to sit 2.5px off its centre line
-           while the anchors sat dead on it — the music and charms icons looking shifted beside
-           the github and linkedin ones.
-           
-           Two causes, both from the UA's idea of a button. Its appearance and 1px side padding
-           made the box wider than its icon; and as an inline-block it was baseline-aligned, so
-           the line box reserved descender space beside it — 5px of it, which the sideways-lr
-           writing mode turns from a gap below into a gap to one side. display:block takes the
-           element out of the inline formatting context altogether, so there is no baseline left
-           to leave room for. */
         display: block;
 
         appearance: none;
@@ -1569,7 +1559,13 @@
             width: min-content;
             transform: none;
 
-            font-size: clamp(44px, 3.4vw + 21px, 92px);
+            /* Bigger from laptop widths up. The slope is steeper than it was rather than the
+               intercept being higher, because the growth has to land where there's room for it:
+               the sidebar is position:fixed and shrink-to-fit, so the name's width is 4.38x the
+               font-size and it grows straight towards the window column. At 769px there are only
+               ~25px between them, so this curve rejoins the old one down there instead of
+               pushing into it, and opens up by 12-16% from 1280px on. */
+            font-size: clamp(44px, 4.6vw + 12px, 104px);
             left:-9px;
 
             & .✨lsdev-fx-glitch--word {
@@ -1976,7 +1972,7 @@
             transform 500ms ease,
             width 500ms var(--💾lsdev-ease-flip);
 
-        /*&::after {
+        &::after {
             
             content: "";
 
@@ -1989,7 +1985,7 @@
             border-radius: inherit;
 
             background-color: white;
-        }*/
+        }
 
         &[data-animation="in"] {
             animation-name: ✨lsdev-fx-fade-in-down;
