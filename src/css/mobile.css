@@ -18,7 +18,7 @@
         .🎨lsdev-projects__grid-container {
             height: var(
                 --lsdev-window-grid-container-height,
-                calc(100vh - 90px - 4px - 60px - 50px - 3px - 60px - 25px));
+                calc(100vh - (var(--💾lsdev-window-gutter) * 2) - 4px - 60px - 50px - 3px - 60px - 25px));
         }
 
         .🎨lsdev-page-title[data-moved] {
@@ -45,6 +45,10 @@
         
         .🐱lsdev {
             font-size: 16px;
+
+            /* Back to 45px here: below this width the window gets the smaller gutter, and its
+               open height follows automatically (see style.css for the token). */
+            --💾lsdev-window-gutter: 45px;
         }
 
         .🎨lsdev-nav {
@@ -85,7 +89,7 @@
         */
 
         .🎨lsdev-page__content {
-            margin: 45px 5vw 0 8vw;
+            margin: var(--💾lsdev-window-gutter) 5vw 0 8vw;
         }
 
         .🎨lsdev-window {
@@ -116,7 +120,7 @@
         .🎨lsdev-projects__grid-container {
             height: var(
                 --lsdev-window-grid-container-height,
-                calc(100vh - 90px - 4px - 55px - 50px - 3px - 60px - 25px));
+                calc(100vh - (var(--💾lsdev-window-gutter) * 2) - 4px - 55px - 50px - 3px - 60px - 25px));
         }
         
     }

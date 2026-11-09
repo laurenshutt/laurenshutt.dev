@@ -475,6 +475,12 @@
         color: var(--💾lsdev-black);
         font-family: var(--💾lsdev-sans-font);
         font-size: 18px;
+
+        /* The breathing room above and below the projects window when it is open. One token
+           drives two things that have to agree: the top margin on .🎨lsdev-page__content, and
+           the open height of the window, which subtracts twice this. mobile.css drops it back
+           to 45px at <=1439px. */
+        --💾lsdev-window-gutter: 100px;
     }
 
     body {
@@ -1489,7 +1495,7 @@
         
         position: relative;
         
-        margin: 45px 4vw 0 10vw;
+        margin: var(--💾lsdev-window-gutter) 4vw 0 10vw;
     }
 
     /* #endregion */
@@ -2409,7 +2415,7 @@
            three if you restyle the title bar or the menu buttons. */
         height: var(
             --lsdev-window-grid-container-height,
-            calc(100vh - 90px   /* the window's open height */
+            calc(100vh - (var(--💾lsdev-window-gutter) * 2)   /* the gutter, above and below */
                 - 4px    /* the window's 2px top + bottom border */
                 - 60px   /* title bar */
                 - 52px   /* menu bar (content-sized by its buttons, plus a 2px border) */
