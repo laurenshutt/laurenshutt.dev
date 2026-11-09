@@ -101,10 +101,6 @@
         .🎨lsdev-window__title-bar {
             padding: 15px 0;
         }
-
-        .🎨lsdev-projects__grid-container {
-            height: calc(92.5vh - 235px);
-        }
     }
 
     @media screen and (max-width:1420px){
