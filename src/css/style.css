@@ -1591,7 +1591,21 @@
             left: auto;
             width: min-content;
             transform: none;
-            font-size: 5.25vw; 
+
+            /* Nearly flat across the desktop range, instead of tracking the viewport the way a
+               plain vw value does — it used to run 5.25vw, dip to 4.9vw at 1200 and jump back up
+               to 6.5vw at 1040, so the name both shrank hard and changed direction twice.
+               
+               The ceiling at the narrow end is not a taste decision: the sidebar is shrink-to-fit
+               on this text, and its right edge (7vw of padding + the text) has to clear the
+               windows at 38vw. The widest word measures 4.376x the font size, which puts the
+               limit at 7.08vw — about 54px at the 768px breakpoint. The floor below sits just
+               under that.
+               
+               To scale the whole name up or down, move the 26px; the 2.6vw is the slope, and
+               raising it makes the name track the viewport more again. The floor is a backstop
+               and does not bind above 692px. */
+            font-size: clamp(44px, 2.6vw + 26px, 84px);
             left:-9px;
 
             /* The break the title used to get from reflow. As a change of display it is discrete,
