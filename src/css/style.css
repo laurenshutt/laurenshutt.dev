@@ -735,7 +735,7 @@
         font-weight: 500;
 
         span {
-            border-bottom: 1px solid var(--💾lsdev-purple-500);
+            text-decoration: underline;
         }
 
         &::after {
