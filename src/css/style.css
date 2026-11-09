@@ -1949,7 +1949,7 @@
             8vh);
         padding: 0 25px;
         border-radius: 6px;
-        border:2px solid var(--💾lsdev-purple-500);
+        border:2px solid #b64c81;
 
         background-image: linear-gradient(
                 to right,
@@ -2401,10 +2401,11 @@
         height: var(
             --lsdev-window-grid-container-height,
             calc(100vh - 90px   /* the window's open height */
-                - 90px   /* top and bottom margin */
                 - 4px    /* the window's 2px top + bottom border */
                 - 60px   /* title bar */
-                - 50px   /* menu bar */
+                - 52px   /* menu bar: content-sized by its buttons plus a 2px border, so
+                            this is a measured value — recheck it if the menu buttons'
+                            padding or type size changes */
                 - 60px   /* this element's own padding-bottom */
                 - 25px   /* the window's padding-bottom while open */));
         overflow:scroll;
