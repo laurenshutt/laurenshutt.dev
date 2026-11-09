@@ -1671,7 +1671,7 @@
         
         color: var(--💾lsdev-purple-700);
         font-family: var(--💾lsdev-pixel-font);
-        font-size: 15px;
+        font-size: 14px;
         letter-spacing: -1px;
 
         transition: margin .3s ease;
